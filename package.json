@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "tsc -w",
+    "serve": " node ./build/bot.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "grammy": "^1.17.2",
+    "mariadb": "^3.2.0"
+  }
+}
