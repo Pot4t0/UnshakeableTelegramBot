@@ -1,10 +1,26 @@
-import {createPool} from 'mariadb';
+import "reflect-metadata"
 
-// Expose the Pool object within this module
-export default createPool({
+
+import { DataSource } from "typeorm"
+import { EventTable, NameTable, WishTable } from './Entity/tableEntity';
+
+export const Database = new DataSource({
+    type: "mariadb",
     host: 'pi',
     port: 3306,
-    user: 'user',
-    password: 'Password123!',
+    username: 'user',
+    password: process.env.PASSWORD ||"",
     database: 'unshakeableDB',
-  })
+    entities: [EventTable, NameTable, WishTable]
+})
+
+const init = async() => {
+    await Database.initialize()
+    .then(() => {
+        console.log("Data Source has been initialized!")
+    })
+    .catch((err) => {
+        console.error("Error during Data Source initialization", err)
+    })
+}
+ init()
