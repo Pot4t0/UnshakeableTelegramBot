@@ -6,7 +6,7 @@ an efficient collation of data from the lifegroup.
 
 ## Contributors
 - [@Pot4t0](https://github.com/Pot4t0)
-- [@carlintyj](https://github.com/Carlintyj)
+- [@carlintyj](https://github.com/Carlintyj) (AKA Minh's slave)
 
 ## Features
 A **Telegram Bot** which allows Lifegroup members to input their service feedback, welfare and birthday wishes.
