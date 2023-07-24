@@ -5,16 +5,24 @@
   },
   "devDependencies": {
     "@types/node": "^20.4.2",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
     "eslint": "^8.45.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
     "es6-shim": "^0.35.8",
+    "eslint-config-google": "^0.14.0",
     "grammy": "^1.17.2",
     "mariadb": "^3.2.0",
     "mysql": "^2.18.1",
+    "nanoid": "^4.0.2",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.6.0",
     "typeorm": "^0.3.17"
