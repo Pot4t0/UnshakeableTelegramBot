@@ -19,7 +19,7 @@ bot.command('settings', functions_1.Command.settings);
 //Call /claim command
 //bot.command('claim');
 //Call /adminWelfare command
-bot.command('adminWelfare', functions_1.Command.admin);
+bot.command('adminWelfare', functions_1.Command.adminWelfare);
 //Call /sendwish command
 bot.command('sendwish', functions_1.Command.sendWish);
 //Initiallise Callbacks

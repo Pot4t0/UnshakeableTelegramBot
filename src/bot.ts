@@ -28,7 +28,7 @@ bot.command('settings', Command.settings);
 //Call /claim command
 //bot.command('claim');
 //Call /adminWelfare command
-bot.command('adminWelfare', Command.admin);
+bot.command('adminWelfare', Command.adminWelfare);
 //Call /sendwish command
 bot.command('sendwish', Command.sendWish);
 
