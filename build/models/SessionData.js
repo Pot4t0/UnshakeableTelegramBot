@@ -5,7 +5,7 @@ function initial() {
     return {
         eventName: undefined,
         name: undefined,
-        wish: undefined
+        wish: undefined,
     };
 }
 exports.initial = initial;

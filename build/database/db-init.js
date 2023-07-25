@@ -14,21 +14,21 @@ require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const tableEntity_1 = require("./Entity/tableEntity");
 exports.Database = new typeorm_1.DataSource({
-    type: "mariadb",
+    type: 'mariadb',
     host: 'pi',
     port: 3306,
     username: 'user',
-    password: process.env.PASSWORD || "",
+    password: process.env.PASSWORD || '',
     database: 'unshakeableDB',
-    entities: [tableEntity_1.EventTable, tableEntity_1.NameTable, tableEntity_1.WishTable]
+    entities: [tableEntity_1.EventTable, tableEntity_1.NameTable, tableEntity_1.WishTable],
 });
 const init = () => __awaiter(void 0, void 0, void 0, function* () {
     yield exports.Database.initialize()
         .then(() => {
-        console.log("Data Source has been initialized!");
+        console.log('Data Source has been initialized!');
     })
         .catch((err) => {
-        console.error("Error during Data Source initialization", err);
+        console.error('Error during Data Source initialization', err);
     });
 });
 init();

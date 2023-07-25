@@ -9,60 +9,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FinalReply = exports.NameReply = exports.EventReply = void 0;
-const grammy_1 = require("grammy");
+exports.FinalReply = exports.EventReply = void 0;
+const db_init_1 = require("../database_mongoDB/db-init");
 const SessionData_1 = require("../models/SessionData");
-const db_init_1 = require("../database/db-init");
-const tableEntity_1 = require("../database/Entity/tableEntity");
+const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const EventReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const event = ctx.update.callback_query.data.substring('eventName-'.length);
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     ctx.session.eventName = event;
-    const names = yield db_init_1.Database.getRepository(tableEntity_1.NameTable).find();
-    // query.select("nameTable", "text");
-    const inlineKeyboard = new grammy_1.InlineKeyboard(names.map(n => [{
-            text: n.text,
-            callback_data: `name-${n.text}`
-        }]));
     yield ctx.answerCallbackQuery({
         text: event,
     });
-    yield ctx.reply("Select your name ", {
-        reply_markup: inlineKeyboard
+    yield ctx.reply('Send a msg that contains your wish ', {
+        reply_markup: {
+            force_reply: true,
+        },
     });
 });
 exports.EventReply = EventReply;
-const NameReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const name = ctx.update.callback_query.data.substring('name-'.length);
-    ctx.session.name = name;
-    yield ctx.answerCallbackQuery({
-        text: name,
-    });
-    yield ctx.reply("Send a msg that contains your wish ", {
-        reply_markup: {
-            force_reply: true
-        }
-    });
-});
-exports.NameReply = NameReply;
 const FinalReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    if (ctx.session.eventName && ctx.session.name) {
-        try {
-            const wish = ctx.message.text || '';
-            ctx.session.wish = wish;
-            const eventName = ctx.session.eventName;
-            const name = ctx.session.name;
-            const wishSent = yield db_init_1.Database.getRepository(tableEntity_1.WishTable).save({
-                eventName,
-                name,
-                wish
+    if (ctx.session.eventName) {
+        const wish = ctx.message.text || '';
+        ctx.session.wish = wish;
+        const eventName = ctx.session.eventName;
+        const name = ctx.message.from.username;
+        const collection = yield db_init_1.Database.getMongoRepository(tableEntity_1.Wishes).findOneBy({
+            eventName: eventName,
+            teleUser: name,
+        });
+        if (!collection) {
+            yield db_init_1.Database.getMongoRepository(tableEntity_1.Wishes).save({
+                eventName: eventName,
+                teleUser: name,
+                wishText: wish,
             });
-            // query.insert("wishTable", ['eventName','name', 'wish'], [eventName,name,wish]);
-            ctx.reply("Wish Received");
-            ctx.session = (0, SessionData_1.initial)();
+            yield ctx.reply('Wish Received');
         }
-        catch (err) {
-            console.log(err);
+        else {
+            yield db_init_1.Database.getMongoRepository(tableEntity_1.Wishes).updateOne({ teleUser: name, eventName: eventName }, { $set: { wishText: wish } });
+            yield ctx.reply('Wish Overrided');
         }
+        ctx.session = (0, SessionData_1.initial)();
     }
 });
 exports.FinalReply = FinalReply;

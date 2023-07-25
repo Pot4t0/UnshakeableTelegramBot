@@ -23,7 +23,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Command = exports.adminCallback = exports.sendWishCallback = void 0;
+exports.startCallback = exports.Command = exports.adminCallback = exports.sendWishCallback = void 0;
 exports.sendWishCallback = __importStar(require("./sendWishCallback"));
-exports.adminCallback = __importStar(require("./adminCallback"));
+exports.adminCallback = __importStar(require("./adminWelfareCallbacks"));
 exports.Command = __importStar(require("./commands"));
+exports.startCallback = __importStar(require("./startCallbacks"));
