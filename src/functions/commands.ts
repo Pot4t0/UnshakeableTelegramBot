@@ -26,9 +26,9 @@ export const start = async (ctx: CommandContext<BotContext>) => {
 
 export const help = async (ctx: CommandContext<BotContext>) => {
   await ctx.reply(`
-	Help List
-	/sendwish -->  Send wishes to upcoming welfare events
-	/admin --> Management of resources/data within this telegram bot (FOR WELFARE TEAM ONLY)
+	**Commands**
+	/sendwish -->  Send wishes for Birthday or Welfare events
+	/adminWelfare --> Management of resources/data within this telegram bot (FOR WELFARE TEAM ONLY)
 	`);
 };
 export const settings = async (ctx: CommandContext<BotContext>) => {
@@ -46,7 +46,7 @@ export const sendWish = async (ctx: CommandContext<BotContext>) => {
     ])
   );
 
-  await ctx.reply('Choose upcoming Welfare Event ', {
+  await ctx.reply('Choose upcoming Welfare Event: ', {
     reply_markup: inlineKeyboard,
   });
 };
@@ -66,7 +66,7 @@ export const adminWelfare = async (ctx: CommandContext<BotContext>) => {
     ],
     [
       {
-        text: 'See Wishes',
+        text: 'View Wishes',
         callback_data: 'seeWelfareWishes',
       },
     ],

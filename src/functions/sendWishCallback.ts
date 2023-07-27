@@ -12,7 +12,7 @@ export const EventReply = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.answerCallbackQuery({
     text: event,
   });
-  await ctx.reply('Send a msg that contains your wish ', {
+  await ctx.reply('Please type out your wish and send it here! :)', {
     reply_markup: {
       force_reply: true,
     },
@@ -36,13 +36,13 @@ export const FinalReply = async (ctx: Filter<BotContext, 'message'>) => {
         teleUser: name,
         wishText: wish,
       });
-      await ctx.reply('Wish Received');
+      await ctx.reply('Wish received!');
     } else {
       await Database.getMongoRepository(Wishes).updateOne(
         { teleUser: name, eventName: eventName },
         { $set: { wishText: wish } }
       );
-      await ctx.reply('Wish Overrided');
+      await ctx.reply('Wish updated!');
     }
     ctx.session = initial();
   }

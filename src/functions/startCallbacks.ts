@@ -25,12 +25,12 @@ export const startReply = async (ctx: CallbackQueryContext<BotContext>) => {
   const teleUser = await name.map((n) => n.teleUser);
   if (teleUser.toString() == '') {
     ctx.session.name = nameStart;
-    await ctx.reply(`${nameStart} choosen.\nIs this your name?`, {
+    await ctx.reply(`To double confirm, you are ${nameStart} correct?`, {
       reply_markup: inlineKeyboard_confirm,
     });
   } else {
     await ctx.reply(
-      `${nameStart} already taken.\nDo you still want to override?`,
+      `Someone has already claimed to be ${nameStart}.\nAre you sure you are ${nameStart}?`,
       {
         reply_markup: inlineKeyboard_select,
       }
@@ -63,7 +63,7 @@ export const confirmReply_Yes = async (
     { $set: { teleUser: ctx.update.callback_query.from.username } }
   );
   await ctx.reply(
-    'Name Logged!\nYou can now use any of the following functions below!',
+    'Welcome!\nYou can now use the following functions!',
     { reply_markup: keyboard }
   );
 };
@@ -73,7 +73,7 @@ export const confirmReply_No = async (
 ) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
 
-  await ctx.reply('Understood.\nPlease /start to try again');
+  await ctx.reply('Understood.\nPlease enter /start to try again');
 };
 
 export const selectreply_No = async (ctx: CallbackQueryContext<BotContext>) => {
