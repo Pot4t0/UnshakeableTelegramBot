@@ -12,11 +12,14 @@ export const EventReply = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.answerCallbackQuery({
     text: event,
   });
-  await ctx.reply('Send a msg that contains your wish ', {
-    reply_markup: {
-      force_reply: true,
-    },
-  });
+  await ctx.reply(
+    'Send a wish.\n\n DO NOT DO ANYTHING ELSE EXCEPT SENDING A TEXT MSG. ANY OTHER INPUT WILL RESULT IN BUGS',
+    {
+      reply_markup: {
+        force_reply: true,
+      },
+    }
+  );
 };
 
 export const FinalReply = async (ctx: Filter<BotContext, 'message'>) => {

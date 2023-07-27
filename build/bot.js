@@ -32,6 +32,12 @@ bot.callbackQuery('select_NO', functions_1.startCallback.selectreply_No);
 // /sendwish Callbacks
 bot.callbackQuery(/^eventName-/g, functions_1.sendWishCallback.EventReply);
 // /adminWelfare Callbacks
+bot.callbackQuery('seeWelfareWishes', functions_1.adminWelfareCallback.seeWish_1);
+bot.callbackQuery(/^welfareWish_1-/g, functions_1.adminWelfareCallback.seeWish_2);
+bot.callbackQuery('manageReminder', functions_1.adminWelfareCallback.reminderManagement);
+bot.callbackQuery('sendSpecificReminder', functions_1.adminWelfareCallback.sendSpecificReminder_1);
+bot.callbackQuery(/^reminderSpecificEvents-/g, functions_1.adminWelfareCallback.sendSpecificReminder_2);
+bot.callbackQuery(/^reminderSpecificNames-/g, functions_1.adminWelfareCallback.sendSpecificReminder_3);
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', functions_1.sendWishCallback.FinalReply);

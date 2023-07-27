@@ -33,7 +33,7 @@ const startReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const teleUser = yield name.map((n) => n.teleUser);
     if (teleUser.toString() == '') {
         ctx.session.name = nameStart;
-        yield ctx.reply(`${nameStart} choosen.\nIs this your name?`, {
+        yield ctx.reply(`${nameStart} chosen.\nIs this your name?`, {
             reply_markup: inlineKeyboard_confirm,
         });
     }
@@ -45,6 +45,7 @@ const startReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.startReply = startReply;
 const confirmReply_Yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const keyboard = new grammy_1.Keyboard()
         .text('/help')
@@ -60,9 +61,14 @@ const confirmReply_Yes = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         .text('/adminBday')
         .row()
         .text('/adminSF')
-        .resized()
-        .persistent();
-    yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).updateOne({ nameText: ctx.session.name }, { $set: { teleUser: ctx.update.callback_query.from.username } });
+        .resized();
+    const chatid = yield ((_a = ctx.chat) === null || _a === void 0 ? void 0 : _a.id.toString());
+    yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).updateOne({ nameText: ctx.session.name }, {
+        $set: {
+            teleUser: ctx.update.callback_query.from.username,
+            chat: chatid,
+        },
+    });
     yield ctx.reply('Name Logged!\nYou can now use any of the following functions below!', { reply_markup: keyboard });
 });
 exports.confirmReply_Yes = confirmReply_Yes;

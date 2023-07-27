@@ -5,11 +5,10 @@ import { initial } from './models/SessionData';
 import { BotContext } from './app';
 import {
   Command,
-  adminCallback,
+  adminWelfareCallback,
   sendWishCallback,
   startCallback,
 } from './functions';
-import { start } from 'repl';
 
 const token = process.env.TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
@@ -42,7 +41,21 @@ bot.callbackQuery('select_NO', startCallback.selectreply_No);
 // /sendwish Callbacks
 bot.callbackQuery(/^eventName-/g, sendWishCallback.EventReply);
 // /adminWelfare Callbacks
-
+bot.callbackQuery('seeWelfareWishes', adminWelfareCallback.seeWish_1);
+bot.callbackQuery(/^welfareWish_1-/g, adminWelfareCallback.seeWish_2);
+bot.callbackQuery('manageReminder', adminWelfareCallback.reminderManagement);
+bot.callbackQuery(
+  'sendSpecificReminder',
+  adminWelfareCallback.sendSpecificReminder_1
+);
+bot.callbackQuery(
+  /^reminderSpecificEvents-/g,
+  adminWelfareCallback.sendSpecificReminder_2
+);
+bot.callbackQuery(
+  /^reminderSpecificNames-/g,
+  adminWelfareCallback.sendSpecificReminder_3
+);
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', sendWishCallback.FinalReply);

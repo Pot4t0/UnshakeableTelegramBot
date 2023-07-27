@@ -41,8 +41,10 @@ export class Names {
   nameText: string;
   @Column()
   teleUser: string;
+  @Column('simple-array', { nullable: true })
+  role: string[];
   @Column()
-  role: string;
+  chat: number;
 }
 
 // wishes Collaction

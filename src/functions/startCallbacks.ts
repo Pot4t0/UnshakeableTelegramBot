@@ -25,7 +25,7 @@ export const startReply = async (ctx: CallbackQueryContext<BotContext>) => {
   const teleUser = await name.map((n) => n.teleUser);
   if (teleUser.toString() == '') {
     ctx.session.name = nameStart;
-    await ctx.reply(`${nameStart} choosen.\nIs this your name?`, {
+    await ctx.reply(`${nameStart} chosen.\nIs this your name?`, {
       reply_markup: inlineKeyboard_confirm,
     });
   } else {
@@ -56,11 +56,16 @@ export const confirmReply_Yes = async (
     .text('/adminBday')
     .row()
     .text('/adminSF')
-    .resized()
-    .persistent();
+    .resized();
+  const chatid = await ctx.chat?.id.toString();
   await Database.getMongoRepository(Names).updateOne(
     { nameText: ctx.session.name },
-    { $set: { teleUser: ctx.update.callback_query.from.username } }
+    {
+      $set: {
+        teleUser: ctx.update.callback_query.from.username,
+        chat: chatid,
+      },
+    }
   );
   await ctx.reply(
     'Name Logged!\nYou can now use any of the following functions below!',

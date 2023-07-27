@@ -13,6 +13,7 @@ exports.adminWelfare = exports.sendWish = exports.settings = exports.help = expo
 const grammy_1 = require("grammy");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
+const db_functions_1 = require("./db_functions");
 /* / start command
  *  Purpose is to tag the username with the name list inside the "names" collection within UnshakeableDB
  */
@@ -55,33 +56,35 @@ const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.sendWish = sendWish;
 const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const inlineKeyboard = new grammy_1.InlineKeyboard([
-        [
-            {
-                text: 'Manage Welfare Events',
-                callback_data: 'manageWelfareEvent',
-            },
-        ],
-        [
-            {
-                text: 'Manage Welfare Team',
-                callback_data: 'manageWelfareTeam',
-            },
-        ],
-        [
-            {
-                text: 'See Wishes',
-                callback_data: 'seeWelfareWishes',
-            },
-        ],
-        [
-            {
-                text: 'Send Reminder',
-                callback_data: 'manageReminder',
-            },
-        ],
-    ]);
-    yield ctx.reply(`
+    const access = yield (0, db_functions_1.roleAccess)(['welfare', 'welfareIC'], ctx);
+    if (access) {
+        const inlineKeyboard = new grammy_1.InlineKeyboard([
+            [
+                {
+                    text: 'Manage Welfare Events',
+                    callback_data: 'manageWelfareEvent',
+                },
+            ],
+            [
+                {
+                    text: 'Manage Welfare Team',
+                    callback_data: 'manageWelfareTeam',
+                },
+            ],
+            [
+                {
+                    text: 'See Wishes',
+                    callback_data: 'seeWelfareWishes',
+                },
+            ],
+            [
+                {
+                    text: 'Send Reminder',
+                    callback_data: 'manageReminder',
+                },
+            ],
+        ]);
+        yield ctx.reply(`
 	Welfare Team Admin Matters 
 
 	Welfare Team and Event Management can only be used by Welfare IC / IT Rep (for technical purposes only)
@@ -89,7 +92,11 @@ const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 	Please respect the privacy of LG members by only using the information when deemed necessary.
 	Please also do not abuse the reminder system and annoy your fellow lifegroup members
 	`, {
-        reply_markup: inlineKeyboard,
-    });
+            reply_markup: inlineKeyboard,
+        });
+    }
+    else {
+        yield ctx.reply('Sorry you are not a member of Welfare.\nTherefore, due to privacy reasons, we cannot grant you access.\nThank you for your understanding');
+    }
 });
 exports.adminWelfare = adminWelfare;

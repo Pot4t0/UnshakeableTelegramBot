@@ -20,7 +20,7 @@ const EventReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.answerCallbackQuery({
         text: event,
     });
-    yield ctx.reply('Send a msg that contains your wish ', {
+    yield ctx.reply('Send a wish.\n\n DO NOT DO ANYTHING ELSE EXCEPT SENDING A TEXT MSG. ANY OTHER INPUT WILL RESULT IN BUGS', {
         reply_markup: {
             force_reply: true,
         },
