@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /Users/whysleep/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add google-spreadsheet
+  /usr/local/bin/node /Users/whysleep/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add -D @vercel/node
 
 PATH: 
   /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin
@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/Users/whysleep/Documents/Projects/UnshakeableWelfareBot_ts/node_modules/@eslint-community/regexpp/LICENSE'
+  Error: EACCES: permission denied, unlink '/Users/whysleep/Documents/Projects/UnshakeableBot_ts/node_modules/@eslint-community/regexpp/README.md'
 
 npm manifest: 
   {
