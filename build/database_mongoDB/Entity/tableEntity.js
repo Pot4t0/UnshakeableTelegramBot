@@ -63,8 +63,16 @@ __decorate([
 ], Names.prototype, "role", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Names.prototype, "chat", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Names.prototype, "sfrow", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Names.prototype, "attendanceRow", void 0);
 exports.Names = Names = __decorate([
     (0, typeorm_1.Entity)('names')
 ], Names);
@@ -90,3 +98,13 @@ __decorate([
 exports.Wishes = Wishes = __decorate([
     (0, typeorm_1.Entity)('wishes')
 ], Wishes);
+// attendance collection
+// @Entity('attendance')
+// export class Attendance {
+//   @ObjectIdColumn()
+//   id: ObjectId;
+//   @Column()
+//   rowNo: number;
+//   @Column()
+//   name: string;
+// }

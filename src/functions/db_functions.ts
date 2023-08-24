@@ -11,15 +11,13 @@ export const roleAccess = async (role: string[], ctx: Context) => {
       role: role[i],
     });
     teleUserList.push(access.map((x) => x.teleUser.toString()));
-    // teleUserList.push(access.filter((n) => n.teleUser).toString());
   }
   teleUserList = teleUserList.flat();
-
-  console.log(teleUserList);
   const user = ctx.message?.from.username || 'FAIL';
   return teleUserList.includes(user);
 };
 
+//Send to User in their respective ChatId with telegram bot
 export const sendMessageUser = async (
   user: string,
   msg: string,
@@ -28,6 +26,7 @@ export const sendMessageUser = async (
   const name = await Database.getMongoRepository(Names).find({
     teleUser: user,
   });
-  const chatid = +name.map((n) => `${n.chat}`);
-  ctx.api.sendMessage(chatid, msg);
+  if (name[0].chat) {
+    ctx.api.sendMessage(name[0].chat, msg);
+  }
 };

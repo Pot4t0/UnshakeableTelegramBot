@@ -1,3 +1,4 @@
+import { integrations_v1alpha } from 'googleapis';
 import {
   ArrayElement,
   Column,
@@ -44,7 +45,11 @@ export class Names {
   @Column('simple-array', { nullable: true })
   role: string[];
   @Column()
-  chat: number;
+  chat: string;
+  @Column()
+  sfrow: number;
+  @Column()
+  attendanceRow: number;
 }
 
 // wishes Collaction
@@ -59,3 +64,14 @@ export class Wishes {
   @Column()
   wishText: string;
 }
+
+// attendance collection
+// @Entity('attendance')
+// export class Attendance {
+//   @ObjectIdColumn()
+//   id: ObjectId;
+//   @Column()
+//   rowNo: number;
+//   @Column()
+//   name: string;
+// }

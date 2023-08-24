@@ -22,19 +22,19 @@ const roleAccess = (role, ctx) => __awaiter(void 0, void 0, void 0, function* ()
             role: role[i],
         });
         teleUserList.push(access.map((x) => x.teleUser.toString()));
-        // teleUserList.push(access.filter((n) => n.teleUser).toString());
     }
     teleUserList = teleUserList.flat();
-    console.log(teleUserList);
     const user = ((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.from.username) || 'FAIL';
     return teleUserList.includes(user);
 });
 exports.roleAccess = roleAccess;
+//Send to User in their respective ChatId with telegram bot
 const sendMessageUser = (user, msg, ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const name = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find({
         teleUser: user,
     });
-    const chatid = +name.map((n) => `${n.chat}`);
-    ctx.api.sendMessage(chatid, msg);
+    if (name[0].chat) {
+        ctx.api.sendMessage(name[0].chat, msg);
+    }
 });
 exports.sendMessageUser = sendMessageUser;

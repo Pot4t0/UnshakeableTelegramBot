@@ -47,15 +47,15 @@ export const confirmReply_Yes = async (
     .row()
     .text('/settings')
     .row()
-    .text('/sendSF')
+    .text('/sendsf')
     .row()
     .text('/sendwish')
     .row()
-    .text('/adminWelfare')
+    .text('/adminwelfare')
     .row()
-    .text('/adminBday')
+    .text('/adminbday')
     .row()
-    .text('/adminSF')
+    .text('/adminsf')
     .resized();
   const chatid = await ctx.chat?.id.toString();
   await Database.getMongoRepository(Names).updateOne(
