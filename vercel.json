@@ -1,6 +1,6 @@
 {
   "functions": {
-    "src/bot.ts": {
+    "api/src/bot.ts": {
       "memory": 1024,
       "maxDuration": 10
     }
