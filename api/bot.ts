@@ -20,7 +20,7 @@ const token = process.env.BOT_TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
 
 const bot = new Bot<BotContext>(token); // <-- put your bot token between the ""
-if (!token) throw new Error('BOT_TOKEN is unset');
+// if (!token) throw new Error('BOT_TOKEN is unset');
 
 bot.use(session({ initial }));
 
@@ -303,10 +303,16 @@ bot.callbackQuery(
   adminAttendanceCallback.sendSpecificReminder_2
 );
 
+bot.callbackQuery('chatAttendance', adminAttendanceCallback.selectSvcDateChat);
+bot.callbackQuery(
+  /^selectSvcDateChat-/g,
+  adminAttendanceCallback.sendAttendanceToLGChat
+);
+
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-// bot.start();
+bot.start();
 
-export default webhookCallback(bot, 'http');
+// export default webhookCallback(bot, 'http');

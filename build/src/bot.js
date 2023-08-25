@@ -8,8 +8,7 @@ const _index_1 = require("./functions/_index");
 const token = process.env.BOT_TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
 const bot = new grammy_1.Bot(token); // <-- put your bot token between the ""
-if (!token)
-    throw new Error('BOT_TOKEN is unset');
+// if (!token) throw new Error('BOT_TOKEN is unset');
 bot.use((0, grammy_1.session)({ initial: _SessionData_1.initial }));
 //Initialise Commands
 //Call /start command
@@ -155,9 +154,11 @@ bot.callbackQuery(/^notInReminderAttendance-/g, _index_1.adminAttendanceCallback
 //Send specific reminder (attendance)
 bot.callbackQuery('sendAttendanceSpecificReminder', _index_1.adminAttendanceCallback.sendSpecificReminder_1);
 bot.callbackQuery(/^reminderAttendanceSpecificNames-/g, _index_1.adminAttendanceCallback.sendSpecificReminder_2);
+bot.callbackQuery('chatAttendance', _index_1.adminAttendanceCallback.selectSvcDateChat);
+bot.callbackQuery(/^selectSvcDateChat-/g, _index_1.adminAttendanceCallback.sendAttendanceToLGChat);
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', _index_1.botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-// bot.start();
-exports.default = (0, grammy_1.webhookCallback)(bot, 'http');
+bot.start();
+// export default webhookCallback(bot, 'http');

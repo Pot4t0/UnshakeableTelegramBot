@@ -357,3 +357,70 @@ export const sendSpecificReminder_3 = async (
   }
   ctx.session = await initial();
 };
+
+export const selectSvcDateChat = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+  const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const inlineKeyboard = new InlineKeyboard(
+    ghseetArray
+      .filter((n) => n != template)
+      .map((n) => [
+        { text: n.title, callback_data: `selectSvcDateChat-${n.title}` },
+      ])
+  );
+  await ctx.reply(
+    `Choose Service Date in dd/mm/yyyy
+		  `,
+    {
+      reply_markup: inlineKeyboard,
+    }
+  );
+};
+
+export const sendAttendanceToLGChat = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const callback = await ctx.update.callback_query.data.substring(
+    'selectSvcDateChat-'.length
+  );
+  const totalNames = await Database.getMongoRepository(Names).find({});
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const sheet =
+    await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+
+  let msg = `Unshakeable Attendance for ${callback}`;
+  let lgComingMsg = '\n\nLG:\n\nComing 🥳\n';
+  let lgNotCmgMsg = '\n\nNot Coming 😢\n';
+  let weCmgMsg = '\n\nWE:\n\nComing 🥳\n';
+  let weNotCmgMsg = '\n\nNot Coming 😢\n';
+  await sheet.loadCells();
+  for (let i = 4; i <= totalNames.length + 3; i++) {
+    const attendName = await sheet.getCellByA1(`B${i}`);
+    const lgCheckCell = await sheet.getCellByA1(`C3`);
+    const weCell = await sheet.getCellByA1(`F${i}`);
+    const weReasonCell = await sheet.getCellByA1(`G${i}`);
+    const lgCell = await sheet.getCellByA1(`C${i}`);
+    const lgReasonCell = await sheet.getCellByA1(`D${i}`);
+    if (lgCheckCell.value == 'LG') {
+      if (lgCell.value == 'Y') {
+        lgComingMsg += `\n${attendName.value}`;
+      } else {
+        lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+      }
+    }
+    if (weCell.value == 'Y') {
+      weCmgMsg += `\n${attendName.value}`;
+    } else {
+      weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+    }
+  }
+
+  msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
+  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+};

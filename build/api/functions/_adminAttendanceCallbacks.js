@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = exports.noDelete = exports.yesDelete = exports.confirmDelete = exports.delAttendanceSheet = exports.addAttendanceSheet_No_2 = exports.addAttendanceSheet_No_1 = exports.addAttendanceSheet_Yes_3 = exports.addAttendanceSheet_Yes_2 = exports.addAttendanceSheet_Yes_1 = exports.addAttendanceSheet = void 0;
+exports.sendAttendanceToLGChat = exports.selectSvcDateChat = exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = exports.noDelete = exports.yesDelete = exports.confirmDelete = exports.delAttendanceSheet = exports.addAttendanceSheet_No_2 = exports.addAttendanceSheet_No_1 = exports.addAttendanceSheet_Yes_3 = exports.addAttendanceSheet_Yes_2 = exports.addAttendanceSheet_Yes_1 = exports.addAttendanceSheet = void 0;
 const grammy_1 = require("grammy");
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
@@ -297,3 +297,58 @@ const sendSpecificReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, functi
     ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendSpecificReminder_3 = sendSpecificReminder_3;
+const selectSvcDateChat = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
+        .filter((n) => n != template)
+        .map((n) => [
+        { text: n.title, callback_data: `selectSvcDateChat-${n.title}` },
+    ]));
+    yield ctx.reply(`Choose Service Date in dd/mm/yyyy
+		  `, {
+        reply_markup: inlineKeyboard,
+    });
+});
+exports.selectSvcDateChat = selectSvcDateChat;
+const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    const callback = yield ctx.update.callback_query.data.substring('selectSvcDateChat-'.length);
+    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({});
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+    let msg = `Unshakeable Attendance for ${callback}`;
+    let lgComingMsg = '\n\nLG:\n\nComing 🥳\n';
+    let lgNotCmgMsg = '\n\nNot Coming 😢\n';
+    let weCmgMsg = '\n\nWE:\n\nComing 🥳\n';
+    let weNotCmgMsg = '\n\nNot Coming 😢\n';
+    yield sheet.loadCells();
+    for (let i = 4; i <= totalNames.length + 3; i++) {
+        const attendName = yield sheet.getCellByA1(`B${i}`);
+        const lgCheckCell = yield sheet.getCellByA1(`C3`);
+        const weCell = yield sheet.getCellByA1(`F${i}`);
+        const weReasonCell = yield sheet.getCellByA1(`G${i}`);
+        const lgCell = yield sheet.getCellByA1(`C${i}`);
+        const lgReasonCell = yield sheet.getCellByA1(`D${i}`);
+        if (lgCheckCell.value == 'LG') {
+            if (lgCell.value == 'Y') {
+                lgComingMsg += `\n${attendName.value}`;
+            }
+            else {
+                lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+            }
+        }
+        if (weCell.value == 'Y') {
+            weCmgMsg += `\n${attendName.value}`;
+        }
+        else {
+            weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+        }
+    }
+    msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
+    yield ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+});
+exports.sendAttendanceToLGChat = sendAttendanceToLGChat;

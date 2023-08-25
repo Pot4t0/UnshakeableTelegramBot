@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "tsc -w",
-    "serve": " node ./build/bot.js",
+    "serve": " node ./build/src/bot.js",
     "build": ""
   },
   "devDependencies": {
