@@ -51,11 +51,16 @@ export const confirmReply_Yes = async (
     .row()
     .text('/sendwish')
     .row()
+    .text('/sendattendance')
+    .row()
     .text('/adminwelfare')
     .row()
     .text('/adminbday')
     .row()
     .text('/adminsf')
+    .row()
+    .text('/adminattendance')
+    .row()
     .resized();
   const chatid = await ctx.chat?.id.toString();
   await Database.getMongoRepository(Names).updateOne(
