@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "tsc -w",
-    "serve": " node ./build/bot.js"
+    "serve": " node ./build/bot.js",
+    "build": ""
   },
   "devDependencies": {
     "@types/node": "^20.5.0",

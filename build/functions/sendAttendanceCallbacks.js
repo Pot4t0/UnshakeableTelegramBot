@@ -10,16 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.withLG_noLG_2 = exports.withLG_noLG_1 = exports.withLG_yesLG = exports.noLG_no_2 = exports.noLG_no_1 = exports.noLG_yes = exports.sendAttendanceReply = void 0;
-const gsheets_1 = require("../gsheets");
+const _index_1 = require("../gsheets/_index");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
-const gsheet_init_1 = require("../gsheets/gsheet_init");
-const SessionData_1 = require("../models/SessionData");
+const _gsheet_init_1 = require("../gsheets/_gsheet_init");
+const _SessionData_1 = require("../models/_SessionData");
 const sendAttendanceReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const callback = yield ctx.update.callback_query.data.substring('svcLGAttendance-'.length);
-    const sheet = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+    const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
     ctx.session.attendance = callback;
     yield sheet.loadCells('C3');
     const lgCell = yield sheet.getCellByA1('C3');
@@ -64,7 +64,7 @@ const sendAttendanceReply = (ctx) => __awaiter(void 0, void 0, void 0, function*
     else {
         yield ctx.reply('There is a technical error please feedback to your repsective leaders');
     }
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendAttendanceReply = sendAttendanceReply;
 const noLG_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -72,8 +72,8 @@ const noLG_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
     });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const sheet = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.attendance || ''];
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.attendance || ''];
     yield sheet.loadCells();
     const weCell = yield sheet.getCellByA1(`F${user[0].attendanceRow}`);
     const lgCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
@@ -85,8 +85,8 @@ const noLG_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     lgReasonCell.value = ctx.session.text;
     yield sheet.saveUpdatedCells();
     yield ctx.reply('Attendance logged! Thanks for submitting!');
-    ctx.session = yield (0, SessionData_1.initial)();
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    ctx.session = yield (0, _SessionData_1.initial)();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.noLG_yes = noLG_yes;
 const noLG_no_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -104,8 +104,8 @@ const noLG_no_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find({
         teleUser: ctx.update.message.from.username,
     });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const sheet = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.attendance || ''];
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.attendance || ''];
     yield sheet.loadCells();
     const weCell = yield sheet.getCellByA1(`F${user[0].attendanceRow}`);
     const lgCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
@@ -117,8 +117,8 @@ const noLG_no_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     lgReasonCell.value = ctx.session.text;
     yield sheet.saveUpdatedCells();
     yield ctx.reply('Attendance logged! Thanks for submitting!');
-    ctx.session = yield (0, SessionData_1.initial)();
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    ctx.session = yield (0, _SessionData_1.initial)();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.noLG_no_2 = noLG_no_2;
 const withLG_yesLG = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FinalReply = exports.EventReply = void 0;
 const db_init_1 = require("../database_mongoDB/db-init");
-const SessionData_1 = require("../models/SessionData");
+const _SessionData_1 = require("../models/_SessionData");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const EventReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const event = ctx.update.callback_query.data.substring('eventName-'.length);
@@ -49,7 +49,7 @@ const FinalReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield db_init_1.Database.getMongoRepository(tableEntity_1.Wishes).updateOne({ teleUser: name, eventName: eventName }, { $set: { wishText: wish } });
         yield ctx.reply('Wish Overrided');
     }
-    ctx.session = (0, SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
     // }
 });
 exports.FinalReply = FinalReply;

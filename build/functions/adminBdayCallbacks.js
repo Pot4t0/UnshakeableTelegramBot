@@ -14,7 +14,7 @@ const grammy_1 = require("grammy");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const db_functions_1 = require("./db_functions");
-const SessionData_1 = require("../models/SessionData");
+const _SessionData_1 = require("../models/_SessionData");
 // See Wish Callbacks
 const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -123,7 +123,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         yield (0, db_functions_1.sendMessageUser)(notInUsers[i], reminder, ctx);
     }
     yield ctx.reply(`Reminder sent!`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendNotInReminder_3 = sendNotInReminder_3;
 //Send Specific Person Reminder Msg
@@ -179,7 +179,7 @@ const sendSpecificReminder_4 = (ctx) => __awaiter(void 0, void 0, void 0, functi
         yield (0, db_functions_1.sendMessageUser)(ctx.session.reminderUser, reminder, ctx);
         yield ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
     }
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendSpecificReminder_4 = sendSpecificReminder_4;
 //Manage Birthday Events
@@ -241,7 +241,7 @@ const addBdayEvent_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addBdayEvent_1 = addBdayEvent_1;
 //botOntype = 12
 const addBdayEvent_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
     ctx.session.eventName = (yield ctx.message.text) || '';
     ctx.reply('Deadline of the event put in dd/mm/yyyy: ', {
         reply_markup: { force_reply: true },
@@ -286,7 +286,7 @@ const addBdayEvent_4 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }
     yield db_init_1.Database.getMongoRepository(tableEntity_1.Events).save(event);
     yield ctx.reply(`${ctx.session.eventName} (Birthday Event) added!`);
-    ctx.session = (0, SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 });
 exports.addBdayEvent_4 = addBdayEvent_4;
 //Delete Welfare Event
@@ -337,13 +337,13 @@ const deleteEvent_Yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
     yield db_init_1.Database.getMongoRepository(tableEntity_1.Events).delete(event);
     yield db_init_1.Database.getMongoRepository(tableEntity_1.Wishes).delete(wishEvent);
     yield ctx.reply(`${ctx.session.eventName} deleted!`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.deleteEvent_Yes = deleteEvent_Yes;
 const deleteEvent_No = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     yield ctx.reply(`Deletion cancelled`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.deleteEvent_No = deleteEvent_No;
 const editEvent = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -414,7 +414,7 @@ const editEventName_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
     const newEventName = (yield ctx.message.text) || '';
     yield db_init_1.Database.getMongoRepository(tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventName: newEventName } });
     yield ctx.reply(`Event Name changed to ${newEventName}`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.editEventName_2 = editEventName_2;
 const editEventDate_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -431,7 +431,7 @@ const editEventDate_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
     const newEventDate = (yield ctx.message.text) || '';
     yield db_init_1.Database.getMongoRepository(tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventDate: newEventDate } });
     yield ctx.reply(`Event Date changed to ${newEventDate}`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.editEventDate_2 = editEventDate_2;
 const editNotAllowedUser_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -451,7 +451,7 @@ const editNotAllowedUser_2 = (ctx) => __awaiter(void 0, void 0, void 0, function
     const selectedName = yield ctx.update.callback_query.data.substring('editBdayNotAllowedUser-'.length);
     yield db_init_1.Database.getMongoRepository(tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { notAllowedUser: selectedName } });
     yield ctx.reply(`Not allowed user changed to ${selectedName}`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.editNotAllowedUser_2 = editNotAllowedUser_2;
 //Bday Team Memembers Management

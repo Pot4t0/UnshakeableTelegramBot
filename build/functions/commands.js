@@ -14,8 +14,8 @@ const grammy_1 = require("grammy");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const db_functions_1 = require("./db_functions");
-const gsheet_init_1 = require("../gsheets/gsheet_init");
-const gsheets_1 = require("../gsheets");
+const _gsheet_init_1 = require("../gsheets/_gsheet_init");
+const _index_1 = require("../gsheets/_index");
 /* / start command
  *  Purpose is to tag the username with the name list inside the "names" collection within UnshakeableDB
  */
@@ -96,9 +96,9 @@ const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.sendWish = sendWish;
 const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const template = gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
-    const ghseetArray = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
         .map((n) => [
@@ -109,7 +109,7 @@ const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
   `, {
         reply_markup: inlineKeyboard,
     });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendattendance = sendattendance;
 const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

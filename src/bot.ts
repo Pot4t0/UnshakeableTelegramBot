@@ -1,8 +1,8 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 import { Bot, session, webhookCallback } from 'grammy';
-import { initial } from './models/SessionData';
-import { BotContext } from './app';
+import { initial } from './models/_SessionData';
+import { BotContext } from './app/_index';
 import {
   Command,
   adminAttendanceCallback,
@@ -14,12 +14,13 @@ import {
   sendWishCallback,
   sendsfFunctions,
   startCallback,
-} from './functions';
+} from './functions/_index';
 
-const token = process.env.TOKEN || '';
+const token = process.env.BOT_TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
 
 const bot = new Bot<BotContext>(token); // <-- put your bot token between the ""
+if (!token) throw new Error('BOT_TOKEN is unset');
 
 bot.use(session({ initial }));
 
@@ -306,6 +307,6 @@ bot.callbackQuery(
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-bot.start();
+// bot.start();
 
 export default webhookCallback(bot, 'http');

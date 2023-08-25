@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendSfEvent_2_yes = exports.sendSfEvent_2_no = exports.sendSfEvent_1_no = exports.sendSfEvent_1 = void 0;
-const gsheets_1 = require("../gsheets");
+const _index_1 = require("../gsheets/_index");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const sendSfEvent_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,8 +40,8 @@ exports.sendSfEvent_1_no = sendSfEvent_1_no;
 const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text || '';
-    yield gsheets_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
-    const sheet = gsheets_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
+    const sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
     const user = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find({
         teleUser: ctx.update.message.from.username,
     });
@@ -52,7 +52,7 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         attendance: 'No',
         reason: reason,
     });
-    const data_sheet = gsheets_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
+    const data_sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     yield data_sheet.loadCells();
     const sfCell = yield data_sheet.getCellByA1(`C${user[0].sfrow}`);
     const attendanceCell = yield data_sheet.getCellByA1(`D${user[0].sfrow}`);
@@ -64,15 +64,15 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
     timeStampCell.value = Date();
     yield data_sheet.saveUpdatedCells();
     yield ctx.reply('Sent!');
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendSfEvent_2_no = sendSfEvent_2_no;
 // botOntype = 8
 const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.botOnType = undefined;
     const sf = ctx.message.text || '';
-    yield gsheets_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
-    const sheet = gsheets_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
+    const sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
     const user = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find({
         teleUser: ctx.update.message.from.username,
     });
@@ -83,7 +83,7 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         attendance: 'Yes',
         reason: '',
     });
-    const data_sheet = gsheets_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
+    const data_sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     yield data_sheet.loadCells();
     const sfCell = yield data_sheet.getCellByA1(`C${user[0].sfrow}`);
     const attendanceCell = yield data_sheet.getCellByA1(`D${user[0].sfrow}`);
@@ -95,6 +95,6 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     timeStampCell.value = Date();
     yield data_sheet.saveUpdatedCells();
     yield ctx.reply('Sent!');
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendSfEvent_2_yes = sendSfEvent_2_yes;

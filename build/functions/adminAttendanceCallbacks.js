@@ -14,9 +14,9 @@ const grammy_1 = require("grammy");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const db_functions_1 = require("./db_functions");
-const SessionData_1 = require("../models/SessionData");
-const gsheets_1 = require("../gsheets");
-const gsheet_init_1 = require("../gsheets/gsheet_init");
+const _SessionData_1 = require("../models/_SessionData");
+const _index_1 = require("../gsheets/_index");
+const _gsheet_init_1 = require("../gsheets/_gsheet_init");
 const addAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -57,7 +57,7 @@ const addAttendanceSheet_Yes_2 = (ctx) => __awaiter(void 0, void 0, void 0, func
         reply_markup: { force_reply: true },
     });
     ctx.session.botOnType = 22;
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.addAttendanceSheet_Yes_2 = addAttendanceSheet_Yes_2;
 //BotOntype = 22
@@ -67,15 +67,15 @@ const addAttendanceSheet_Yes_3 = (ctx) => __awaiter(void 0, void 0, void 0, func
     ctx.session.botOnType = yield undefined;
     const weDateArray = getText.split('/');
     const lgDateArray = (yield ((_a = ctx.session.eventDate) === null || _a === void 0 ? void 0 : _a.split('/'))) || '';
-    ctx.session = (0, SessionData_1.initial)();
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const templateSheet = gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsById[0];
-    const sheetExist = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
+    ctx.session = (0, _SessionData_1.initial)();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const templateSheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsById[0];
+    const sheetExist = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
     if (sheetExist == undefined) {
         yield templateSheet.duplicate({
             title: `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`,
         });
-        const newSheet = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
+        const newSheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
         yield newSheet.loadCells();
         const lgDateCell = yield newSheet.getCellByA1(`C2`);
         const weDateCell = yield newSheet.getCellByA1(`F2`);
@@ -87,7 +87,7 @@ const addAttendanceSheet_Yes_3 = (ctx) => __awaiter(void 0, void 0, void 0, func
     else {
         yield ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
     }
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.addAttendanceSheet_Yes_3 = addAttendanceSheet_Yes_3;
 //Add Sheet without LG
@@ -104,15 +104,15 @@ const addAttendanceSheet_No_2 = (ctx) => __awaiter(void 0, void 0, void 0, funct
     const getText = (yield ctx.message.text) || '';
     ctx.session.botOnType = yield undefined;
     const weDateArray = getText.split('/');
-    ctx.session = (0, SessionData_1.initial)();
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const templateSheet = gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsById[0];
-    const sheetExist = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
+    ctx.session = (0, _SessionData_1.initial)();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const templateSheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsById[0];
+    const sheetExist = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
     if (sheetExist == undefined) {
         yield templateSheet.duplicate({
             title: `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`,
         });
-        const newSheet = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
+        const newSheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`];
         yield newSheet.loadCells();
         2;
         const lgCell = yield newSheet.getCellByA1(`C3`);
@@ -127,14 +127,14 @@ const addAttendanceSheet_No_2 = (ctx) => __awaiter(void 0, void 0, void 0, funct
     else {
         yield ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
     }
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.addAttendanceSheet_No_2 = addAttendanceSheet_No_2;
 const delAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const template = gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
-    const ghseetArray = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
         .map((n) => [
@@ -143,7 +143,7 @@ const delAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* 
     yield ctx.reply('Which Google Sheet would you like to delete?', {
         reply_markup: inlineKeyboard,
     });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.delAttendanceSheet = delAttendanceSheet;
 const confirmDelete = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -168,11 +168,11 @@ const confirmDelete = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 exports.confirmDelete = confirmDelete;
 const yesDelete = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const sheet = gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.eventName || ''];
-    yield gsheet_init_1.unshakeableAttendanceSpreadsheet.deleteSheet(sheet.sheetId);
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.eventName || ''];
+    yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.deleteSheet(sheet.sheetId);
     yield ctx.reply(`${ctx.session.eventName} deleted!`);
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.yesDelete = yesDelete;
 const noDelete = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -222,9 +222,9 @@ exports.sendNotInReminder_1 = sendNotInReminder_1;
 //Uses botOnType = 24 to work
 const sendNotInReminder_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.text = (yield ctx.message.text) || '';
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const template = gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
-    const ghseetArray = yield gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
         .map((n) => [
@@ -234,7 +234,7 @@ const sendNotInReminder_2 = (ctx) => __awaiter(void 0, void 0, void 0, function*
 		  `, {
         reply_markup: inlineKeyboard,
     });
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendNotInReminder_2 = sendNotInReminder_2;
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -242,8 +242,8 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const callback = yield ctx.update.callback_query.data.substring('notInReminderAttendance-'.length);
     const totalNames = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find({});
     const reminder = ctx.session.text || '';
-    yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const sheet = yield gsheets_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
     for (let i = 4; i <= totalNames.length + 3; i++) {
         yield sheet.loadCells(`F${i}`);
         const checkCell = yield sheet.getCellByA1(`F${i}`);
@@ -255,7 +255,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         }
     }
     yield ctx.reply(`Reminder sent!`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendNotInReminder_3 = sendNotInReminder_3;
 //Send Specific Person Reminder Msg
@@ -294,6 +294,6 @@ const sendSpecificReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, functi
         yield (0, db_functions_1.sendMessageUser)(ctx.session.reminderUser, reminder, ctx);
         yield ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
     }
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendSpecificReminder_3 = sendSpecificReminder_3;

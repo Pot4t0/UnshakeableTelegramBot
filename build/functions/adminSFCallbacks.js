@@ -14,8 +14,8 @@ const grammy_1 = require("grammy");
 const db_init_1 = require("../database_mongoDB/db-init");
 const tableEntity_1 = require("../database_mongoDB/Entity/tableEntity");
 const db_functions_1 = require("./db_functions");
-const SessionData_1 = require("../models/SessionData");
-const gsheets_1 = require("../gsheets");
+const _SessionData_1 = require("../models/_SessionData");
+const _index_1 = require("../gsheets/_index");
 // Reminder Management
 const reminderManagement = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -75,8 +75,8 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const svcDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]));
     const totalNames = yield db_init_1.Database.getMongoRepository(tableEntity_1.Names).find();
     const reminder = ctx.session.text || '';
-    yield gsheets_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
-    const sheet = yield gsheets_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
+    yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
+    const sheet = yield _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     for (let i = 4; i <= totalNames.length + 3; i++) {
         yield sheet.loadCells(`F${i}`);
         const time = yield sheet.getCellByA1(`F${i}`);
@@ -90,7 +90,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         }
     }
     yield ctx.reply(`Reminder sent!`);
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendNotInReminder_3 = sendNotInReminder_3;
 //Send Specific Person Reminder Msg
@@ -129,6 +129,6 @@ const sendSpecificReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, functi
         yield (0, db_functions_1.sendMessageUser)(ctx.session.reminderUser, reminder, ctx);
         yield ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
     }
-    ctx.session = yield (0, SessionData_1.initial)();
+    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendSpecificReminder_3 = sendSpecificReminder_3;
