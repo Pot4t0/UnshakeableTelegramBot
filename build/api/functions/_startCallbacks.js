@@ -56,11 +56,16 @@ const confirmReply_Yes = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         .row()
         .text('/sendwish')
         .row()
+        .text('/sendattendance')
+        .row()
         .text('/adminwelfare')
         .row()
         .text('/adminbday')
         .row()
         .text('/adminsf')
+        .row()
+        .text('/adminattendance')
+        .row()
         .resized();
     const chatid = yield ((_a = ctx.chat) === null || _a === void 0 ? void 0 : _a.id.toString());
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: ctx.session.name }, {

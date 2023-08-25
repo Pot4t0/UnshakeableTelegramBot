@@ -248,6 +248,12 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
                     callback_data: 'manageAttendanceReminder',
                 },
             ],
+            [
+                {
+                    text: 'Send to Chat',
+                    callback_data: 'chatAttendance',
+                },
+            ],
         ]);
         yield ctx.reply(`
 	Unshakeable Attendance Matters

@@ -272,6 +272,12 @@ export const adminattendance = async (ctx: CommandContext<BotContext>) => {
           callback_data: 'manageAttendanceReminder',
         },
       ],
+      [
+        {
+          text: 'Send to Chat',
+          callback_data: 'chatAttendance',
+        },
+      ],
     ]);
 
     await ctx.reply(
