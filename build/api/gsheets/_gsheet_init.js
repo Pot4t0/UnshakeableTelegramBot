@@ -12,10 +12,10 @@ const auth = new google_auth_library_1.JWT({
     // see "Authentication" section in docs for more info
     email: 
     // creds.client_email,
-    process.env.SHEETS_EMAIL,
+    process.env.SHEETS_EMAIL || '',
     key: 
     // creds.private_key,
-    process.env.SHEETSKEY,
+    process.env.SHEETSKEY || '',
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 exports.unshakeableSFSpreadsheet = new google_spreadsheet_1.GoogleSpreadsheet(process.env.SF_TOKEN || '', auth);

@@ -14,10 +14,10 @@ const auth = new JWT({
   // see "Authentication" section in docs for more info
   email:
     // creds.client_email,
-    process.env.SHEETS_EMAIL,
+    process.env.SHEETS_EMAIL || '',
   key:
     // creds.private_key,
-    process.env.SHEETSKEY,
+    process.env.SHEETSKEY || '',
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 

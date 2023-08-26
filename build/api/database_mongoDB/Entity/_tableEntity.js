@@ -13,8 +13,9 @@ exports.Wishes = exports.Names = exports.Events = void 0;
 const typeorm_1 = require("typeorm");
 //Declaring all collections within UnshakeableDB
 //events Collection
-let Events = exports.Events = class Events {
+let Events = class Events {
 };
+exports.Events = Events;
 __decorate([
     (0, typeorm_1.ObjectIdColumn)(),
     __metadata("design:type", typeorm_1.ObjectId)
@@ -43,8 +44,9 @@ exports.Events = Events = __decorate([
     (0, typeorm_1.Entity)('events')
 ], Events);
 // names collection
-let Names = exports.Names = class Names {
+let Names = class Names {
 };
+exports.Names = Names;
 __decorate([
     (0, typeorm_1.ObjectIdColumn)(),
     __metadata("design:type", typeorm_1.ObjectId)
@@ -77,8 +79,9 @@ exports.Names = Names = __decorate([
     (0, typeorm_1.Entity)('names')
 ], Names);
 // wishes Collaction
-let Wishes = exports.Wishes = class Wishes {
+let Wishes = class Wishes {
 };
+exports.Wishes = Wishes;
 __decorate([
     (0, typeorm_1.ObjectIdColumn)(),
     __metadata("design:type", typeorm_1.ObjectId)

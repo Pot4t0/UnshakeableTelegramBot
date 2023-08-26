@@ -37,9 +37,11 @@ export const help = async (ctx: CommandContext<BotContext>) => {
   \n/settings --> Settings list
   \n/sendsf --> Send sermon feedback for the week
 	\n/sendwish -->  Send wishes to upcoming welfare events
+  \n/sendattendance -->  Send whether coming to LG/WE
 	\n/adminwelfare --> Management of admin for Welfare Team (only accessible to serving members)
   \n/adminbday --> Management of admin for Bday Team (only accessible to serving members)
   \n/adminsf --> Management of sermon feedback for Admin Team (only accessible to serving members)
+  \n/adminattendance --> Management of attendance
 	`);
 };
 export const settings = async (ctx: CommandContext<BotContext>) => {

@@ -40,9 +40,11 @@ const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
   \n/settings --> Settings list
   \n/sendsf --> Send sermon feedback for the week
 	\n/sendwish -->  Send wishes to upcoming welfare events
+  \n/sendattendance -->  Send whether coming to LG/WE
 	\n/adminwelfare --> Management of admin for Welfare Team (only accessible to serving members)
   \n/adminbday --> Management of admin for Bday Team (only accessible to serving members)
   \n/adminsf --> Management of sermon feedback for Admin Team (only accessible to serving members)
+  \n/adminattendance --> Management of attendance
 	`);
 });
 exports.help = help;
