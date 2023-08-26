@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "unshakeable",
+  "private_key_id": "760dbf55579da0bb30b6489673ae2da641134418",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDAWtWKsuBsC3PF\nQl5zbQpHAQ/7Qj0wfYurwLSrayWna4dI673fbQT8G/+Kh8xbkULPab6O4YFraH8X\n6QlrCyWtFY3LRw50JdwNth+XV6dTHvdjotzNVVKaPwyMMDznCgLkEzRRPYRnm8DQ\nKWlvsIwqWF3mWTGBM9XS/IuklcHk5sW+rVqQVOQkqfsJXSlnVpDL0mzmk6CN6Txp\nbad/7b4wZZJ0wL4a54BbF1acg86ko3ZyP864yOdfI6hM74/l2x/W3+FeU3OQdfFf\ne1mWiMAylxTuJmzzQZMVwUMpKCkbmnyhkZmrHWiy06a329G0vmMryuCyg4MVxUpK\nkCfBFjVHAgMBAAECggEALET7fndalSMxmsWCjVgcFGlXL0F4aa+LNJUeP5FiUhy6\nPvsacNBbZFZhQpWsX6qX0LqKg8G8kmazUWJtq3geTK54Or94wRxxf6pZrPAcb1Hi\nJ8k0vgEUCLHYBm+XpKi2L52H3ealkV7USlQtkunz6E78FWaTsSOn424CCXf57t8S\n/bWqolKCO8XhlU5idvsw/h8NgY7J4OsVDluAzl/pROJFbjumtQ5Ko8y87Cv2H8dK\nENDtCRHWWlGkbA29MEJzvn3G+VzrE7aGW2DiMmanlVDZMEuL4FApvWIlL8eNoqja\naLP5FezhHl5zPXfW0xPqPzcl1KAqShcH5huNkTpPOQKBgQD4IY4dV6a6y1PhlZPl\nAE+m7N6FNBHB3b5XHc0AQ77vZYWoGKC5PVquRjs/ImS/Qc4JJ03btzuMC9VNK6s7\nqzg4dCWY7g16xDMTeoHi8AkmqZMud6/nNcl3Nn4T/TMjdqdeRoG8z5CWrE85RWTg\ntIPTd5CkYSVkny9pwVgdku2NuwKBgQDGdHYMhtq497UFn/vZkdrnVi+Asj9qBb6t\niFAHqMvYgR5wEAjrjAwFA+FtBW+F3DuWq6fvACVFzSL2B0dloErQsa0R/NOVxKWu\nUkq4IF2Ey4YsrTRgb7dh5HVC3IMYCgf1v1jzczgb0ZqEBbOukio2COXYqF67QM9y\n6BsbU5X35QKBgD2jWEJBu9E7ISMwnQSOBztYLA662I5oHxhU9s/SBGRDu+f99i8N\n5rDUEXOlf5FjL2NmuBiUc95eMiZxap/v8I9ViuFqgT617lowXIObTSqlhUJNyQyO\nd/V9O+SLSWDN4NWyfhgBF9HWC/gWHPEU5oppcSzkVP2h7Y0/0jvGe+xxAoGARH5P\ne/VTKgG8RYu45ZeUgMFbNcTPZC1FaSkhzfLxH/E4ax7tpTY5s8VqGTGGEyI2osLt\n++wF8Thit509hBK1n5+jBxFGiWtMb4TRawkonbuMvICvEhWcqjmqSwBGcpaLtsJq\n1eNPWzKVbLl3EWo7DVk20vcRcvlkX9lB+cV4fg0CgYA3054sjFMP5BArxkMxMiH9\nLzz9BfyWHUaOjPoLncVVAfD8+MPaieoD5UFXoCzM188pKNsOvlTwA5GkI5m4tZ8h\n3LIW+ODKOYppUjKSVoRmo+oJ2eRVoEXY/VG465jryj5UrppfeY/GU0xRdpPydIW2\nu/fIdgZjSo6sCQi0M7ENDQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "unshakeable-telebot-account@unshakeable.iam.gserviceaccount.com",
+  "client_id": "115153150032923933079",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/unshakeable-telebot-account%40unshakeable.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
