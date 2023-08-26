@@ -6,7 +6,7 @@ import { JWT } from 'google-auth-library';
 import * as fs from 'fs';
 import 'reflect-metadata';
 import 'dotenv/config';
-const jsonString = fs.readFileSync('unshakeable-760dbf55579d.json', 'utf-8');
+const jsonString = fs.readFileSync('./unshakeable-760dbf55579d.json', 'utf-8');
 const creds = JSON.parse(jsonString);
 
 const auth = new JWT({
