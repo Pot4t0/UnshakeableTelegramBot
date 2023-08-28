@@ -19,6 +19,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.0.2",
     "dotenv": "^16.3.1",
     "es6-shim": "^0.35.8",
     "eslint-config-google": "^0.14.0",

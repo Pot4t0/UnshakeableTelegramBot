@@ -320,6 +320,11 @@
     "@typescript-eslint/types" "6.4.1"
     eslint-visitor-keys "^3.4.1"
 
+"@vercel/analytics@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@vercel/analytics/-/analytics-1.0.2.tgz#7af719a1bf33734840aee6f04eb548d2cedab9ec"
+  integrity sha512-BZFxVrv24VbNNl5xMxqUojQIegEeXMI6rX3rg1uVLYUEXsuKNBSAEQf4BWEcjQDp/8aYJOj6m8V4PUA3x/cxgg==
+
 "@vercel/build-utils@7.1.0":
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/@vercel/build-utils/-/build-utils-7.1.0.tgz#50652c82439aa13a8fdb422dcfa607c72ae28667"
