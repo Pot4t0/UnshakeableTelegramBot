@@ -161,7 +161,7 @@ const specialAddAttendance_3 = (ctx) => __awaiter(void 0, void 0, void 0, functi
     ctx.session.botOnType = yield undefined;
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const templateSheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
-    const sheetExist = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`${event_name} (${event_date})`];
+    const sheetExist = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`${event_name} (${event_date}) created`];
     if (sheetExist == undefined) {
         yield templateSheet.duplicate({
             title: `${event_name} (${event_date})`,

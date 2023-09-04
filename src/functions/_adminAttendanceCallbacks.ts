@@ -188,7 +188,7 @@ export const specialAddAttendance_3 = async (
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const sheetExist =
     await unshakeableAttendanceSpreadsheet.sheetsByTitle[
-      `${event_name} (${event_date})`
+      `${event_name} (${event_date}) created`
     ];
 
   if (sheetExist == undefined) {
