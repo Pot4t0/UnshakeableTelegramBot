@@ -25,11 +25,17 @@ export const addAttendanceSheet = async (
         callback_data: 'noLGAddAttendance',
       },
     ],
+    [
+      {
+        text: 'Special Event',
+        callback_data: 'specialAddAttendance',
+      },
+    ],
   ]);
 
   await ctx.reply(
     `
-	Is there LG?
+	Is there LG or is it a special event?
 	`,
     {
       reply_markup: inlineKeyboard,
@@ -150,16 +156,75 @@ export const addAttendanceSheet_No_2 = async (
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
+export const specialAddAttendance_1 = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await ctx.reply('Enter Special Event Name:', {
+    reply_markup: { force_reply: true },
+  });
+  ctx.session.botOnType = 26;
+};
+//Botontype = 26
+export const specialAddAttendance_2 = async (
+  ctx: Filter<BotContext, 'message'>
+) => {
+  const getText = (await ctx.message.text) || '';
+  ctx.session.eventName = getText;
+  await ctx.reply('Enter Special Event Date in dd/mm/yyyy:', {
+    reply_markup: { force_reply: true },
+  });
+  ctx.session.botOnType = 27;
+};
+//Botontype = 27
+export const specialAddAttendance_3 = async (
+  ctx: Filter<BotContext, 'message'>
+) => {
+  const event_date = (await ctx.message.text) || '';
+  const event_name = ctx.session.eventName;
+  ctx.session.botOnType = await undefined;
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const templateSheet =
+    unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
+  const sheetExist =
+    await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+      `${event_name} (${event_date})`
+    ];
+
+  if (sheetExist == undefined) {
+    await templateSheet.duplicate({
+      title: `${event_name} (${event_date})`,
+    });
+    const newSheet =
+      await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+        `${event_name} (${event_date})`
+      ];
+    await newSheet.loadCells();
+    const eventDateCell = newSheet.getCellByA1('C2');
+    const eventNameCell = newSheet.getCellByA1('C3');
+    eventDateCell.value = event_date;
+    eventNameCell.value = event_name;
+    await newSheet.saveUpdatedCells();
+    await ctx.reply(`${event_name} (${event_date})`);
+  } else {
+    await ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
+  }
+  ctx.session = await initial();
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+};
 export const delAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+  const special_template =
+    unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const inlineKeyboard = new InlineKeyboard(
     ghseetArray
       .filter((n) => n != template)
+      .filter((n) => n != special_template)
       .map((n) => [
         { text: n.title, callback_data: `delAttendanceeSheet-${n.title}` },
       ])
@@ -262,10 +327,13 @@ export const sendNotInReminder_2 = async (
   ctx.session.text = (await ctx.message.text) || '';
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+  const special_template =
+    unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const inlineKeyboard = new InlineKeyboard(
     ghseetArray
       .filter((n) => n != template)
+      .filter((n) => n != special_template)
       .map((n) => [
         { text: n.title, callback_data: `notInReminderAttendance-${n.title}` },
       ])
@@ -291,14 +359,29 @@ export const sendNotInReminder_3 = async (
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const sheet =
     await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-  for (let i = 4; i <= totalNames.length + 3; i++) {
-    await sheet.loadCells(`F${i}`);
-    const checkCell = await sheet.getCellByA1(`F${i}`);
-    if (checkCell.value == null) {
-      const user = await Database.getMongoRepository(Names).find({
-        attendanceRow: i,
-      });
-      await sendMessageUser(user[0].teleUser, reminder, ctx);
+  await sheet.loadCells();
+  const checkSpecialCell = sheet.getCellByA1('B2');
+  if (checkSpecialCell.value == 'Special Event') {
+    for (let i = 4; i <= totalNames.length + 3; i++) {
+      await sheet.loadCells(`C${i}`);
+      const checkCell = await sheet.getCellByA1(`C${i}`);
+      if (checkCell.value == null) {
+        const user = await Database.getMongoRepository(Names).find({
+          attendanceRow: i,
+        });
+        await sendMessageUser(user[0].teleUser, reminder, ctx);
+      }
+    }
+  } else {
+    for (let i = 4; i <= totalNames.length + 3; i++) {
+      await sheet.loadCells(`F${i}`);
+      const checkCell = await sheet.getCellByA1(`F${i}`);
+      if (checkCell.value == null) {
+        const user = await Database.getMongoRepository(Names).find({
+          attendanceRow: i,
+        });
+        await sendMessageUser(user[0].teleUser, reminder, ctx);
+      }
     }
   }
   await ctx.reply(`Reminder sent!`);
@@ -364,10 +447,13 @@ export const selectSvcDateChat = async (
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+  const special_template =
+    unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const inlineKeyboard = new InlineKeyboard(
     ghseetArray
       .filter((n) => n != template)
+      .filter((n) => n != special_template)
       .map((n) => [
         { text: n.title, callback_data: `selectSvcDateChat-${n.title}` },
       ])
@@ -392,35 +478,55 @@ export const sendAttendanceToLGChat = async (
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const sheet =
     await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-
-  let msg = `Unshakeable Attendance for ${callback}`;
-  let lgComingMsg = '\n\nLG:\n\nComing 🥳\n';
-  let lgNotCmgMsg = '\n\nNot Coming 😢\n';
-  let weCmgMsg = '\n\nWE:\n\nComing 🥳\n';
-  let weNotCmgMsg = '\n\nNot Coming 😢\n';
   await sheet.loadCells();
-  for (let i = 4; i <= totalNames.length + 3; i++) {
-    const attendName = await sheet.getCellByA1(`B${i}`);
-    const lgCheckCell = await sheet.getCellByA1(`C3`);
-    const weCell = await sheet.getCellByA1(`F${i}`);
-    const weReasonCell = await sheet.getCellByA1(`G${i}`);
-    const lgCell = await sheet.getCellByA1(`C${i}`);
-    const lgReasonCell = await sheet.getCellByA1(`D${i}`);
-    if (lgCheckCell.value == 'LG') {
+  const lgDateCell = await sheet.getCellByA1('C2');
+  const lgCheckCell = await sheet.getCellByA1('C3');
+  const weCheckCell = await sheet.getCellByA1('F3');
+  const weDateCell = await sheet.getCellByA1('F2');
+  const checkSpecialCell = sheet.getCellByA1('B2');
+  let msg = `Unshakeable Attendance`;
+  if (checkSpecialCell.value == 'Special Event') {
+    let cmgMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
+    let notCmgMsg = '\n\nNot Coming 😢\n';
+    for (let i = 4; i <= totalNames.length + 3; i++) {
+      const attendName = await sheet.getCellByA1(`B${i}`);
+      const lgCell = await sheet.getCellByA1(`C${i}`);
+      const lgReasonCell = await sheet.getCellByA1(`D${i}`);
       if (lgCell.value == 'Y') {
-        lgComingMsg += `\n${attendName.value}`;
+        cmgMsg += `\n${attendName.value}`;
       } else {
-        lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+        notCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
       }
     }
-    if (weCell.value == 'Y') {
-      weCmgMsg += `\n${attendName.value}`;
-    } else {
-      weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+    msg += cmgMsg + notCmgMsg;
+  } else {
+    let lgComingMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
+    let lgNotCmgMsg = '\n\nNot Coming 😢\n';
+    let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
+    let weNotCmgMsg = '\n\nNot Coming 😢\n';
+    for (let i = 4; i <= totalNames.length + 3; i++) {
+      const attendName = await sheet.getCellByA1(`B${i}`);
+      const weCell = await sheet.getCellByA1(`F${i}`);
+      const weReasonCell = await sheet.getCellByA1(`G${i}`);
+      const lgCell = await sheet.getCellByA1(`C${i}`);
+      const lgReasonCell = await sheet.getCellByA1(`D${i}`);
+      if (lgCheckCell.value != 'No LG') {
+        if (lgCell.value == 'Y') {
+          lgComingMsg += `\n${attendName.value}`;
+        } else {
+          lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+        }
+      }
+      if (weCheckCell.value != 'No WE') {
+        if (weCell.value == 'Y') {
+          weCmgMsg += `\n${attendName.value}`;
+        } else {
+          weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+        }
+      }
     }
+    msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
   }
-
-  msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
   await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };

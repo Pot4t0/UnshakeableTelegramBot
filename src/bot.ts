@@ -20,7 +20,7 @@ const token = process.env.BOT_TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
 
 const bot = new Bot<BotContext>(token); // <-- put your bot token between the ""
-// if (!token) throw new Error('BOT_TOKEN is unset');
+if (!token) throw new Error('BOT_TOKEN is unset');
 
 bot.use(session({ initial }));
 
@@ -70,6 +70,14 @@ bot.callbackQuery('yesWeAttendance', sendAttendanceCallback.noLG_yes);
 bot.callbackQuery('noWeAttendance', sendAttendanceCallback.noLG_no_1);
 bot.callbackQuery('yesLGAttendance', sendAttendanceCallback.withLG_yesLG);
 bot.callbackQuery('noLGAttendance', sendAttendanceCallback.withLG_noLG_1);
+bot.callbackQuery(
+  'yesSpecialAttendance',
+  sendAttendanceCallback.yesSpecialAttendance
+);
+bot.callbackQuery(
+  'noSpecialAttendance',
+  sendAttendanceCallback.noSpecialAttendance_1
+);
 
 // /adminWelfare Callbacks
 //See Wish Callbacks
@@ -267,6 +275,10 @@ bot.callbackQuery(
   adminAttendanceCallback.addAttendanceSheet_No_1
 );
 bot.callbackQuery(
+  'specialAddAttendance',
+  adminAttendanceCallback.specialAddAttendance_1
+);
+bot.callbackQuery(
   'delAttendanceSheet',
   adminAttendanceCallback.delAttendanceSheet
 );
@@ -313,6 +325,6 @@ bot.callbackQuery(
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-bot.start();
+// bot.start();
 
-// export default webhookCallback(bot, 'http');
+export default webhookCallback(bot, 'http');

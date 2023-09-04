@@ -50,6 +50,8 @@ bot.callbackQuery('yesWeAttendance', _index_1.sendAttendanceCallback.noLG_yes);
 bot.callbackQuery('noWeAttendance', _index_1.sendAttendanceCallback.noLG_no_1);
 bot.callbackQuery('yesLGAttendance', _index_1.sendAttendanceCallback.withLG_yesLG);
 bot.callbackQuery('noLGAttendance', _index_1.sendAttendanceCallback.withLG_noLG_1);
+bot.callbackQuery('yesSpecialAttendance', _index_1.sendAttendanceCallback.yesSpecialAttendance);
+bot.callbackQuery('noSpecialAttendance', _index_1.sendAttendanceCallback.noSpecialAttendance_1);
 // /adminWelfare Callbacks
 //See Wish Callbacks
 bot.callbackQuery('seeWelfareWishes', _index_1.adminWelfareCallback.seeWish_1);
@@ -143,6 +145,7 @@ bot.callbackQuery(/^reminderSFSpecificNames-/g, _index_1.adminSFCallback.sendSpe
 bot.callbackQuery('addAttendanceSheet', _index_1.adminAttendanceCallback.addAttendanceSheet);
 bot.callbackQuery('yesLGAddAttendance', _index_1.adminAttendanceCallback.addAttendanceSheet_Yes_1);
 bot.callbackQuery('noLGAddAttendance', _index_1.adminAttendanceCallback.addAttendanceSheet_No_1);
+bot.callbackQuery('specialAddAttendance', _index_1.adminAttendanceCallback.specialAddAttendance_1);
 bot.callbackQuery('delAttendanceSheet', _index_1.adminAttendanceCallback.delAttendanceSheet);
 bot.callbackQuery(/^delAttendanceeSheet-/g, _index_1.adminAttendanceCallback.confirmDelete);
 bot.callbackQuery('yesCfmDelAttendanceSheet', _index_1.adminAttendanceCallback.yesDelete);

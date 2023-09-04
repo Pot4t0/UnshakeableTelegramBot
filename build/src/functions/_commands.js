@@ -100,9 +100,11 @@ exports.sendWish = sendWish;
 const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
     const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
+        .filter((n) => n != special_template)
         .map((n) => [
         { text: n.title, callback_data: `svcLGAttendance-${n.title}` },
     ]));

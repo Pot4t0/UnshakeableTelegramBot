@@ -130,6 +130,20 @@ const botOnContext = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         case 25: {
             yield _index_1.adminAttendanceCallback.sendSpecificReminder_3(ctx);
         }
+        //Add special sheet
+        case 26: {
+            yield _index_1.adminAttendanceCallback.specialAddAttendance_2(ctx);
+            break;
+        }
+        case 27: {
+            yield _index_1.adminAttendanceCallback.specialAddAttendance_3(ctx);
+            break;
+        }
+        // /sendattendance Special Event
+        case 28: {
+            yield _index_1.sendAttendanceCallback.noSpecialAttendance_2(ctx);
+            break;
+        }
     }
 });
 exports.botOnContext = botOnContext;

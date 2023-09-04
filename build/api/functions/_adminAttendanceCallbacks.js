@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendAttendanceToLGChat = exports.selectSvcDateChat = exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = exports.noDelete = exports.yesDelete = exports.confirmDelete = exports.delAttendanceSheet = exports.addAttendanceSheet_No_2 = exports.addAttendanceSheet_No_1 = exports.addAttendanceSheet_Yes_3 = exports.addAttendanceSheet_Yes_2 = exports.addAttendanceSheet_Yes_1 = exports.addAttendanceSheet = void 0;
+exports.sendAttendanceToLGChat = exports.selectSvcDateChat = exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = exports.noDelete = exports.yesDelete = exports.confirmDelete = exports.delAttendanceSheet = exports.specialAddAttendance_3 = exports.specialAddAttendance_2 = exports.specialAddAttendance_1 = exports.addAttendanceSheet_No_2 = exports.addAttendanceSheet_No_1 = exports.addAttendanceSheet_Yes_3 = exports.addAttendanceSheet_Yes_2 = exports.addAttendanceSheet_Yes_1 = exports.addAttendanceSheet = void 0;
 const grammy_1 = require("grammy");
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
@@ -32,9 +32,15 @@ const addAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* 
                 callback_data: 'noLGAddAttendance',
             },
         ],
+        [
+            {
+                text: 'Special Event',
+                callback_data: 'specialAddAttendance',
+            },
+        ],
     ]);
     yield ctx.reply(`
-	Is there LG?
+	Is there LG or is it a special event?
 	`, {
         reply_markup: inlineKeyboard,
     });
@@ -130,13 +136,61 @@ const addAttendanceSheet_No_2 = (ctx) => __awaiter(void 0, void 0, void 0, funct
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.addAttendanceSheet_No_2 = addAttendanceSheet_No_2;
+const specialAddAttendance_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield ctx.reply('Enter Special Event Name:', {
+        reply_markup: { force_reply: true },
+    });
+    ctx.session.botOnType = 26;
+});
+exports.specialAddAttendance_1 = specialAddAttendance_1;
+//Botontype = 26
+const specialAddAttendance_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    const getText = (yield ctx.message.text) || '';
+    ctx.session.eventName = getText;
+    yield ctx.reply('Enter Special Event Date in dd/mm/yyyy:', {
+        reply_markup: { force_reply: true },
+    });
+    ctx.session.botOnType = 27;
+});
+exports.specialAddAttendance_2 = specialAddAttendance_2;
+//Botontype = 27
+const specialAddAttendance_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    const event_date = (yield ctx.message.text) || '';
+    const event_name = ctx.session.eventName;
+    ctx.session.botOnType = yield undefined;
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const templateSheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
+    const sheetExist = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`${event_name} (${event_date})`];
+    if (sheetExist == undefined) {
+        yield templateSheet.duplicate({
+            title: `${event_name} (${event_date})`,
+        });
+        const newSheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[`${event_name} (${event_date})`];
+        yield newSheet.loadCells();
+        const eventDateCell = newSheet.getCellByA1('C2');
+        const eventNameCell = newSheet.getCellByA1('C3');
+        eventDateCell.value = event_date;
+        eventNameCell.value = event_name;
+        yield newSheet.saveUpdatedCells();
+        yield ctx.reply(`${event_name} (${event_date})`);
+    }
+    else {
+        yield ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
+    }
+    ctx.session = yield (0, _SessionData_1.initial)();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+});
+exports.specialAddAttendance_3 = specialAddAttendance_3;
 const delAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
     const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
+        .filter((n) => n != special_template)
         .map((n) => [
         { text: n.title, callback_data: `delAttendanceeSheet-${n.title}` },
     ]));
@@ -224,9 +278,11 @@ const sendNotInReminder_2 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     ctx.session.text = (yield ctx.message.text) || '';
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
     const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
+        .filter((n) => n != special_template)
         .map((n) => [
         { text: n.title, callback_data: `notInReminderAttendance-${n.title}` },
     ]));
@@ -244,14 +300,30 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const reminder = ctx.session.text || '';
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-        yield sheet.loadCells(`F${i}`);
-        const checkCell = yield sheet.getCellByA1(`F${i}`);
-        if (checkCell.value == null) {
-            const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-                attendanceRow: i,
-            });
-            yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
+    yield sheet.loadCells();
+    const checkSpecialCell = sheet.getCellByA1('B2');
+    if (checkSpecialCell.value == 'Special Event') {
+        for (let i = 4; i <= totalNames.length + 3; i++) {
+            yield sheet.loadCells(`C${i}`);
+            const checkCell = yield sheet.getCellByA1(`C${i}`);
+            if (checkCell.value == null) {
+                const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                    attendanceRow: i,
+                });
+                yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
+            }
+        }
+    }
+    else {
+        for (let i = 4; i <= totalNames.length + 3; i++) {
+            yield sheet.loadCells(`F${i}`);
+            const checkCell = yield sheet.getCellByA1(`F${i}`);
+            if (checkCell.value == null) {
+                const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                    attendanceRow: i,
+                });
+                yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
+            }
         }
     }
     yield ctx.reply(`Reminder sent!`);
@@ -301,9 +373,11 @@ const selectSvcDateChat = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
     const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
+        .filter((n) => n != special_template)
         .map((n) => [
         { text: n.title, callback_data: `selectSvcDateChat-${n.title}` },
     ]));
@@ -319,35 +393,59 @@ const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, functi
     const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({});
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-    let msg = `Unshakeable Attendance for ${callback}`;
-    let lgComingMsg = '\n\nLG:\n\nComing 🥳\n';
-    let lgNotCmgMsg = '\n\nNot Coming 😢\n';
-    let weCmgMsg = '\n\nWE:\n\nComing 🥳\n';
-    let weNotCmgMsg = '\n\nNot Coming 😢\n';
     yield sheet.loadCells();
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-        const attendName = yield sheet.getCellByA1(`B${i}`);
-        const lgCheckCell = yield sheet.getCellByA1(`C3`);
-        const weCell = yield sheet.getCellByA1(`F${i}`);
-        const weReasonCell = yield sheet.getCellByA1(`G${i}`);
-        const lgCell = yield sheet.getCellByA1(`C${i}`);
-        const lgReasonCell = yield sheet.getCellByA1(`D${i}`);
-        if (lgCheckCell.value == 'LG') {
+    const lgDateCell = yield sheet.getCellByA1('C2');
+    const lgCheckCell = yield sheet.getCellByA1('C3');
+    const weCheckCell = yield sheet.getCellByA1('F3');
+    const weDateCell = yield sheet.getCellByA1('F2');
+    const checkSpecialCell = sheet.getCellByA1('B2');
+    let msg = `Unshakeable Attendance`;
+    if (checkSpecialCell.value == 'Special Event') {
+        let cmgMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
+        let notCmgMsg = '\n\nNot Coming 😢\n';
+        for (let i = 4; i <= totalNames.length + 3; i++) {
+            const attendName = yield sheet.getCellByA1(`B${i}`);
+            const lgCell = yield sheet.getCellByA1(`C${i}`);
+            const lgReasonCell = yield sheet.getCellByA1(`D${i}`);
             if (lgCell.value == 'Y') {
-                lgComingMsg += `\n${attendName.value}`;
+                cmgMsg += `\n${attendName.value}`;
             }
             else {
-                lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+                notCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
             }
         }
-        if (weCell.value == 'Y') {
-            weCmgMsg += `\n${attendName.value}`;
-        }
-        else {
-            weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
-        }
+        msg += cmgMsg + notCmgMsg;
     }
-    msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
+    else {
+        let lgComingMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
+        let lgNotCmgMsg = '\n\nNot Coming 😢\n';
+        let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
+        let weNotCmgMsg = '\n\nNot Coming 😢\n';
+        for (let i = 4; i <= totalNames.length + 3; i++) {
+            const attendName = yield sheet.getCellByA1(`B${i}`);
+            const weCell = yield sheet.getCellByA1(`F${i}`);
+            const weReasonCell = yield sheet.getCellByA1(`G${i}`);
+            const lgCell = yield sheet.getCellByA1(`C${i}`);
+            const lgReasonCell = yield sheet.getCellByA1(`D${i}`);
+            if (lgCheckCell.value != 'No LG') {
+                if (lgCell.value == 'Y') {
+                    lgComingMsg += `\n${attendName.value}`;
+                }
+                else {
+                    lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+                }
+            }
+            if (weCheckCell.value != 'No WE') {
+                if (weCell.value == 'Y') {
+                    weCmgMsg += `\n${attendName.value}`;
+                }
+                else {
+                    weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+                }
+            }
+        }
+        msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
+    }
     yield ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });

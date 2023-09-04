@@ -100,10 +100,13 @@ export const sendWish = async (ctx: CommandContext<BotContext>) => {
 export const sendattendance = async (ctx: CommandContext<BotContext>) => {
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+  const special_template =
+    unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const inlineKeyboard = new InlineKeyboard(
     ghseetArray
       .filter((n) => n != template)
+      .filter((n) => n != special_template)
       .map((n) => [
         { text: n.title, callback_data: `svcLGAttendance-${n.title}` },
       ])

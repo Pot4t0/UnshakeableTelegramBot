@@ -8,7 +8,8 @@ const _index_1 = require("./functions/_index");
 const token = process.env.BOT_TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
 const bot = new grammy_1.Bot(token); // <-- put your bot token between the ""
-// if (!token) throw new Error('BOT_TOKEN is unset');
+if (!token)
+    throw new Error('BOT_TOKEN is unset');
 bot.use((0, grammy_1.session)({ initial: _SessionData_1.initial }));
 //Initialise Commands
 //Call /start command
@@ -49,6 +50,8 @@ bot.callbackQuery('yesWeAttendance', _index_1.sendAttendanceCallback.noLG_yes);
 bot.callbackQuery('noWeAttendance', _index_1.sendAttendanceCallback.noLG_no_1);
 bot.callbackQuery('yesLGAttendance', _index_1.sendAttendanceCallback.withLG_yesLG);
 bot.callbackQuery('noLGAttendance', _index_1.sendAttendanceCallback.withLG_noLG_1);
+bot.callbackQuery('yesSpecialAttendance', _index_1.sendAttendanceCallback.yesSpecialAttendance);
+bot.callbackQuery('noSpecialAttendance', _index_1.sendAttendanceCallback.noSpecialAttendance_1);
 // /adminWelfare Callbacks
 //See Wish Callbacks
 bot.callbackQuery('seeWelfareWishes', _index_1.adminWelfareCallback.seeWish_1);
@@ -142,6 +145,7 @@ bot.callbackQuery(/^reminderSFSpecificNames-/g, _index_1.adminSFCallback.sendSpe
 bot.callbackQuery('addAttendanceSheet', _index_1.adminAttendanceCallback.addAttendanceSheet);
 bot.callbackQuery('yesLGAddAttendance', _index_1.adminAttendanceCallback.addAttendanceSheet_Yes_1);
 bot.callbackQuery('noLGAddAttendance', _index_1.adminAttendanceCallback.addAttendanceSheet_No_1);
+bot.callbackQuery('specialAddAttendance', _index_1.adminAttendanceCallback.specialAddAttendance_1);
 bot.callbackQuery('delAttendanceSheet', _index_1.adminAttendanceCallback.delAttendanceSheet);
 bot.callbackQuery(/^delAttendanceeSheet-/g, _index_1.adminAttendanceCallback.confirmDelete);
 bot.callbackQuery('yesCfmDelAttendanceSheet', _index_1.adminAttendanceCallback.yesDelete);
@@ -160,5 +164,5 @@ bot.callbackQuery(/^selectSvcDateChat-/g, _index_1.adminAttendanceCallback.sendA
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', _index_1.botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-bot.start();
-// export default webhookCallback(bot, 'http');
+// bot.start();
+exports.default = (0, grammy_1.webhookCallback)(bot, 'http');

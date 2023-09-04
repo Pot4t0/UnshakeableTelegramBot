@@ -70,6 +70,14 @@ bot.callbackQuery('yesWeAttendance', sendAttendanceCallback.noLG_yes);
 bot.callbackQuery('noWeAttendance', sendAttendanceCallback.noLG_no_1);
 bot.callbackQuery('yesLGAttendance', sendAttendanceCallback.withLG_yesLG);
 bot.callbackQuery('noLGAttendance', sendAttendanceCallback.withLG_noLG_1);
+bot.callbackQuery(
+  'yesSpecialAttendance',
+  sendAttendanceCallback.yesSpecialAttendance
+);
+bot.callbackQuery(
+  'noSpecialAttendance',
+  sendAttendanceCallback.noSpecialAttendance_1
+);
 
 // /adminWelfare Callbacks
 //See Wish Callbacks
@@ -265,6 +273,10 @@ bot.callbackQuery(
 bot.callbackQuery(
   'noLGAddAttendance',
   adminAttendanceCallback.addAttendanceSheet_No_1
+);
+bot.callbackQuery(
+  'specialAddAttendance',
+  adminAttendanceCallback.specialAddAttendance_1
 );
 bot.callbackQuery(
   'delAttendanceSheet',
