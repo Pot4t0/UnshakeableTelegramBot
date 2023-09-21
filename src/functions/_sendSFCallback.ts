@@ -48,7 +48,9 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     teleUser: ctx.update.message.from.username,
   });
   await sheet.addRow({
-    timeStamp: Date(),
+    timeStamp: new Date().toLocaleString('en-sg', {
+      timeZone: 'Asia/Singapore',
+    }),
     name: user[0].nameText,
     sermonFeedback: '',
     attendance: 'No',
@@ -64,7 +66,9 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
   sfCell.value = '';
   attendanceCell.value = 'No';
   reasonCell.value = reason;
-  timeStampCell.value = Date();
+  timeStampCell.value = new Date().toLocaleString('en-sg', {
+    timeZone: 'Asia/Singapore',
+  });
   await data_sheet.saveUpdatedCells();
 
   await ctx.reply('Sent!');
@@ -82,7 +86,9 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     teleUser: ctx.update.message.from.username,
   });
   await sheet.addRow({
-    timeStamp: Date(),
+    timeStamp: new Date().toLocaleString('en-sg', {
+      timeZone: 'Asia/Singapore',
+    }),
     name: user[0].nameText,
     sermonFeedback: sf,
     attendance: 'Yes',
@@ -97,7 +103,9 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
   sfCell.value = sf;
   attendanceCell.value = 'Yes';
   reasonCell.value = '';
-  timeStampCell.value = Date();
+  timeStampCell.value = new Date().toLocaleString('en-sg', {
+    timeZone: 'Asia/Singapore',
+  });
   await data_sheet.saveUpdatedCells();
   await ctx.reply('Sent!');
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
