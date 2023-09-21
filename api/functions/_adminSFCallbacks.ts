@@ -90,7 +90,7 @@ export const sendNotInReminder_3 = async (
     const time = await sheet.getCellByA1(`F${i}`);
     const date = new Date(time.value?.toString() || '');
     const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
-    if (offset > 2 || time.value == null) {
+    if (offset > 3 || time.value == null) {
       const user = await Database.getMongoRepository(Names).find({
         sfrow: i,
       });

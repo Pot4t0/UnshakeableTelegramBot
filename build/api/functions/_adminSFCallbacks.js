@@ -82,7 +82,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         const time = yield sheet.getCellByA1(`F${i}`);
         const date = new Date(((_a = time.value) === null || _a === void 0 ? void 0 : _a.toString()) || '');
         const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
-        if (offset > 2 || time.value == null) {
+        if (offset > 3 || time.value == null) {
             const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
                 sfrow: i,
             });
