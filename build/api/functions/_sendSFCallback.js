@@ -46,7 +46,7 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         teleUser: ctx.update.message.from.username,
     });
     yield sheet.addRow({
-        timeStamp: Date().toLocaleUpperCase('en-sg'),
+        timeStamp: Date(),
         name: user[0].nameText,
         sermonFeedback: '',
         attendance: 'No',
@@ -61,7 +61,7 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
     sfCell.value = '';
     attendanceCell.value = 'No';
     reasonCell.value = reason;
-    timeStampCell.value = Date().toLocaleUpperCase('en-sg');
+    timeStampCell.value = Date();
     yield data_sheet.saveUpdatedCells();
     yield ctx.reply('Sent!');
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
@@ -77,7 +77,7 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         teleUser: ctx.update.message.from.username,
     });
     yield sheet.addRow({
-        timeStamp: Date().toLocaleUpperCase('en-sg'),
+        timeStamp: Date(),
         name: user[0].nameText,
         sermonFeedback: sf,
         attendance: 'Yes',
@@ -92,7 +92,7 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     sfCell.value = sf;
     attendanceCell.value = 'Yes';
     reasonCell.value = '';
-    timeStampCell.value = Date().toLocaleUpperCase('en-sg');
+    timeStampCell.value = Date();
     yield data_sheet.saveUpdatedCells();
     yield ctx.reply('Sent!');
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
