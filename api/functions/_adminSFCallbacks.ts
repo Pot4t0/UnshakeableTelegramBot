@@ -95,7 +95,7 @@ export const sendNotInReminder_3 = async (
       const user = await Database.getMongoRepository(Names).find({
         sfrow: i,
       });
-      await sendMessageUser(user[0].teleUser, reminder, ctx);
+      sendMessageUser(user[0].teleUser, reminder, ctx);
     }
   }
   await ctx.reply(`Reminder sent!`);
