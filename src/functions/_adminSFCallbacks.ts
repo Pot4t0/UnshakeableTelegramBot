@@ -95,7 +95,9 @@ export const sendNotInReminder_3 = async (
         sfrow: i,
       });
       await console.log(user[0]);
-      await sendMessageUser(user[0].teleUser, reminder, ctx);
+      if (user[0].teleUser) {
+        await sendMessageUser(user[0].teleUser, reminder, ctx);
+      }
     }
   }
   await ctx.reply(`Reminder sent!`);
