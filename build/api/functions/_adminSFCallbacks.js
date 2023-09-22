@@ -86,10 +86,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
                 sfrow: i,
             });
-            yield console.log(user[0]);
-            if (user[0].teleUser) {
-                yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
-            }
+            yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
         }
     }
     yield ctx.reply(`Reminder sent!`);

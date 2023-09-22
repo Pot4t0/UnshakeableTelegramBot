@@ -86,6 +86,7 @@ export const sendNotInReminder_3 = async (
   await gsheet.unshakeableSFSpreadsheet.loadInfo();
   const sheet = await gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
   await sheet.loadCells();
+
   for (let i = 4; i <= totalNames.length + 3; i++) {
     const time = await sheet.getCellByA1(`F${i}`);
     const date = new Date(time.value?.toString() || '');
@@ -94,10 +95,7 @@ export const sendNotInReminder_3 = async (
       const user = await Database.getMongoRepository(Names).find({
         sfrow: i,
       });
-      await console.log(user[0]);
-      if (user[0].teleUser) {
-        await sendMessageUser(user[0].teleUser, reminder, ctx);
-      }
+      await sendMessageUser(user[0].teleUser, reminder, ctx);
     }
   }
   await ctx.reply(`Reminder sent!`);
