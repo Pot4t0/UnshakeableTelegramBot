@@ -363,7 +363,7 @@ export const sendNotInReminder_3 = async (
   const checkSpecialCell = sheet.getCellByA1('B2');
   if (checkSpecialCell.value == 'Special Event') {
     for (let i = 4; i <= totalNames.length + 3; i++) {
-      await sheet.loadCells(`C${i}`);
+      // await sheet.loadCells(`C${i}`);
       const checkCell = await sheet.getCellByA1(`C${i}`);
       if (checkCell.value == null) {
         const user = await Database.getMongoRepository(Names).find({
@@ -374,7 +374,7 @@ export const sendNotInReminder_3 = async (
     }
   } else {
     for (let i = 4; i <= totalNames.length + 3; i++) {
-      await sheet.loadCells(`F${i}`);
+      // await sheet.loadCells(`F${i}`);
       const checkCell = await sheet.getCellByA1(`F${i}`);
       if (checkCell.value == null) {
         const user = await Database.getMongoRepository(Names).find({

@@ -304,7 +304,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const checkSpecialCell = sheet.getCellByA1('B2');
     if (checkSpecialCell.value == 'Special Event') {
         for (let i = 4; i <= totalNames.length + 3; i++) {
-            yield sheet.loadCells(`C${i}`);
+            // await sheet.loadCells(`C${i}`);
             const checkCell = yield sheet.getCellByA1(`C${i}`);
             if (checkCell.value == null) {
                 const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
@@ -316,7 +316,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     }
     else {
         for (let i = 4; i <= totalNames.length + 3; i++) {
-            yield sheet.loadCells(`F${i}`);
+            // await sheet.loadCells(`F${i}`);
             const checkCell = yield sheet.getCellByA1(`F${i}`);
             if (checkCell.value == null) {
                 const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({

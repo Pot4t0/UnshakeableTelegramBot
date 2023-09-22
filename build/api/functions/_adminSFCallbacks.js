@@ -77,8 +77,8 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const reminder = ctx.session.text || '';
     yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
+    yield sheet.loadCells();
     for (let i = 4; i <= totalNames.length + 3; i++) {
-        yield sheet.loadCells(`F${i}`);
         const time = yield sheet.getCellByA1(`F${i}`);
         const date = new Date(((_a = time.value) === null || _a === void 0 ? void 0 : _a.toString()) || '');
         const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
@@ -86,6 +86,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
                 sfrow: i,
             });
+            yield console.log(user[0]);
             yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
         }
     }

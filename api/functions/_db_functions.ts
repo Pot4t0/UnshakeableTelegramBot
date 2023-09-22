@@ -27,6 +27,7 @@ export const sendMessageUser = async (
     teleUser: user,
   });
   if (name[0].chat) {
-    ctx.api.sendMessage(name[0].chat, msg);
+    await console.log(name[0].chat);
+    await ctx.api.sendMessage(name[0].chat, msg);
   }
 };
