@@ -34,7 +34,8 @@ const sendMessageUser = (user, msg, ctx) => __awaiter(void 0, void 0, void 0, fu
         teleUser: user,
     });
     if (name[0].chat) {
-        ctx.api.sendMessage(name[0].chat, msg);
+        yield console.log(name[0].chat);
+        yield ctx.api.sendMessage(name[0].chat, msg);
     }
 });
 exports.sendMessageUser = sendMessageUser;

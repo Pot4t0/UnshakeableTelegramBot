@@ -129,6 +129,7 @@ const botOnContext = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         }
         case 25: {
             yield _index_1.adminAttendanceCallback.sendSpecificReminder_3(ctx);
+            break;
         }
         //Add special sheet
         case 26: {

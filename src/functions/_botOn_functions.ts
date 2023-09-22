@@ -133,6 +133,7 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
     }
     case 25: {
       await adminAttendanceCallback.sendSpecificReminder_3(ctx);
+      break;
     }
     //Add special sheet
     case 26: {

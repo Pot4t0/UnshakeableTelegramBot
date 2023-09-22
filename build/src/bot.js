@@ -164,5 +164,5 @@ bot.callbackQuery(/^selectSvcDateChat-/g, _index_1.adminAttendanceCallback.sendA
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', _index_1.botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-// bot.start();
+bot.start();
 exports.default = (0, grammy_1.webhookCallback)(bot, 'http');

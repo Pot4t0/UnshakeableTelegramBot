@@ -325,6 +325,6 @@ bot.callbackQuery(
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot.
-// bot.start();
+bot.start();
 
 export default webhookCallback(bot, 'http');
