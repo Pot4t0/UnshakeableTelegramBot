@@ -86,8 +86,7 @@ export const sendNotInReminder_3 = async (
   await gsheet.unshakeableSFSpreadsheet.loadInfo();
   const sheet = await gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
   await sheet.loadCells();
-  let i = 4;
-  while (i <= totalNames.length + 3) {
+  for (let i = 4; i <= totalNames.length + 3; i++) {
     const time = await sheet.getCellByA1(`F${i}`);
     const date = new Date(time.value?.toString() || '');
     const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
@@ -97,7 +96,6 @@ export const sendNotInReminder_3 = async (
       });
       await sendMessageUser(user[0].teleUser, reminder, ctx);
     }
-    i++;
   }
   await ctx.reply(`Reminder sent!`);
 
