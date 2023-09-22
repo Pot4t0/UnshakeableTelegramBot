@@ -73,13 +73,13 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const textDate = (yield ctx.message.text) || '';
     const textDateArray = textDate.split('/');
     const svcDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]));
-    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
+    const totalNames = (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find()).length + 3;
     const reminder = ctx.session.text || '';
     yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     yield sheet.loadCells();
     let i = 4;
-    while (i <= totalNames.length + 3) {
+    while (i <= totalNames) {
         const time = yield sheet.getCellByA1(`F${i}`);
         const date = new Date(((_a = time.value) === null || _a === void 0 ? void 0 : _a.toString()) || '');
         const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days

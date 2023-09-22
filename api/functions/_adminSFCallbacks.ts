@@ -81,13 +81,14 @@ export const sendNotInReminder_3 = async (
     parseInt(textDateArray[1]) - 1,
     parseInt(textDateArray[0])
   );
-  const totalNames = await Database.getMongoRepository(Names).find();
+  const totalNames =
+    (await Database.getMongoRepository(Names).find()).length + 3;
   const reminder = ctx.session.text || '';
   await gsheet.unshakeableSFSpreadsheet.loadInfo();
   const sheet = await gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
   await sheet.loadCells();
   let i = 4;
-  while (i <= totalNames.length + 3) {
+  while (i <= totalNames) {
     const time = await sheet.getCellByA1(`F${i}`);
     const date = new Date(time.value?.toString() || '');
     const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
