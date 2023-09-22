@@ -92,7 +92,14 @@ export const sendNotInReminder_3 = async (
     const date = new Date(time.value?.toString() || '');
     const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
     if (offset > 3 || time.value == null) {
+<<<<<<< HEAD
       user[i - 4] = i;
+=======
+      const user = await Database.getMongoRepository(Names).find({
+        sfrow: i,
+      });
+      await sendMessageUser(user[0].teleUser, reminder, ctx);
+>>>>>>> parent of 69eb26d (bug fixing)
     }
   }
   for (let i = 0; i < user.length; i++) {
