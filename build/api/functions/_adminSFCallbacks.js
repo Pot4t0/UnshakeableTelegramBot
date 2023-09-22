@@ -78,7 +78,8 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     yield sheet.loadCells();
-    for (let i = 4; i <= totalNames.length + 3; i++) {
+    let i = 4;
+    while (i <= totalNames.length + 3) {
         const time = yield sheet.getCellByA1(`F${i}`);
         const date = new Date(((_a = time.value) === null || _a === void 0 ? void 0 : _a.toString()) || '');
         const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
@@ -88,6 +89,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             });
             yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
         }
+        i++;
     }
     yield ctx.reply(`Reminder sent!`);
     ctx.session = yield (0, _SessionData_1.initial)();
