@@ -308,7 +308,7 @@ export const addWelfareEvent_3 = async (ctx: Filter<BotContext, 'message'>) => {
         [
           {
             text: 'All can see',
-            callback_data: 'nameAddBdayEvent-ALL',
+            callback_data: 'nameAddWelfareEvent-ALL',
           },
         ],
       ])

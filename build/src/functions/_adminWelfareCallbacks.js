@@ -263,7 +263,7 @@ const addWelfareEvent_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         [
             {
                 text: 'All can see',
-                callback_data: 'nameAddBdayEvent-ALL',
+                callback_data: 'nameAddWelfareEvent-ALL',
             },
         ],
     ]));

@@ -548,7 +548,7 @@ const delMember_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (userRoleList.includes('bday')) {
         yield userRoleList.splice(userRoleList.indexOf('bday', 1));
     }
-    else if (userRoleList.includes('welfareIC')) {
+    else if (userRoleList.includes('bdayIC')) {
         yield userRoleList.splice(userRoleList.indexOf('bdayIC', 1));
     }
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: selectedName }, { $set: { role: userRoleList } });

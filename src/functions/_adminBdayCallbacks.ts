@@ -638,7 +638,7 @@ export const delMember_2 = async (ctx: CallbackQueryContext<BotContext>) => {
   ).flatMap((n) => n.role);
   if (userRoleList.includes('bday')) {
     await userRoleList.splice(userRoleList.indexOf('bday', 1));
-  } else if (userRoleList.includes('welfareIC')) {
+  } else if (userRoleList.includes('bdayIC')) {
     await userRoleList.splice(userRoleList.indexOf('bdayIC', 1));
   }
   await Database.getMongoRepository(Names).updateOne(
