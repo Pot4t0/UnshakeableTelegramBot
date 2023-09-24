@@ -48,9 +48,7 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     teleUser: ctx.update.message.from.username,
   });
   await sheet.addRow({
-    timeStamp: new Date().toLocaleString('en-sg', {
-      timeZone: 'Asia/Singapore',
-    }),
+    timeStamp: new Date(),
     name: user[0].nameText,
     sermonFeedback: '',
     attendance: 'No',
