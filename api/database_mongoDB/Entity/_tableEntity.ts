@@ -2,6 +2,7 @@ import { integrations_v1alpha } from 'googleapis';
 import {
   ArrayElement,
   Column,
+  CreateDateColumn,
   Entity,
   ObjectId,
   ObjectIdColumn,
@@ -76,7 +77,7 @@ export class SF_mongo {
   sf: string;
   @Column('simple-array', { nullable: true })
   attendance: [];
-  @Column('date')
+  @Column((type) => Date)
   timestamp: Date;
 }
 
