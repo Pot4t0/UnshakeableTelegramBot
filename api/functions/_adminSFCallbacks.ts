@@ -99,11 +99,12 @@ export const sendNotInReminder_3 = async (
   const notInUsers = notInNames
     .map((n) => `${n.teleUser}`)
     .filter((n) => n != '');
-  let i = 0;
-  while (i < notInUsers.length) {
-    sendMessageUser(notInUsers[i], reminder, ctx);
-    i++;
-  }
+
+  notInUsers.map(async (n) => {
+    await sendMessageUser(n, reminder, ctx);
+  });
+  // await sendMessageUser(notInUsers[i], reminder, ctx);
+
   await ctx.reply(`Reminder sent!`);
   ctx.session = await initial();
 };
