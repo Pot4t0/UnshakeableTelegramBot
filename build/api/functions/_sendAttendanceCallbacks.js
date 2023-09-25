@@ -25,8 +25,8 @@ const sendAttendanceReply = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const lgCell = yield sheet.getCellByA1('C3');
     const lgDateCell = yield sheet.getCellByA1('C2');
     const weDateCell = yield sheet.getCellByA1('F2');
-    const checkSpecialCell = sheet.getCellByA1('B2');
-    if ((checkSpecialCell.value = 'Special Event')) {
+    const checkSpecialCell = yield sheet.getCellByA1('B2');
+    if (checkSpecialCell.value == 'Special Event') {
         const inlineKeyboard = [
             [
                 {
@@ -46,7 +46,7 @@ const sendAttendanceReply = (ctx) => __awaiter(void 0, void 0, void 0, function*
         });
     }
     else {
-        if (lgCell.value == 'No LG' || 'null') {
+        if (lgCell.value == 'No LG') {
             const inlineKeyboard = [
                 [
                     {

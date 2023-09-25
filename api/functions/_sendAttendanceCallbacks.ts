@@ -44,7 +44,7 @@ export const sendAttendanceReply = async (
       }
     );
   } else {
-    if (lgCell.value == 'No LG' || 'null') {
+    if (lgCell.value == 'No LG') {
       const inlineKeyboard = [
         [
           {
