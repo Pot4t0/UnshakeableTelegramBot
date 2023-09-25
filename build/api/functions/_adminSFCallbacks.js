@@ -78,6 +78,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             timestamp: { $gte: offSetDate },
         },
     });
+    yield console.log(InSF);
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         where: {
             teleUser: { $not: { $in: InSF.map((n) => `${n.name}`) } },
