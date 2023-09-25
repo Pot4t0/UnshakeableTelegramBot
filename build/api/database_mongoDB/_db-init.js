@@ -18,7 +18,7 @@ exports.Database = new typeorm_1.DataSource({
     type: 'mongodb',
     url: process.env.CONNECTION || '',
     database: 'UnshakeableDB',
-    entities: [_tableEntity_1.Names, _tableEntity_1.Events, _tableEntity_1.Wishes],
+    entities: [_tableEntity_1.Names, _tableEntity_1.Events, _tableEntity_1.Wishes, _tableEntity_1.SF_mongo, _tableEntity_1.Attendance_mongo],
 });
 const init = () => __awaiter(void 0, void 0, void 0, function* () {
     yield exports.Database.initialize()

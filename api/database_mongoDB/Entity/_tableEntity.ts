@@ -65,6 +65,30 @@ export class Wishes {
   wishText: string;
 }
 
+@Entity('sf')
+export class SF_mongo {
+  @ObjectIdColumn()
+  id: ObjectId;
+  @Column()
+  name: string;
+  @Column('simple-array', { nullable: true })
+  attendance: [];
+  @Column()
+  timestamp: Date;
+}
+
+@Entity('attendance')
+export class Attendance_mongo {
+  @ObjectIdColumn()
+  id: ObjectId;
+  @Column()
+  name: string;
+  @Column()
+  type: string;
+  @Column()
+  response: {};
+}
+
 // attendance collection
 // @Entity('attendance')
 // export class Attendance {

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Wishes = exports.Names = exports.Events = void 0;
+exports.Attendance_mongo = exports.SF_mongo = exports.Wishes = exports.Names = exports.Events = void 0;
 const typeorm_1 = require("typeorm");
 //Declaring all collections within UnshakeableDB
 //events Collection
@@ -101,6 +101,50 @@ __decorate([
 exports.Wishes = Wishes = __decorate([
     (0, typeorm_1.Entity)('wishes')
 ], Wishes);
+let SF_mongo = class SF_mongo {
+};
+exports.SF_mongo = SF_mongo;
+__decorate([
+    (0, typeorm_1.ObjectIdColumn)(),
+    __metadata("design:type", typeorm_1.ObjectId)
+], SF_mongo.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], SF_mongo.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)('simple-array', { nullable: true }),
+    __metadata("design:type", Array)
+], SF_mongo.prototype, "attendance", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Date)
+], SF_mongo.prototype, "timestamp", void 0);
+exports.SF_mongo = SF_mongo = __decorate([
+    (0, typeorm_1.Entity)('sf')
+], SF_mongo);
+let Attendance_mongo = class Attendance_mongo {
+};
+exports.Attendance_mongo = Attendance_mongo;
+__decorate([
+    (0, typeorm_1.ObjectIdColumn)(),
+    __metadata("design:type", typeorm_1.ObjectId)
+], Attendance_mongo.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Attendance_mongo.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Attendance_mongo.prototype, "type", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Object)
+], Attendance_mongo.prototype, "response", void 0);
+exports.Attendance_mongo = Attendance_mongo = __decorate([
+    (0, typeorm_1.Entity)('attendance')
+], Attendance_mongo);
 // attendance collection
 // @Entity('attendance')
 // export class Attendance {
