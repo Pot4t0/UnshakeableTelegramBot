@@ -354,7 +354,8 @@ export const sendNotInReminder_3 = async (
   const callback = await ctx.update.callback_query.data.substring(
     'notInReminderAttendance-'.length
   );
-  const totalNames = await Database.getMongoRepository(Names).find({});
+  const totalNames = await Database.getMongoRepository(Names).find();
+
   const reminder = ctx.session.text || '';
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const sheet =
@@ -362,30 +363,31 @@ export const sendNotInReminder_3 = async (
   await sheet.loadCells();
   const checkSpecialCell = sheet.getCellByA1('B2');
   if (checkSpecialCell.value == 'Special Event') {
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-      // await sheet.loadCells(`C${i}`);
-      const checkCell = await sheet.getCellByA1(`C${i}`);
-      if (checkCell.value == null) {
-        const user = await Database.getMongoRepository(Names).find({
-          attendanceRow: i,
-        });
-        await sendMessageUser(user[0].teleUser, reminder, ctx);
-      }
-    }
+    // for (let i = 4; i <= totalNames.length + 3; i++) {
+    await Promise.all(
+      totalNames.map(async (i) => {
+        const checkCell = await sheet.getCellByA1(`C${i.sfrow}`);
+        if (checkCell.value == null) {
+          await sendMessageUser(i.teleUser, reminder, ctx);
+        }
+      })
+    );
+    // }
   } else {
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-      // await sheet.loadCells(`F${i}`);
-      const checkCell = await sheet.getCellByA1(`F${i}`);
-      if (checkCell.value == null) {
-        const user = await Database.getMongoRepository(Names).find({
-          attendanceRow: i,
-        });
-        await sendMessageUser(user[0].teleUser, reminder, ctx);
-      }
-    }
+    // for (let i = 4; i <= totalNames.length + 3; i++) {
+    await Promise.all(
+      totalNames.map(async (i) => {
+        // await sheet.loadCells(`F${i}`);
+        const checkCell = await sheet.getCellByA1(`F${i.sfrow}`);
+        if (checkCell.value == null) {
+          await sendMessageUser(i.teleUser, reminder, ctx);
+        }
+      })
+    );
+    // }
+    await ctx.reply(`Reminder sent!`);
+    ctx.session = await initial();
   }
-  await ctx.reply(`Reminder sent!`);
-  ctx.session = await initial();
 };
 
 //Send Specific Person Reminder Msg

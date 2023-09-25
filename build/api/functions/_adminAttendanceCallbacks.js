@@ -296,38 +296,35 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const callback = yield ctx.update.callback_query.data.substring('notInReminderAttendance-'.length);
-    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({});
+    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
     const reminder = ctx.session.text || '';
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
     yield sheet.loadCells();
     const checkSpecialCell = sheet.getCellByA1('B2');
     if (checkSpecialCell.value == 'Special Event') {
-        for (let i = 4; i <= totalNames.length + 3; i++) {
-            // await sheet.loadCells(`C${i}`);
-            const checkCell = yield sheet.getCellByA1(`C${i}`);
+        // for (let i = 4; i <= totalNames.length + 3; i++) {
+        yield Promise.all(totalNames.map((i) => __awaiter(void 0, void 0, void 0, function* () {
+            const checkCell = yield sheet.getCellByA1(`C${i.sfrow}`);
             if (checkCell.value == null) {
-                const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-                    attendanceRow: i,
-                });
-                yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
+                yield (0, _db_functions_1.sendMessageUser)(i.teleUser, reminder, ctx);
             }
-        }
+        })));
+        // }
     }
     else {
-        for (let i = 4; i <= totalNames.length + 3; i++) {
+        // for (let i = 4; i <= totalNames.length + 3; i++) {
+        yield Promise.all(totalNames.map((i) => __awaiter(void 0, void 0, void 0, function* () {
             // await sheet.loadCells(`F${i}`);
-            const checkCell = yield sheet.getCellByA1(`F${i}`);
+            const checkCell = yield sheet.getCellByA1(`F${i.sfrow}`);
             if (checkCell.value == null) {
-                const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-                    attendanceRow: i,
-                });
-                yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
+                yield (0, _db_functions_1.sendMessageUser)(i.teleUser, reminder, ctx);
             }
-        }
+        })));
+        // }
+        yield ctx.reply(`Reminder sent!`);
+        ctx.session = yield (0, _SessionData_1.initial)();
     }
-    yield ctx.reply(`Reminder sent!`);
-    ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendNotInReminder_3 = sendNotInReminder_3;
 //Send Specific Person Reminder Msg
