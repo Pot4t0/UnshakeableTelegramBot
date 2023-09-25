@@ -26,8 +26,7 @@ export const sendMessageUser = async (
   const name = await Database.getMongoRepository(Names).find({
     teleUser: user,
   });
-  if (name[0].chat) {
-    await console.log(name[0].chat);
+  if (name[0].chat != null) {
     await ctx.api.sendMessage(name[0].chat, msg);
   }
 };
