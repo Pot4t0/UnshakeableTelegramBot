@@ -85,7 +85,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const notInUsers = notInNames
         .map((n) => `${n.teleUser}`)
         .filter((n) => n != '');
-    notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
+    yield notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, _db_functions_1.sendMessageUser)(n, reminder, ctx);
     }));
     // await sendMessageUser(notInUsers[i], reminder, ctx);
