@@ -368,7 +368,7 @@ export const sendNotInReminder_3 = async (
     // for (let i = 4; i <= totalNames.length + 3; i++) {
     await Promise.all(
       totalNames.map(async (i) => {
-        const checkCell = await sheet.getCellByA1(`C${i.sfrow}`);
+        const checkCell = await sheet.getCellByA1(`C${i.attendanceRow}`);
         if (checkCell.value == null) {
           await sendMessageUser(i.teleUser, reminder, ctx);
         }
@@ -380,7 +380,7 @@ export const sendNotInReminder_3 = async (
     await Promise.all(
       totalNames.map(async (i) => {
         // await sheet.loadCells(`F${i}`);
-        const checkCell = await sheet.getCellByA1(`F${i.sfrow}`);
+        const checkCell = await sheet.getCellByA1(`F${i.attendanceRow}`);
         if (checkCell.value == null) {
           await sendMessageUser(i.teleUser, reminder, ctx);
         }

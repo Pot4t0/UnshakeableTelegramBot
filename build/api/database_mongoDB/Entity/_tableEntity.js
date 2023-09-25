@@ -70,10 +70,6 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], Names.prototype, "sfrow", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
 ], Names.prototype, "attendanceRow", void 0);
 exports.Names = Names = __decorate([
     (0, typeorm_1.Entity)('names')

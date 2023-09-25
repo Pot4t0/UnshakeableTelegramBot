@@ -49,8 +49,6 @@ export class Names {
   @Column()
   chat: string;
   @Column()
-  sfrow: number;
-  @Column()
   attendanceRow: number;
 }
 

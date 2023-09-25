@@ -307,7 +307,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     if (checkSpecialCell.value == 'Special Event') {
         // for (let i = 4; i <= totalNames.length + 3; i++) {
         yield Promise.all(totalNames.map((i) => __awaiter(void 0, void 0, void 0, function* () {
-            const checkCell = yield sheet.getCellByA1(`C${i.sfrow}`);
+            const checkCell = yield sheet.getCellByA1(`C${i.attendanceRow}`);
             if (checkCell.value == null) {
                 yield (0, _db_functions_1.sendMessageUser)(i.teleUser, reminder, ctx);
             }
@@ -318,7 +318,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         // for (let i = 4; i <= totalNames.length + 3; i++) {
         yield Promise.all(totalNames.map((i) => __awaiter(void 0, void 0, void 0, function* () {
             // await sheet.loadCells(`F${i}`);
-            const checkCell = yield sheet.getCellByA1(`F${i.sfrow}`);
+            const checkCell = yield sheet.getCellByA1(`F${i.attendanceRow}`);
             if (checkCell.value == null) {
                 yield (0, _db_functions_1.sendMessageUser)(i.teleUser, reminder, ctx);
             }
