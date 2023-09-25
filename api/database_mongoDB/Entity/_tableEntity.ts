@@ -76,7 +76,7 @@ export class SF_mongo {
   sf: string;
   @Column('simple-array', { nullable: true })
   attendance: [];
-  @UpdateDateColumn()
+  @Column({ type: 'date' })
   timestamp: Date;
 }
 
