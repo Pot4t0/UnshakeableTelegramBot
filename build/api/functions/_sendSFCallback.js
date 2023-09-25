@@ -52,7 +52,7 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         attendance: 'No',
         reason: reason,
     });
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [false, reason], sf: '', timestamp: Date() } });
+    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [false, reason], sf: '', timestamp: new Date() } });
     // const data_sheet = gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     // await data_sheet.loadCells();
     // const sfCell = await data_sheet.getCellByA1(`C${user[0].sfrow}`);
@@ -83,7 +83,7 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         attendance: 'Yes',
         reason: '',
     });
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [true, ''], sf: sf, timestamp: Date() } });
+    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } });
     // const data_sheet = gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
     // await data_sheet.loadCells();
     // const sfCell = await data_sheet.getCellByA1(`C${user[0].sfrow}`);

@@ -57,7 +57,7 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
 
   await Database.getMongoRepository(SF_mongo).updateOne(
     { teleUser: user[0].teleUser },
-    { $set: { attendance: [false, reason], sf: '', timestamp: Date() } }
+    { $set: { attendance: [false, reason], sf: '', timestamp: new Date() } }
   );
 
   // const data_sheet = gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
@@ -95,7 +95,7 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
 
   await Database.getMongoRepository(SF_mongo).updateOne(
     { teleUser: user[0].teleUser },
-    { $set: { attendance: [true, ''], sf: sf, timestamp: Date() } }
+    { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } }
   );
   // const data_sheet = gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
   // await data_sheet.loadCells();
