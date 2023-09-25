@@ -99,7 +99,7 @@ export const sendNotInReminder_3 = async (
   await console.log(InSF);
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
-      teleUser: { $not: { $in: InSF.map((n) => `${n.name}`) } },
+      teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
     },
   });
   const notInUsers = notInNames

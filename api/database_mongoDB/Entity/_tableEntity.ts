@@ -6,6 +6,7 @@ import {
   ObjectId,
   ObjectIdColumn,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 //Declaring all collections within UnshakeableDB
@@ -70,10 +71,10 @@ export class SF_mongo {
   @ObjectIdColumn()
   id: ObjectId;
   @Column()
-  name: string;
+  teleUser: string;
   @Column('simple-array', { nullable: true })
   attendance: [];
-  @Column()
+  @UpdateDateColumn()
   timestamp: Date;
 }
 
