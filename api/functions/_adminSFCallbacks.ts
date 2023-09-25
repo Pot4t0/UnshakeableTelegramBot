@@ -103,8 +103,6 @@ export const sendNotInReminder_3 = async (
   await notInUsers.map(async (n) => {
     await sendMessageUser(n, reminder, ctx);
   });
-  // await sendMessageUser(notInUsers[i], reminder, ctx);
-
   await ctx.reply(`Reminder sent!`);
   ctx.session = await initial();
 };
