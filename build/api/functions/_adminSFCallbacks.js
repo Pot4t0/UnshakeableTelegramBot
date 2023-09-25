@@ -70,7 +70,6 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const textDate = (yield ctx.message.text) || '';
     const textDateArray = textDate.split('/');
-    const svcDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]));
     const offSetDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]) - 7 + 3); // offsetted to the wk before tues
     const reminder = ctx.session.text || '';
     const InSF = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).find({
@@ -78,10 +77,9 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             timestamp: { $gte: offSetDate },
         },
     });
-    yield console.log(InSF);
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         where: {
-            teleUser: { $not: { $in: InSF.map((n) => `${n.name}`) } },
+            teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
         },
     });
     const notInUsers = notInNames
@@ -90,21 +88,6 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     for (let i = 0; i < notInUsers.length; i++) {
         yield (0, _db_functions_1.sendMessageUser)(notInUsers[i], reminder, ctx);
     }
-    // const date = new Date(time.value?.toString() || '');
-    // await gsheet.unshakeableSFSpreadsheet.loadInfo();
-    // const sheet = await gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
-    // await sheet.loadCells();
-    // let i = 4;
-    // while (i <= totalNames) {
-    //   const time = await sheet.getCellByA1(`F${i}`);
-    //   if (offset > 3 || time.value == null) {
-    //     const user = await Database.getMongoRepository(Names).find({
-    //       sfrow: i,
-    //     });
-    //     await sendMessageUser(user[0].teleUser, reminder, ctx);
-    //   }
-    //   i++;
-    // }
     yield ctx.reply(`Reminder sent!`);
     ctx.session = yield (0, _SessionData_1.initial)();
 });

@@ -80,11 +80,6 @@ export const sendNotInReminder_3 = async (
 ) => {
   const textDate = (await ctx.message.text) || '';
   const textDateArray = textDate.split('/');
-  const svcDate = new Date(
-    parseInt(textDateArray[2]),
-    parseInt(textDateArray[1]) - 1,
-    parseInt(textDateArray[0])
-  );
   const offSetDate = new Date(
     parseInt(textDateArray[2]),
     parseInt(textDateArray[1]) - 1,
@@ -96,7 +91,6 @@ export const sendNotInReminder_3 = async (
       timestamp: { $gte: offSetDate },
     },
   });
-  await console.log(InSF);
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
       teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
@@ -108,23 +102,6 @@ export const sendNotInReminder_3 = async (
   for (let i = 0; i < notInUsers.length; i++) {
     await sendMessageUser(notInUsers[i], reminder, ctx);
   }
-
-  // const date = new Date(time.value?.toString() || '');
-
-  // await gsheet.unshakeableSFSpreadsheet.loadInfo();
-  // const sheet = await gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
-  // await sheet.loadCells();
-  // let i = 4;
-  // while (i <= totalNames) {
-  //   const time = await sheet.getCellByA1(`F${i}`);
-  //   if (offset > 3 || time.value == null) {
-  //     const user = await Database.getMongoRepository(Names).find({
-  //       sfrow: i,
-  //     });
-  //     await sendMessageUser(user[0].teleUser, reminder, ctx);
-  //   }
-  //   i++;
-  // }
   await ctx.reply(`Reminder sent!`);
   ctx.session = await initial();
 };

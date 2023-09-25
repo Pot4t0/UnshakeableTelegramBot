@@ -33,9 +33,6 @@ const sendMessageUser = (user, msg, ctx) => __awaiter(void 0, void 0, void 0, fu
     const name = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: user,
     });
-    if (name[0].chat) {
-        yield console.log(name[0].chat);
-        yield ctx.api.sendMessage(name[0].chat, msg);
-    }
+    yield ctx.api.sendMessage(name[0].chat, msg);
 });
 exports.sendMessageUser = sendMessageUser;

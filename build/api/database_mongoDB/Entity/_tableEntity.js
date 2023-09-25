@@ -111,13 +111,13 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], SF_mongo.prototype, "name", void 0);
+], SF_mongo.prototype, "teleUser", void 0);
 __decorate([
     (0, typeorm_1.Column)('simple-array', { nullable: true }),
     __metadata("design:type", Array)
 ], SF_mongo.prototype, "attendance", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], SF_mongo.prototype, "timestamp", void 0);
 exports.SF_mongo = SF_mongo = __decorate([
