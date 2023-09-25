@@ -100,7 +100,7 @@ const botOnContext = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             yield _index_1.adminSFCallback.sendSpecificReminder_3(ctx);
             break;
         }
-        // adminattendance BotOn Functions
+        // sendattendance BotOn Functions
         case 19: {
             yield _index_1.sendAttendanceCallback.noLG_no_2(ctx);
             break;
@@ -109,6 +109,7 @@ const botOnContext = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             yield _index_1.sendAttendanceCallback.withLG_noLG_2(ctx);
             break;
         }
+        // /adminattendance
         case 21: {
             yield _index_1.adminAttendanceCallback.addAttendanceSheet_Yes_2(ctx);
             break;

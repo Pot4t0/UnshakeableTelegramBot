@@ -20,7 +20,7 @@ export const sendAttendanceReply = async (
   const lgCell = await sheet.getCellByA1('C3');
   const lgDateCell = await sheet.getCellByA1('C2');
   const weDateCell = await sheet.getCellByA1('F2');
-  const checkSpecialCell = sheet.getCellByA1('B2');
+  const checkSpecialCell = await sheet.getCellByA1('B2');
 
   if ((checkSpecialCell.value = 'Special Event')) {
     const inlineKeyboard = [
