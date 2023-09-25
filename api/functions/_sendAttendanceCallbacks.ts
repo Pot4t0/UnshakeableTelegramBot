@@ -22,7 +22,7 @@ export const sendAttendanceReply = async (
   const weDateCell = await sheet.getCellByA1('F2');
   const checkSpecialCell = await sheet.getCellByA1('B2');
 
-  if ((checkSpecialCell.value = 'Special Event')) {
+  if (checkSpecialCell.value == 'Special Event') {
     const inlineKeyboard = [
       [
         {
