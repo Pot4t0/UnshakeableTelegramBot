@@ -85,8 +85,10 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const notInUsers = notInNames
         .map((n) => `${n.teleUser}`)
         .filter((n) => n != '');
-    for (let i = 0; i < notInUsers.length; i++) {
+    let i = 0;
+    while (i < notInUsers.length) {
         yield (0, _db_functions_1.sendMessageUser)(notInUsers[i], reminder, ctx);
+        i++;
     }
     yield ctx.reply(`Reminder sent!`);
     ctx.session = yield (0, _SessionData_1.initial)();
