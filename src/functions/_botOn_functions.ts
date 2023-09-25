@@ -104,7 +104,7 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
       break;
     }
 
-    // adminattendance BotOn Functions
+    // sendattendance BotOn Functions
     case 19: {
       await sendAttendanceCallback.noLG_no_2(ctx);
       break;
@@ -113,6 +113,7 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
       await sendAttendanceCallback.withLG_noLG_2(ctx);
       break;
     }
+    // /adminattendance
     case 21: {
       await adminAttendanceCallback.addAttendanceSheet_Yes_2(ctx);
       break;

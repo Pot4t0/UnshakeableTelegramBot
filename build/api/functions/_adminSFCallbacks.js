@@ -87,7 +87,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         .filter((n) => n != '');
     let i = 0;
     while (i < notInUsers.length) {
-        yield (0, _db_functions_1.sendMessageUser)(notInUsers[i], reminder, ctx);
+        (0, _db_functions_1.sendMessageUser)(notInUsers[i], reminder, ctx);
         i++;
     }
     yield ctx.reply(`Reminder sent!`);

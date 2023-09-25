@@ -1,7 +1,11 @@
 import { CallbackQueryContext, Filter, InlineKeyboard } from 'grammy';
 import { BotContext } from '../app/_index';
 import { Database } from '../database_mongoDB/_db-init';
-import { Names } from '../database_mongoDB/Entity/_tableEntity';
+import {
+  Attendance_mongo,
+  Names,
+  SF_mongo,
+} from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
 import { gsheet } from '../gsheets/_index';
@@ -76,32 +80,31 @@ export const sendNotInReminder_3 = async (
 ) => {
   const textDate = (await ctx.message.text) || '';
   const textDateArray = textDate.split('/');
-  const svcDate = new Date(
+  const offSetDate = new Date(
     parseInt(textDateArray[2]),
     parseInt(textDateArray[1]) - 1,
-    parseInt(textDateArray[0])
-  );
-  const totalNames = await Database.getMongoRepository(Names).find();
+    parseInt(textDateArray[0]) - 7 + 3
+  ); // offsetted to the wk before tues
   const reminder = ctx.session.text || '';
-  await gsheet.unshakeableSFSpreadsheet.loadInfo();
-  const sheet = await gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
-  await sheet.loadCells();
-  for (let i = 4; i <= totalNames.length + 3; i++) {
-    const time = await sheet.getCellByA1(`F${i}`);
-    const date = new Date(time.value?.toString() || '');
-    const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
-    if (offset > 3 || time.value == null) {
-      const user = await Database.getMongoRepository(Names).find({
-        sfrow: i,
-      });
-      await console.log(user[0]);
-      if (user[0].teleUser) {
-        await sendMessageUser(user[0].teleUser, reminder, ctx);
-      }
-    }
+  const InSF = await Database.getMongoRepository(SF_mongo).find({
+    where: {
+      timestamp: { $gte: offSetDate },
+    },
+  });
+  const notInNames = await Database.getMongoRepository(Names).find({
+    where: {
+      teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
+    },
+  });
+  const notInUsers = notInNames
+    .map((n) => `${n.teleUser}`)
+    .filter((n) => n != '');
+  let i = 0;
+  while (i < notInUsers.length) {
+    await sendMessageUser(notInUsers[i], reminder, ctx);
+    i++;
   }
   await ctx.reply(`Reminder sent!`);
-
   ctx.session = await initial();
 };
 

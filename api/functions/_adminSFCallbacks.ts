@@ -101,7 +101,7 @@ export const sendNotInReminder_3 = async (
     .filter((n) => n != '');
   let i = 0;
   while (i < notInUsers.length) {
-    await sendMessageUser(notInUsers[i], reminder, ctx);
+    sendMessageUser(notInUsers[i], reminder, ctx);
     i++;
   }
   await ctx.reply(`Reminder sent!`);

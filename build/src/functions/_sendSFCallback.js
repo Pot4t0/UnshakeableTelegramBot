@@ -46,9 +46,7 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         teleUser: ctx.update.message.from.username,
     });
     yield sheet.addRow({
-        timeStamp: new Date().toLocaleString('en-sg', {
-            timeZone: 'Asia/Singapore',
-        }),
+        timeStamp: Date(),
         name: user[0].nameText,
         sermonFeedback: '',
         attendance: 'No',

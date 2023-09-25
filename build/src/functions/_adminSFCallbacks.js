@@ -15,7 +15,6 @@ const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
 const _db_functions_1 = require("./_db_functions");
 const _SessionData_1 = require("../models/_SessionData");
-const _index_1 = require("../gsheets/_index");
 // Reminder Management
 const reminderManagement = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -69,28 +68,27 @@ const sendNotInReminder_2 = (ctx) => __awaiter(void 0, void 0, void 0, function*
 exports.sendNotInReminder_2 = sendNotInReminder_2;
 //Uses botOnType = 17 to work
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const textDate = (yield ctx.message.text) || '';
     const textDateArray = textDate.split('/');
-    const svcDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]));
-    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
+    const offSetDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]) - 7 + 3); // offsetted to the wk before tues
     const reminder = ctx.session.text || '';
-    yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
-    const sheet = yield _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
-    yield sheet.loadCells();
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-        const time = yield sheet.getCellByA1(`F${i}`);
-        const date = new Date(((_a = time.value) === null || _a === void 0 ? void 0 : _a.toString()) || '');
-        const offset = (date.getTime() - svcDate.getTime()) / 86400000; // in days
-        if (offset > 3 || time.value == null) {
-            const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-                sfrow: i,
-            });
-            yield console.log(user[0]);
-            if (user[0].teleUser) {
-                yield (0, _db_functions_1.sendMessageUser)(user[0].teleUser, reminder, ctx);
-            }
-        }
+    const InSF = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).find({
+        where: {
+            timestamp: { $gte: offSetDate },
+        },
+    });
+    const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+        where: {
+            teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
+        },
+    });
+    const notInUsers = notInNames
+        .map((n) => `${n.teleUser}`)
+        .filter((n) => n != '');
+    let i = 0;
+    while (i < notInUsers.length) {
+        yield (0, _db_functions_1.sendMessageUser)(notInUsers[i], reminder, ctx);
+        i++;
     }
     yield ctx.reply(`Reminder sent!`);
     ctx.session = yield (0, _SessionData_1.initial)();
