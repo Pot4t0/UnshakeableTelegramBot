@@ -113,6 +113,10 @@ __decorate([
     __metadata("design:type", String)
 ], SF_mongo.prototype, "teleUser", void 0);
 __decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], SF_mongo.prototype, "sf", void 0);
+__decorate([
     (0, typeorm_1.Column)('simple-array', { nullable: true }),
     __metadata("design:type", Array)
 ], SF_mongo.prototype, "attendance", void 0);

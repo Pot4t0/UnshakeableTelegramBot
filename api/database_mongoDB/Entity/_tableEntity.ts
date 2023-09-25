@@ -72,6 +72,8 @@ export class SF_mongo {
   id: ObjectId;
   @Column()
   teleUser: string;
+  @Column()
+  sf: string;
   @Column('simple-array', { nullable: true })
   attendance: [];
   @UpdateDateColumn()
