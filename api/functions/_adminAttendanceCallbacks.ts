@@ -354,7 +354,9 @@ export const sendNotInReminder_3 = async (
   const callback = await ctx.update.callback_query.data.substring(
     'notInReminderAttendance-'.length
   );
-  const totalNames = await Database.getMongoRepository(Names).find();
+  const totalNames = await Database.getMongoRepository(Names).find({
+    where: { teleUser: { $not: { $eq: '' } } },
+  });
 
   const reminder = ctx.session.text || '';
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();

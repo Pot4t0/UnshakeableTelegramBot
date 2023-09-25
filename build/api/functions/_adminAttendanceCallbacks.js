@@ -296,7 +296,9 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const callback = yield ctx.update.callback_query.data.substring('notInReminderAttendance-'.length);
-    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
+    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+        where: { teleUser: { $not: { $eq: '' } } },
+    });
     const reminder = ctx.session.text || '';
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
