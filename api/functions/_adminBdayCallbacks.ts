@@ -4,7 +4,6 @@ import { Database } from '../database_mongoDB/_db-init';
 import { Events, Names, Wishes } from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
-import { count } from 'console';
 
 // See Wish Callbacks
 export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
@@ -18,14 +17,9 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
     await Promise.all(
       welfareEvent.map(async (event) => [
         {
-          text: `${event.eventName}  (${await wishNumber
-            .aggregate([
-              {
-                $match: { eventName: event.eventName },
-              },
-            ])
-            .map((n) => n.eventName)
-            .toString()} / ${totalNames})`,
+          text: `${event.eventName}  (${
+            (await wishNumber.find({ eventName: event.eventName })).length
+          } / ${totalNames})`,
           callback_data: `bdayWish_1-${event.eventName}`,
         },
       ])
