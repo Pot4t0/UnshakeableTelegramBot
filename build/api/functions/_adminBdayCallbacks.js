@@ -26,11 +26,14 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const inlineKeyboard = new grammy_1.InlineKeyboard(yield Promise.all(welfareEvent.map((event) => __awaiter(void 0, void 0, void 0, function* () {
         return [
             {
-                text: `${event.eventName}  (${yield wishNumber.aggregate([
+                text: `${event.eventName}  (${yield wishNumber
+                    .aggregate([
                     {
                         $match: { eventName: event.eventName },
                     },
-                ]).map.length} / ${totalNames})`,
+                ])
+                    .map((n) => n.eventName)
+                    .toString()} / ${totalNames})`,
                 callback_data: `bdayWish_1-${event.eventName}`,
             },
         ];
