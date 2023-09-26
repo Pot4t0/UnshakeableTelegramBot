@@ -19,7 +19,7 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
         {
           text: `${event.eventName}  (${
             (await wishNumber.find({ eventName: event.eventName })).length
-          } / ${totalNames})`,
+          } / ${totalNames} )`,
           callback_data: `bdayWish_1-${event.eventName}`,
         },
       ])

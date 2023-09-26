@@ -11,14 +11,21 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
   const welfareEvent = await Database.getMongoRepository(Events).find({
     eventTeam: 'Welfare',
   });
+  const wishNumber = await Database.getMongoRepository(Wishes);
+  const totalNames = await Database.getMongoRepository(Names).count();
   const inlineKeyboard = new InlineKeyboard(
-    welfareEvent.map((w) => [
-      {
-        text: w.eventName,
-        callback_data: `welfareWish_1-${w.eventName}`,
-      },
-    ])
+    await Promise.all(
+      welfareEvent.map(async (event) => [
+        {
+          text: `${event.eventName}  (${
+            (await wishNumber.find({ eventName: event.eventName })).length
+          } / ${totalNames} )`,
+          callback_data: `welfareWish_1-${event.eventName}`,
+        },
+      ])
+    )
   );
+
   await ctx.reply('Select Welfare Event', {
     reply_markup: inlineKeyboard,
   });

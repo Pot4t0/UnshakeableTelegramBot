@@ -21,12 +21,16 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const welfareEvent = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: 'Welfare',
     });
-    const inlineKeyboard = new grammy_1.InlineKeyboard(welfareEvent.map((w) => [
-        {
-            text: w.eventName,
-            callback_data: `welfareWish_1-${w.eventName}`,
-        },
-    ]));
+    const wishNumber = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes);
+    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).count();
+    const inlineKeyboard = new grammy_1.InlineKeyboard(yield Promise.all(welfareEvent.map((event) => __awaiter(void 0, void 0, void 0, function* () {
+        return [
+            {
+                text: `${event.eventName}  (${(yield wishNumber.find({ eventName: event.eventName })).length} / ${totalNames} )`,
+                callback_data: `welfareWish_1-${event.eventName}`,
+            },
+        ];
+    }))));
     yield ctx.reply('Select Welfare Event', {
         reply_markup: inlineKeyboard,
     });
