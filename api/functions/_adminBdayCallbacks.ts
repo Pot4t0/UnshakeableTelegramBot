@@ -13,13 +13,13 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
     eventTeam: 'Bday',
   });
   const wishNumber = await Database.getMongoRepository(Wishes);
-  const totalNames = await Database.getMongoRepository(Names).findAndCount();
+  const totalNames = await Database.getMongoRepository(Names).count();
   const inlineKeyboard = new InlineKeyboard(
     welfareEvent.map((w) => [
       {
-        text: `${w.eventName}  ${wishNumber.findAndCount({
-          where: { eventName: w.eventName },
-        })} / ${totalNames}`,
+        text: `${w.eventName}  (${wishNumber.count({
+          eventNames: w.eventName,
+        })}/ ${totalNames})`,
         callback_data: `bdayWish_1-${w.eventName}`,
       },
     ])

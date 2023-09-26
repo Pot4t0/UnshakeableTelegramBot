@@ -22,12 +22,12 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         eventTeam: 'Bday',
     });
     const wishNumber = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes);
-    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).findAndCount();
+    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).count();
     const inlineKeyboard = new grammy_1.InlineKeyboard(welfareEvent.map((w) => [
         {
-            text: `${w.eventName}  ${wishNumber.findAndCount({
-                where: { eventName: w.eventName },
-            })} / ${totalNames}`,
+            text: `${w.eventName}  (${wishNumber.count({
+                eventNames: w.eventName,
+            })}/ ${totalNames})`,
             callback_data: `bdayWish_1-${w.eventName}`,
         },
     ]));
