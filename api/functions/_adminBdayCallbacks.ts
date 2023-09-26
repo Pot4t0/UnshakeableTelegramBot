@@ -4,7 +4,6 @@ import { Database } from '../database_mongoDB/_db-init';
 import { Events, Names, Wishes } from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
-import { eventNames } from 'process';
 
 // See Wish Callbacks
 export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
@@ -16,12 +15,12 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
   const totalNames = await Database.getMongoRepository(Names).count();
   const inlineKeyboard = new InlineKeyboard(
     await Promise.all(
-      welfareEvent.map(async (w) => [
+      welfareEvent.map((event) => [
         {
-          text: `${w.eventName}  (${await wishNumber.count({
-            eventNames: w.eventName,
-          })}/ ${totalNames})`,
-          callback_data: `bdayWish_1-${w.eventName}`,
+          text: `${event.eventName}  (${wishNumber.count({
+            eventNames: event.eventName,
+          })} / ${totalNames})`,
+          callback_data: `bdayWish_1-${event.eventName}`,
         },
       ])
     )
