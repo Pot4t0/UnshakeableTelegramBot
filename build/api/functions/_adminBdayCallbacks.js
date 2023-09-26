@@ -26,9 +26,11 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const inlineKeyboard = new grammy_1.InlineKeyboard(yield Promise.all(welfareEvent.map((event) => __awaiter(void 0, void 0, void 0, function* () {
         return [
             {
-                text: `${event.eventName}  (${yield wishNumber.findAndCountBy({
-                    where: { eventName: event.eventName },
-                })} / ${totalNames})`,
+                text: `${event.eventName}  (${yield wishNumber.aggregate([
+                    {
+                        $count: { $match: { eventName: 'Celina Birthday' } },
+                    },
+                ])} / ${totalNames})`,
                 callback_data: `bdayWish_1-${event.eventName}`,
             },
         ];
