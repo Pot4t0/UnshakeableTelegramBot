@@ -24,7 +24,7 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const wishNumber = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes);
     const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).count();
     const inlineKeyboard = new grammy_1.InlineKeyboard();
-    Promise.all(welfareEvent.map((w) => __awaiter(void 0, void 0, void 0, function* () {
+    yield Promise.all(welfareEvent.map((w) => __awaiter(void 0, void 0, void 0, function* () {
         return [
             {
                 text: `${w.eventName}  (${yield wishNumber.count({
