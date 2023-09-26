@@ -23,7 +23,7 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const wishNumber = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes);
     const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).count();
-    const inlineKeyboard = new grammy_1.InlineKeyboard(welfareEvent.map((w) => [
+    const inlineKeyboard = yield new grammy_1.InlineKeyboard(welfareEvent.map((w) => [
         {
             text: `${w.eventName}  (${wishNumber.count({
                 eventNames: w.eventName,

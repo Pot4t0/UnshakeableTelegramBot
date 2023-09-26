@@ -14,7 +14,7 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
   });
   const wishNumber = await Database.getMongoRepository(Wishes);
   const totalNames = await Database.getMongoRepository(Names).count();
-  const inlineKeyboard = new InlineKeyboard(
+  const inlineKeyboard = await new InlineKeyboard(
     welfareEvent.map((w) => [
       {
         text: `${w.eventName}  (${wishNumber.count({
