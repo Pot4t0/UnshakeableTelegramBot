@@ -4,6 +4,7 @@ import { Database } from '../database_mongoDB/_db-init';
 import { Events, Names, Wishes } from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
+import { eventNames } from 'process';
 
 // See Wish Callbacks
 export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
@@ -11,10 +12,14 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
   const welfareEvent = await Database.getMongoRepository(Events).find({
     eventTeam: 'Bday',
   });
+  const wishNumber = await Database.getMongoRepository(Wishes);
+  const totalNames = await Database.getMongoRepository(Names).findAndCount();
   const inlineKeyboard = new InlineKeyboard(
     welfareEvent.map((w) => [
       {
-        text: w.eventName,
+        text: `${w.eventName}  ${wishNumber.findAndCount({
+          where: { eventName: w.eventName },
+        })} / ${totalNames}`,
         callback_data: `bdayWish_1-${w.eventName}`,
       },
     ])

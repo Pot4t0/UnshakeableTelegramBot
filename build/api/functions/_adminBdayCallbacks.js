@@ -21,9 +21,13 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const welfareEvent = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: 'Bday',
     });
+    const wishNumber = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes);
+    const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).findAndCount();
     const inlineKeyboard = new grammy_1.InlineKeyboard(welfareEvent.map((w) => [
         {
-            text: w.eventName,
+            text: `${w.eventName}  ${wishNumber.findAndCount({
+                where: { eventName: w.eventName },
+            })} / ${totalNames}`,
             callback_data: `bdayWish_1-${w.eventName}`,
         },
     ]));
