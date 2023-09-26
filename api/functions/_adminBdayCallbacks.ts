@@ -17,8 +17,8 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
     await Promise.all(
       welfareEvent.map(async (event) => [
         {
-          text: `${event.eventName}  (${await wishNumber.count({
-            eventNames: event.eventName,
+          text: `${event.eventName}  (${await wishNumber.findAndCount({
+            where: { eventName: event.eventName },
           })} / ${totalNames})`,
           callback_data: `bdayWish_1-${event.eventName}`,
         },
