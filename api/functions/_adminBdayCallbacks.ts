@@ -15,11 +15,14 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
   const totalNames = await Database.getMongoRepository(Names).count();
   const inlineKeyboard = new InlineKeyboard(
     await Promise.all(
-      welfareEvent.map((event) => [
+      welfareEvent.map(async (event) => [
         {
-          text: `${event.eventName}  (${wishNumber.count({
-            eventNames: event.eventName,
-          })} / ${totalNames})`,
+          text: `${event.eventName}  (${
+            await wishNumber
+            //   .count({
+            //   eventNames: event.eventName,
+            // })
+          } / ${totalNames})`,
           callback_data: `bdayWish_1-${event.eventName}`,
         },
       ])
