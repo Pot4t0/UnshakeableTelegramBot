@@ -14,16 +14,17 @@ export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
   });
   const wishNumber = await Database.getMongoRepository(Wishes);
   const totalNames = await Database.getMongoRepository(Names).count();
-  const inlineKeyboard = new InlineKeyboard();
-  await Promise.all(
-    welfareEvent.map(async (w) => [
-      {
-        text: `${w.eventName}  (${await wishNumber.count({
-          eventNames: w.eventName,
-        })}/ ${totalNames})`,
-        callback_data: `bdayWish_1-${w.eventName}`,
-      },
-    ])
+  const inlineKeyboard = new InlineKeyboard(
+    await Promise.all(
+      welfareEvent.map(async (w) => [
+        {
+          text: `${w.eventName}  (${await wishNumber.count({
+            eventNames: w.eventName,
+          })}/ ${totalNames})`,
+          callback_data: `bdayWish_1-${w.eventName}`,
+        },
+      ])
+    )
   );
   await ctx.reply('Select Birthday Event', {
     reply_markup: inlineKeyboard,
