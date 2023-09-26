@@ -28,9 +28,9 @@ const seeWish_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             {
                 text: `${event.eventName}  (${yield wishNumber.aggregate([
                     {
-                        $count: { $match: { eventName: 'Celina Birthday' } },
+                        $count: { $match: { eventName: event.eventName } },
                     },
-                ])} / ${totalNames})`,
+                ].map((n) => n.$count))} / ${totalNames})`,
                 callback_data: `bdayWish_1-${event.eventName}`,
             },
         ];
