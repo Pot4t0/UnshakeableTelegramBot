@@ -38,8 +38,8 @@ export const seeWish_2 = async (ctx: CallbackQueryContext<BotContext>) => {
   const WishArray = await Database.getMongoRepository(Wishes).find({
     eventName: callback,
   });
-  const wishTable = await WishArray.map(
-    (n) => `@${n.teleUser}\nWish: \n${n.wishText}`
+  const wishTable = await Promise.all(
+    WishArray.map((n) => `@${n.teleUser}\nWish: \n${n.wishText}`)
   );
   const inlineKeyboard = new InlineKeyboard([
     [{ text: 'Back', callback_data: 'seeBdayWishes' }],

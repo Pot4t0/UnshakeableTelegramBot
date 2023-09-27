@@ -42,7 +42,7 @@ const seeWish_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const WishArray = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
         eventName: callback,
     });
-    const wishTable = yield WishArray.map((n) => `@${n.teleUser}\nWish: \n${n.wishText}`);
+    const wishTable = yield Promise.all(WishArray.map((n) => `@${n.teleUser}\nWish: \n${n.wishText}`));
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [{ text: 'Back', callback_data: 'seeBdayWishes' }],
     ]);

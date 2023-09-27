@@ -59,18 +59,6 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     { teleUser: user[0].teleUser },
     { $set: { attendance: [false, reason], sf: '', timestamp: new Date() } }
   );
-
-  // const data_sheet = gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
-  // await data_sheet.loadCells();
-  // const sfCell = await data_sheet.getCellByA1(`C${user[0].sfrow}`);
-  // const attendanceCell = await data_sheet.getCellByA1(`D${user[0].sfrow}`);
-  // const reasonCell = await data_sheet.getCellByA1(`E${user[0].sfrow}`);
-  // const timeStampCell = await data_sheet.getCellByA1(`F${user[0].sfrow}`);
-  // sfCell.value = '';
-  // attendanceCell.value = 'No';
-  // reasonCell.value = reason;
-  // (timeStampCell.value = Date()), await data_sheet.saveUpdatedCells();
-
   await ctx.reply('Sent!');
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
@@ -97,17 +85,6 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     { teleUser: user[0].teleUser },
     { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } }
   );
-  // const data_sheet = gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram'];
-  // await data_sheet.loadCells();
-  // const sfCell = await data_sheet.getCellByA1(`C${user[0].sfrow}`);
-  // const attendanceCell = await data_sheet.getCellByA1(`D${user[0].sfrow}`);
-  // const reasonCell = await data_sheet.getCellByA1(`E${user[0].sfrow}`);
-  // const timeStampCell = await data_sheet.getCellByA1(`F${user[0].sfrow}`);
-  // sfCell.value = sf;
-  // attendanceCell.value = 'Yes';
-  // reasonCell.value = '';
-  // timeStampCell.value = Date();
-  // await data_sheet.saveUpdatedCells();
   await ctx.reply('Sent!');
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
