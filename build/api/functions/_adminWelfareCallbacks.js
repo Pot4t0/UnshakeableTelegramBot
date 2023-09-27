@@ -42,13 +42,12 @@ const seeWish_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const welfareWishArray = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
         eventName: callback,
     });
-    const wishTable = yield welfareWishArray.map((n) => `@${n.teleUser}\nWish: \n${n.wishText}`);
-    const inlineKeyboard = new grammy_1.InlineKeyboard([
-        [{ text: 'Back', callback_data: 'seeWelfareWishes' }],
-    ]);
-    yield ctx.reply(wishTable.join('\n\n'), {
-        reply_markup: inlineKeyboard,
-    });
+    yield Promise.all(welfareWishArray.map((n) => __awaiter(void 0, void 0, void 0, function* () {
+        yield ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`);
+    })));
+    if (welfareWishArray[0] == null) {
+        yield ctx.reply('No Wishes Recived 😢');
+    }
 });
 exports.seeWish_2 = seeWish_2;
 // Reminder Management

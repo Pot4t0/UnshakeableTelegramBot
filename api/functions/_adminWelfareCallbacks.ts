@@ -39,15 +39,14 @@ export const seeWish_2 = async (ctx: CallbackQueryContext<BotContext>) => {
   const welfareWishArray = await Database.getMongoRepository(Wishes).find({
     eventName: callback,
   });
-  const wishTable = await welfareWishArray.map(
-    (n) => `@${n.teleUser}\nWish: \n${n.wishText}`
+  await Promise.all(
+    welfareWishArray.map(async (n) => {
+      await ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`);
+    })
   );
-  const inlineKeyboard = new InlineKeyboard([
-    [{ text: 'Back', callback_data: 'seeWelfareWishes' }],
-  ]);
-  await ctx.reply(wishTable.join('\n\n'), {
-    reply_markup: inlineKeyboard,
-  });
+  if (welfareWishArray[0] == null) {
+    await ctx.reply('No Wishes Recived 😢');
+  }
 };
 
 // Reminder Management
