@@ -42,14 +42,14 @@ const seeWish_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const WishArray = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
         eventName: callback,
     });
-    const wishTable = yield Promise.all(WishArray.map((n) => __awaiter(void 0, void 0, void 0, function* () {
+    const inlineKeyboard = new grammy_1.InlineKeyboard([
+        [{ text: 'Back', callback_data: 'seeBdayWishes' }],
+    ]);
+    yield Promise.all(WishArray.map((n) => __awaiter(void 0, void 0, void 0, function* () {
         yield ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`, {
             reply_markup: inlineKeyboard,
         });
     })));
-    const inlineKeyboard = new grammy_1.InlineKeyboard([
-        [{ text: 'Back', callback_data: 'seeBdayWishes' }],
-    ]);
     // await ctx.reply(wishTable.join('\n\n'), {
     //   reply_markup: inlineKeyboard,
     // });
