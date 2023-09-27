@@ -46,7 +46,7 @@ const seeWish_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`);
     })));
     if (WishArray[0] == null) {
-        yield ctx.reply('No Wishes Recived 😢');
+        yield ctx.reply('No Wish Recived 😢');
     }
 });
 exports.seeWish_2 = seeWish_2;

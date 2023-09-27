@@ -45,7 +45,7 @@ export const seeWish_2 = async (ctx: CallbackQueryContext<BotContext>) => {
     })
   );
   if (welfareWishArray[0] == null) {
-    await ctx.reply('No Wishes Recived 😢');
+    await ctx.reply('No Wish Recived 😢');
   }
 };
 
