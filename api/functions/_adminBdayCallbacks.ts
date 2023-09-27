@@ -4,6 +4,7 @@ import { Database } from '../database_mongoDB/_db-init';
 import { Events, Names, Wishes } from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
+import { IsNull } from 'typeorm';
 
 // See Wish Callbacks
 export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
@@ -41,10 +42,10 @@ export const seeWish_2 = async (ctx: CallbackQueryContext<BotContext>) => {
 
   await Promise.all(
     WishArray.map(async (n) => {
-      await ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`, {});
+      await ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`);
     })
   );
-  if (WishArray == null) {
+  if (WishArray[0] == null) {
     await ctx.reply('No Wishes');
   }
 };
