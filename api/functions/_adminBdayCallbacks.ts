@@ -39,14 +39,18 @@ export const seeWish_2 = async (ctx: CallbackQueryContext<BotContext>) => {
     eventName: callback,
   });
   const wishTable = await Promise.all(
-    WishArray.map((n) => `@${n.teleUser}\nWish: \n${n.wishText}`)
+    WishArray.map(async (n) => {
+      await ctx.reply(`@${n.teleUser}\nWish: \n${n.wishText}`, {
+        reply_markup: inlineKeyboard,
+      });
+    })
   );
   const inlineKeyboard = new InlineKeyboard([
     [{ text: 'Back', callback_data: 'seeBdayWishes' }],
   ]);
-  await ctx.reply(wishTable.join('\n\n'), {
-    reply_markup: inlineKeyboard,
-  });
+  // await ctx.reply(wishTable.join('\n\n'), {
+  //   reply_markup: inlineKeyboard,
+  // });
 };
 
 // Reminder Management
