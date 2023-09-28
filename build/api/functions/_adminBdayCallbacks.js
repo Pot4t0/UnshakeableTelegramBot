@@ -109,22 +109,25 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 //Uses botOnType = 10 to work
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const reminder = (yield ctx.message.text) || '';
+    const wishEventName = yield ctx.session.eventDate;
     const inWishes = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
-        eventName: ctx.session.eventName,
+        eventName: wishEventName,
     });
     const notAllowedName = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
-        eventName: ctx.session.eventName,
+        eventName: wishEventName,
     });
     const notAllowedUser = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         nameText: notAllowedName.map((n) => n.notAllowedUser),
     });
     yield ctx.reply(inWishes.map((n) => n.teleUser).toString());
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: {
-            $not: {
-                $in: yield inWishes
-                    .map((n) => n.teleUser)
-                    .concat(notAllowedUser.map((n) => n.teleUser)),
+        where: {
+            teleUser: {
+                $not: {
+                    $in: yield inWishes
+                        .map((n) => n.teleUser)
+                        .concat(notAllowedUser.map((n) => n.teleUser)),
+                },
             },
         },
     });

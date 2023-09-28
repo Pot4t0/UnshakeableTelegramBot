@@ -127,11 +127,12 @@ export const sendNotInReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   const reminder = (await ctx.message.text) || '';
+  const wishEventName = await ctx.session.eventDate;
   const inWishes = await Database.getMongoRepository(Wishes).find({
-    eventName: ctx.session.eventName,
+    eventName: wishEventName,
   });
   const notAllowedName = await Database.getMongoRepository(Events).find({
-    eventName: ctx.session.eventName,
+    eventName: wishEventName,
   });
 
   const notAllowedUser = await Database.getMongoRepository(Names).find({
@@ -140,11 +141,13 @@ export const sendNotInReminder_3 = async (
   await ctx.reply(inWishes.map((n) => n.teleUser).toString());
 
   const notInNames = await Database.getMongoRepository(Names).find({
-    teleUser: {
-      $not: {
-        $in: await inWishes
-          .map((n) => n.teleUser)
-          .concat(notAllowedUser.map((n) => n.teleUser)),
+    where: {
+      teleUser: {
+        $not: {
+          $in: await inWishes
+            .map((n) => n.teleUser)
+            .concat(notAllowedUser.map((n) => n.teleUser)),
+        },
       },
     },
   });
