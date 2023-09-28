@@ -117,7 +117,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         eventName: wishEventName,
     });
     const notAllowedUser = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        nameText: notAllowedName.map((n) => n.notAllowedUser),
+        nameText: notAllowedName[0].notAllowedUser,
     });
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         where: {
