@@ -150,12 +150,10 @@ export const sendNotInReminder_3 = async (
       },
     },
   });
-  await ctx.reply(notInNames.toString());
+  await ctx.reply(notInNames.map((n) => n.teleUser).toString());
   const notInUsers = await notInNames
     .map((n) => n.teleUser)
     .filter((n) => n != '');
-
-  await ctx.reply(notInUsers.toString());
 
   await Promise.all(
     notInUsers.map(async (n) => {

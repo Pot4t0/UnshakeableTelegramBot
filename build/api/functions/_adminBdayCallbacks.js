@@ -130,11 +130,10 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             },
         },
     });
-    yield ctx.reply(notInNames.toString());
+    yield ctx.reply(notInNames.map((n) => n.teleUser).toString());
     const notInUsers = yield notInNames
         .map((n) => n.teleUser)
         .filter((n) => n != '');
-    yield ctx.reply(notInUsers.toString());
     yield Promise.all(notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
         // await sendMessageUser(n, reminder, ctx);
     })));
