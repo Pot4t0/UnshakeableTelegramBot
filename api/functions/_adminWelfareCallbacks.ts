@@ -148,7 +148,6 @@ export const sendNotInReminder_3 = async (
       },
     },
   });
-  await ctx.reply(notInNames.map((n) => n.teleUser).toString());
   const notInUsers = await notInNames
     .map((n) => n.teleUser)
     .filter((n) => n != '');

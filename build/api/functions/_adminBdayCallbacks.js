@@ -130,7 +130,6 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
             },
         },
     });
-    yield ctx.reply(notInNames.map((n) => n.teleUser).toString());
     const notInUsers = yield notInNames
         .map((n) => n.teleUser)
         .filter((n) => n != '');
