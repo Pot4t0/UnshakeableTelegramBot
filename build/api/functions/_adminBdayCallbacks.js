@@ -123,18 +123,18 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         where: {
             teleUser: {
                 $not: {
-                    $in: yield inWishes
-                        .map((n) => n.teleUser)
-                        .concat(notAllowedUser.map((n) => n.teleUser)),
+                    $in: yield inWishes.map((n) => n.teleUser),
                 },
             },
         },
     });
     const notInUsers = yield notInNames
         .map((n) => n.teleUser)
-        .filter((n) => n != '');
+        .filter((n) => n != '')
+        .filter((n) => n != notAllowedUser[0].teleUser);
+    yield ctx.reply(notInUsers.toString());
     yield Promise.all(notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, _db_functions_1.sendMessageUser)(n, reminder, ctx);
+        // await sendMessageUser(n, reminder, ctx);
     })));
     yield ctx.reply(`Reminder sent!`);
     ctx.session = yield (0, _SessionData_1.initial)();
