@@ -108,7 +108,7 @@ export const sendNotInReminder_2 = async (
 ) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   ctx.session.eventName = await ctx.update.callback_query.data.substring(
-    'reminderNotInEvents-'.length
+    'reminderBdayNotInEvents-'.length
   );
   ctx.session.botOnType = 10;
   await ctx.reply(

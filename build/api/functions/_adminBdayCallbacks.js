@@ -95,7 +95,7 @@ const sendNotInReminder_1 = (ctx) => __awaiter(void 0, void 0, void 0, function*
 exports.sendNotInReminder_1 = sendNotInReminder_1;
 const sendNotInReminder_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-    ctx.session.eventName = yield ctx.update.callback_query.data.substring('reminderNotInEvents-'.length);
+    ctx.session.eventName = yield ctx.update.callback_query.data.substring('reminderBdayNotInEvents-'.length);
     ctx.session.botOnType = 10;
     yield ctx.reply(`Write down the reminder msg for people that have not sent it in
     \nSuggestion to put /sendwish so that user can click on it
