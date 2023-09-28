@@ -120,13 +120,11 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     });
     console.log();
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        where: {
-            teleUser: {
-                $not: {
-                    $in: yield inWishes
-                        .map((n) => n.teleUser)
-                        .concat(notAllowedUser.map((n) => n.teleUser)),
-                },
+        teleUser: {
+            $not: {
+                $in: yield inWishes
+                    .map((n) => n.teleUser)
+                    .concat(notAllowedUser.map((n) => n.teleUser)),
             },
         },
     });
@@ -134,6 +132,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const notInUsers = yield notInNames
         .map((n) => n.teleUser)
         .filter((n) => n != '');
+    yield ctx.reply(notInUsers.toString());
     yield Promise.all(notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
         // await sendMessageUser(n, reminder, ctx);
     })));
