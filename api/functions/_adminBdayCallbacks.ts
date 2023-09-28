@@ -137,12 +137,7 @@ export const sendNotInReminder_3 = async (
   const notAllowedUser = await Database.getMongoRepository(Names).find({
     nameText: notAllowedName.map((n) => n.notAllowedUser),
   });
-
-  const inUsers = await Promise.all(
-    inWishes
-      .map((n) => `${n.teleUser}`)
-      .concat(await notAllowedUser.map((n) => `${n.teleUser}`))
-  );
+  console.log();
 
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
@@ -155,12 +150,16 @@ export const sendNotInReminder_3 = async (
       },
     },
   });
+  await ctx.reply(notInNames.toString());
   const notInUsers = await notInNames
     .map((n) => n.teleUser)
     .filter((n) => n != '');
+
+  await ctx.reply(notInUsers.toString());
+
   await Promise.all(
     notInUsers.map(async (n) => {
-      await sendMessageUser(n, reminder, ctx);
+      // await sendMessageUser(n, reminder, ctx);
     })
   );
 
