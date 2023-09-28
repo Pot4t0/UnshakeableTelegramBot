@@ -107,7 +107,7 @@ export const sendNotInReminder_2 = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-  ctx.session.eventName = ctx.update.callback_query.data.substring(
+  ctx.session.eventName = await ctx.update.callback_query.data.substring(
     'reminderNotInEvents-'.length
   );
   ctx.session.botOnType = 10;
@@ -128,16 +128,14 @@ export const sendNotInReminder_3 = async (
 ) => {
   const reminder = (await ctx.message.text) || '';
   const inWishes = await Database.getMongoRepository(Wishes).find({
-    where: {
-      eventName: { $eq: ctx.session.eventName },
-    },
+    eventName: ctx.session.eventName,
   });
   const notAllowedName = await Database.getMongoRepository(Events).find({
     eventName: ctx.session.eventName,
   });
 
   const notAllowedUser = await Database.getMongoRepository(Names).find({
-    nameText: notAllowedName.map((n) => n.notAllowedUser),
+    nameText: notAllowedName[0].notAllowedUser,
   });
 
   const inUsers = await inWishes
