@@ -135,6 +135,8 @@ export const sendNotInReminder_3 = async (
     eventName: wishEventName,
   });
 
+  await ctx.reply(notAllowedName.map((n) => n.notAllowedUser).toString());
+
   const notAllowedUser = await Database.getMongoRepository(Names).find({
     nameText: await notAllowedName.map((n) => n.notAllowedUser),
   });
