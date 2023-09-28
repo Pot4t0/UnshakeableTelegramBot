@@ -124,11 +124,9 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
         .map((n) => n.teleUser)
         .concat(notAllowedUser.map((n) => n.teleUser));
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        where: {
-            teleUser: {
-                $not: {
-                    $in: inUsers,
-                },
+        teleUser: {
+            $not: {
+                $in: inUsers,
             },
         },
     });
