@@ -139,6 +139,8 @@ export const sendNotInReminder_3 = async (
     nameText: await notAllowedName.map((n) => n.notAllowedUser),
   });
 
+  await ctx.reply(notAllowedUser.map((n) => n.teleUser).toString());
+
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
       teleUser: {
