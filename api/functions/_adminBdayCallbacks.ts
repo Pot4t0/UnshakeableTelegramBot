@@ -144,21 +144,26 @@ export const sendNotInReminder_3 = async (
       .concat(await notAllowedUser.map((n) => `${n.teleUser}`))
   );
 
-  const allNames = await Database.getMongoRepository(Names).find({});
-  const notInUsers = await Promise.all(
-    allNames
-      .map((n) => `${n.teleUser}`)
-      .filter((N) => N != '')
-      .filter((n) => {
-        return inUsers.indexOf(n) < 0;
-      })
-  );
-
+  const notInNames = await Database.getMongoRepository(Names).find({
+    where: {
+      teleUser: {
+        $not: {
+          $in: await inWishes
+            .map((n) => n.teleUser)
+            .concat(notAllowedUser.map((n) => n.teleUser)),
+        },
+      },
+    },
+  });
+  const notInUsers = await notInNames
+    .map((n) => n.teleUser)
+    .filter((n) => n != '');
   await Promise.all(
     notInUsers.map(async (n) => {
       await sendMessageUser(n, reminder, ctx);
     })
   );
+
   await ctx.reply(`Reminder sent!`);
 
   ctx.session = await initial();
