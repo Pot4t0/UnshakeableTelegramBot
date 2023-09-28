@@ -109,13 +109,15 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 //Uses botOnType = 3 to work
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const reminder = (yield ctx.message.text) || '';
+    const wishEventName = (yield ctx.session.eventName) || '';
     const inWishes = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
-        where: {
-            eventName: { $eq: ctx.session.eventName },
-        },
+        eventName: wishEventName,
     });
-    const notAllowedUser = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
-        eventName: ctx.session.eventName,
+    const notAllowedName = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
+        eventName: wishEventName,
+    });
+    const notAllowedUser = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+        nameText: notAllowedName.map((n) => n.notAllowedUser),
     });
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         where: {
@@ -123,11 +125,12 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
                 $not: {
                     $in: yield inWishes
                         .map((n) => n.teleUser)
-                        .concat(notAllowedUser.map((n) => n.notAllowedUser)),
+                        .concat(notAllowedUser.map((n) => n.teleUser)),
                 },
             },
         },
     });
+    yield ctx.reply(notInNames.map((n) => n.teleUser).toString());
     const notInUsers = yield notInNames
         .map((n) => n.teleUser)
         .filter((n) => n != '');

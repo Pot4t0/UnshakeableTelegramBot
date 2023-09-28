@@ -125,28 +125,34 @@ export const sendNotInReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   const reminder = (await ctx.message.text) || '';
+  const wishEventName = (await ctx.session.eventName) || '';
   const inWishes = await Database.getMongoRepository(Wishes).find({
-    where: {
-      eventName: { $eq: ctx.session.eventName },
-    },
+    eventName: wishEventName,
   });
-  const notAllowedUser = await Database.getMongoRepository(Events).find({
-    eventName: ctx.session.eventName,
+  const notAllowedName = await Database.getMongoRepository(Events).find({
+    eventName: wishEventName,
   });
+
+  const notAllowedUser = await Database.getMongoRepository(Names).find({
+    nameText: notAllowedName.map((n) => n.notAllowedUser),
+  });
+
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
       teleUser: {
         $not: {
           $in: await inWishes
             .map((n) => n.teleUser)
-            .concat(notAllowedUser.map((n) => n.notAllowedUser)),
+            .concat(notAllowedUser.map((n) => n.teleUser)),
         },
       },
     },
   });
+  await ctx.reply(notInNames.map((n) => n.teleUser).toString());
   const notInUsers = await notInNames
     .map((n) => n.teleUser)
     .filter((n) => n != '');
+
   await Promise.all(
     notInUsers.map(async (n) => {
       await sendMessageUser(n, reminder, ctx);
