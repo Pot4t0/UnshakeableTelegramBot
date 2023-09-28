@@ -95,7 +95,7 @@ const sendNotInReminder_1 = (ctx) => __awaiter(void 0, void 0, void 0, function*
 exports.sendNotInReminder_1 = sendNotInReminder_1;
 const sendNotInReminder_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-    ctx.session.eventName = ctx.update.callback_query.data.substring('reminderBdayNotInEvents-'.length);
+    ctx.session.eventName = yield ctx.update.callback_query.data.substring('reminderBdayNotInEvents-'.length);
     ctx.session.botOnType = 10;
     yield ctx.reply(`Write down the reminder msg for people that have not sent it in
     \nSuggestion to put /sendwish so that user can click on it
@@ -109,7 +109,7 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 //Uses botOnType = 10 to work
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const reminder = (yield ctx.message.text) || '';
-    const wishEventName = (yield ctx.session.eventDate) || '';
+    const wishEventName = (yield ctx.session.eventName) || ' ';
     yield ctx.reply(wishEventName);
     const inWishes = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
         eventName: wishEventName,
