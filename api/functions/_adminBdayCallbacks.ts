@@ -132,16 +132,23 @@ export const sendNotInReminder_3 = async (
       eventName: { $eq: ctx.session.eventName },
     },
   });
-  const notAllowedUser = await Database.getMongoRepository(Events).find({
+  const notAllowedName = await Database.getMongoRepository(Events).find({
     eventName: ctx.session.eventName,
   });
+
+  const notAllowedUser = await Database.getMongoRepository(Names).find({
+    nameText: notAllowedName.map((n) => n.notAllowedUser),
+  });
+
+  const inUsers = await inWishes
+    .map((n) => n.teleUser)
+    .concat(notAllowedUser.map((n) => n.teleUser));
+
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
       teleUser: {
         $not: {
-          $in: await inWishes
-            .map((n) => n.teleUser)
-            .concat(notAllowedUser.map((n) => n.notAllowedUser)),
+          $in: inUsers,
         },
       },
     },
