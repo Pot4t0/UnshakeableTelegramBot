@@ -109,7 +109,8 @@ exports.sendNotInReminder_2 = sendNotInReminder_2;
 //Uses botOnType = 10 to work
 const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const reminder = (yield ctx.message.text) || '';
-    const wishEventName = yield ctx.session.eventDate;
+    const wishEventName = (yield ctx.session.eventDate) || '';
+    yield ctx.reply(wishEventName);
     const inWishes = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
         eventName: wishEventName,
     });

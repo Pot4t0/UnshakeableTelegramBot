@@ -127,7 +127,8 @@ export const sendNotInReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   const reminder = (await ctx.message.text) || '';
-  const wishEventName = await ctx.session.eventDate;
+  const wishEventName = (await ctx.session.eventDate) || '';
+  await ctx.reply(wishEventName);
   const inWishes = await Database.getMongoRepository(Wishes).find({
     eventName: wishEventName,
   });
