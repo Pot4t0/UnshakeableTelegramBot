@@ -71,7 +71,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const textDate = (yield ctx.message.text) || '';
     const textDateArray = textDate.split('/');
     const offSetDate = new Date(parseInt(textDateArray[2]), parseInt(textDateArray[1]) - 1, parseInt(textDateArray[0]) - 7 + 3); // offsetted to the wk before tues
-    const reminder = ctx.session.text || '';
+    const reminder = (yield ctx.session.text) || '';
     const InSF = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).find({
         where: {
             timestamp: { $gte: offSetDate },
@@ -79,10 +79,10 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     });
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         where: {
-            teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
+            teleUser: { $not: { $in: yield InSF.map((n) => `${n.teleUser}`) } },
         },
     });
-    const notInUsers = notInNames
+    const notInUsers = yield notInNames
         .map((n) => `${n.teleUser}`)
         .filter((n) => n != '');
     yield Promise.all(notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {

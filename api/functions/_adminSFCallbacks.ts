@@ -85,7 +85,7 @@ export const sendNotInReminder_3 = async (
     parseInt(textDateArray[1]) - 1,
     parseInt(textDateArray[0]) - 7 + 3
   ); // offsetted to the wk before tues
-  const reminder = ctx.session.text || '';
+  const reminder = (await ctx.session.text) || '';
   const InSF = await Database.getMongoRepository(SF_mongo).find({
     where: {
       timestamp: { $gte: offSetDate },
@@ -93,10 +93,10 @@ export const sendNotInReminder_3 = async (
   });
   const notInNames = await Database.getMongoRepository(Names).find({
     where: {
-      teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
+      teleUser: { $not: { $in: await InSF.map((n) => `${n.teleUser}`) } },
     },
   });
-  const notInUsers = notInNames
+  const notInUsers = await notInNames
     .map((n) => `${n.teleUser}`)
     .filter((n) => n != '');
 
