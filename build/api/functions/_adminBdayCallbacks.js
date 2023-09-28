@@ -124,9 +124,7 @@ const sendNotInReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const notInNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: { $not: { $in: inUsers } },
     });
-    const notInUsers = yield notInNames
-        .map((n) => `${n.teleUser}`)
-        .filter((n) => n != '');
+    const notInUsers = yield notInNames.map((n) => `${n.teleUser}`);
     yield Promise.all(notInUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, _db_functions_1.sendMessageUser)(n, reminder, ctx);
     })));

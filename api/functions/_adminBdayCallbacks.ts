@@ -145,9 +145,7 @@ export const sendNotInReminder_3 = async (
   const notInNames = await Database.getMongoRepository(Names).find({
     teleUser: { $not: { $in: inUsers } },
   });
-  const notInUsers = await notInNames
-    .map((n) => `${n.teleUser}`)
-    .filter((n) => n != '');
+  const notInUsers = await notInNames.map((n) => `${n.teleUser}`);
 
   await Promise.all(
     notInUsers.map(async (n) => {
