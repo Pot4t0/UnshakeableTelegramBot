@@ -66,14 +66,14 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     sf.sf = '';
     sf.timestamp = new Date();
     await Database.getMongoRepository(SF_mongo).save(sf);
-    await ctx.reply('SF Received');
   } else {
     await Database.getMongoRepository(SF_mongo).updateOne(
       { teleUser: teleUserName },
       { $set: { attendance: ['N', reason], sf: '', timestamp: new Date() } }
     );
-    await ctx.reply('SF Overrided');
   }
+  await ctx.reply('Sent!');
+
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
@@ -106,14 +106,13 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     sfevent.sf = sf;
     sfevent.timestamp = new Date();
     await Database.getMongoRepository(SF_mongo).save(sfevent);
-    await ctx.reply('SF Received');
   } else {
     await Database.getMongoRepository(SF_mongo).updateOne(
       { teleUser: teleUserName },
       { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } }
     );
-    await ctx.reply('SF Overrided');
   }
+  await ctx.reply('Sent!');
 
   await Database.getMongoRepository(SF_mongo).updateOne(
     { teleUser: user[0].teleUser },
