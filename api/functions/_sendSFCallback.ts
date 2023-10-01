@@ -80,7 +80,7 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
 // botOntype = 8
 export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = undefined;
-  const sf = (await ctx.message.text) || '';
+  const sfmsg = (await ctx.message.text) || '';
   await gsheet.unshakeableSFSpreadsheet.loadInfo();
   const sheet =
     gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
@@ -91,7 +91,7 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
   await sheet.addRow({
     timeStamp: Date(),
     name: user[0].nameText,
-    sermonFeedback: sf,
+    sermonFeedback: sfmsg,
     attendance: 'Yes',
     reason: '',
   });
@@ -103,13 +103,13 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     const sfevent = new SF_mongo();
     sfevent.teleUser = teleUserName;
     sfevent.attendance = ['Y', ''];
-    sfevent.sf = sf;
+    sfevent.sf = sfmsg;
     sfevent.timestamp = new Date();
     await Database.getMongoRepository(SF_mongo).save(sfevent);
   } else {
     await Database.getMongoRepository(SF_mongo).updateOne(
       { teleUser: teleUserName },
-      { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } }
+      { $set: { attendance: ['Y', ''], sf: sfmsg, timestamp: new Date() } }
     );
   }
   await ctx.reply('Sent!');
