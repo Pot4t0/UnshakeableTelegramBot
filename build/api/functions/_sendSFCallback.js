@@ -93,10 +93,10 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     });
     if (!collection) {
         const sfevent = new _tableEntity_1.SF_mongo();
-        sfevent.teleUser = teleUserName;
-        sfevent.attendance = ['Y', ''];
-        sfevent.sf = sfmsg;
-        sfevent.timestamp = new Date();
+        sfevent.teleUser = yield teleUserName;
+        sfevent.attendance = yield ['Y', ''];
+        sfevent.sf = yield sfmsg;
+        sfevent.timestamp = yield new Date();
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).save(sfevent);
     }
     else {
