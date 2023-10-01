@@ -117,7 +117,7 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
 
   await Database.getMongoRepository(SF_mongo).updateOne(
     { teleUser: user[0].teleUser },
-    { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } }
+    { $set: { attendance: ['Y', ''], sf: sf, timestamp: new Date() } }
   );
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
