@@ -93,14 +93,14 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     });
     if (!collection) {
         const sfevent = new _tableEntity_1.SF_mongo();
-        sfevent.teleUser = teleUserName.toString();
-        sfevent.attendance = ['Y', ''];
-        sfevent.sf = sfmsg.toString();
+        sfevent.teleUser = teleUserName;
+        sfevent.attendance = ['Y'];
+        sfevent.sf = sfmsg;
         sfevent.timestamp = new Date();
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).save(sfevent);
     }
     else {
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: teleUserName }, { $set: { attendance: ['Y', ''], sf: sfmsg, timestamp: new Date() } });
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: teleUserName }, { $set: { attendance: ['Y'], sf: sfmsg, timestamp: new Date() } });
     }
     yield ctx.reply('Sent!');
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
