@@ -101,10 +101,10 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
 
   if (!collection) {
     const sfevent = new SF_mongo();
-    sfevent.teleUser = await teleUserName;
-    sfevent.attendance = await ['Y', ''];
-    sfevent.sf = await sfmsg;
-    sfevent.timestamp = await new Date();
+    sfevent.teleUser = teleUserName.toString();
+    sfevent.attendance = ['Y', ''];
+    sfevent.sf = sfmsg.toString();
+    sfevent.timestamp = new Date();
     await Database.getMongoRepository(SF_mongo).save(sfevent);
   } else {
     await Database.getMongoRepository(SF_mongo).updateOne(
