@@ -39,11 +39,12 @@ exports.sendSfEvent_1_no = sendSfEvent_1_no;
 // botOntype = 9
 const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.botOnType = undefined;
-    const reason = ctx.message.text || '';
+    const reason = (yield ctx.message.text) || '';
     yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
     const sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    const teleUserName = (yield ctx.update.message.from.username) || '';
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: ctx.update.message.from.username,
+        teleUser: teleUserName,
     });
     yield sheet.addRow({
         timeStamp: Date(),
@@ -53,11 +54,11 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         reason: reason,
     });
     const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).findOneBy({
-        teleUser: user[0].teleUser,
+        teleUser: teleUserName,
     });
     if (!collection) {
         const sf = new _tableEntity_1.SF_mongo();
-        sf.teleUser = user[0].teleUser;
+        sf.teleUser = teleUserName;
         sf.attendance = ['N', reason];
         sf.sf = '';
         sf.timestamp = new Date();
@@ -65,7 +66,7 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         yield ctx.reply('SF Received');
     }
     else {
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: ['N', reason], sf: '', timestamp: new Date() } });
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: teleUserName }, { $set: { attendance: ['N', reason], sf: '', timestamp: new Date() } });
         yield ctx.reply('SF Overrided');
     }
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
@@ -74,11 +75,12 @@ exports.sendSfEvent_2_no = sendSfEvent_2_no;
 // botOntype = 8
 const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.botOnType = undefined;
-    const sf = ctx.message.text || '';
+    const sf = (yield ctx.message.text) || '';
     yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
     const sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    const teleUserName = (yield ctx.update.message.from.username) || '';
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: ctx.update.message.from.username,
+        teleUser: teleUserName,
     });
     yield sheet.addRow({
         timeStamp: Date(),
@@ -87,12 +89,12 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         attendance: 'Yes',
         reason: '',
     });
-    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).findOneBy({
-        teleUser: user[0].teleUser,
+    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).find({
+        teleUser: teleUserName,
     });
     if (!collection) {
         const sfevent = new _tableEntity_1.SF_mongo();
-        sfevent.teleUser = user[0].teleUser;
+        sfevent.teleUser = teleUserName;
         sfevent.attendance = ['Y', ''];
         sfevent.sf = sf;
         sfevent.timestamp = new Date();
@@ -100,7 +102,7 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         yield ctx.reply('SF Received');
     }
     else {
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } });
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: teleUserName }, { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } });
         yield ctx.reply('SF Overrided');
     }
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } });

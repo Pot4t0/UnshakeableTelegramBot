@@ -40,12 +40,13 @@ export const sendSfEvent_1_no = async (
 // botOntype = 9
 export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = undefined;
-  const reason = ctx.message.text || '';
+  const reason = (await ctx.message.text) || '';
   await gsheet.unshakeableSFSpreadsheet.loadInfo();
   const sheet =
     gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+  const teleUserName = (await ctx.update.message.from.username) || '';
   const user = await Database.getMongoRepository(Names).find({
-    teleUser: ctx.update.message.from.username,
+    teleUser: teleUserName,
   });
   await sheet.addRow({
     timeStamp: Date(),
@@ -55,12 +56,12 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     reason: reason,
   });
   const collection = await Database.getMongoRepository(SF_mongo).findOneBy({
-    teleUser: user[0].teleUser,
+    teleUser: teleUserName,
   });
 
   if (!collection) {
     const sf = new SF_mongo();
-    sf.teleUser = user[0].teleUser;
+    sf.teleUser = teleUserName;
     sf.attendance = ['N', reason];
     sf.sf = '';
     sf.timestamp = new Date();
@@ -68,7 +69,7 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     await ctx.reply('SF Received');
   } else {
     await Database.getMongoRepository(SF_mongo).updateOne(
-      { teleUser: user[0].teleUser },
+      { teleUser: teleUserName },
       { $set: { attendance: ['N', reason], sf: '', timestamp: new Date() } }
     );
     await ctx.reply('SF Overrided');
@@ -79,12 +80,13 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
 // botOntype = 8
 export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = undefined;
-  const sf = ctx.message.text || '';
+  const sf = (await ctx.message.text) || '';
   await gsheet.unshakeableSFSpreadsheet.loadInfo();
   const sheet =
     gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+  const teleUserName = (await ctx.update.message.from.username) || '';
   const user = await Database.getMongoRepository(Names).find({
-    teleUser: ctx.update.message.from.username,
+    teleUser: teleUserName,
   });
   await sheet.addRow({
     timeStamp: Date(),
@@ -93,13 +95,13 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     attendance: 'Yes',
     reason: '',
   });
-  const collection = await Database.getMongoRepository(SF_mongo).findOneBy({
-    teleUser: user[0].teleUser,
+  const collection = await Database.getMongoRepository(SF_mongo).find({
+    teleUser: teleUserName,
   });
 
   if (!collection) {
     const sfevent = new SF_mongo();
-    sfevent.teleUser = user[0].teleUser;
+    sfevent.teleUser = teleUserName;
     sfevent.attendance = ['Y', ''];
     sfevent.sf = sf;
     sfevent.timestamp = new Date();
@@ -107,7 +109,7 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     await ctx.reply('SF Received');
   } else {
     await Database.getMongoRepository(SF_mongo).updateOne(
-      { teleUser: user[0].teleUser },
+      { teleUser: teleUserName },
       { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } }
     );
     await ctx.reply('SF Overrided');
