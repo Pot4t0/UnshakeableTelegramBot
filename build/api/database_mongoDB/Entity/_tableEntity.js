@@ -117,11 +117,11 @@ __decorate([
     __metadata("design:type", Array)
 ], SF_mongo.prototype, "attendance", void 0);
 __decorate([
-    (0, typeorm_1.Column)((type) => Date),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Date)
 ], SF_mongo.prototype, "timestamp", void 0);
 exports.SF_mongo = SF_mongo = __decorate([
-    (0, typeorm_1.Entity)('sf')
+    (0, typeorm_1.Entity)('sf_mongo')
 ], SF_mongo);
 let Attendance_mongo = class Attendance_mongo {
 };

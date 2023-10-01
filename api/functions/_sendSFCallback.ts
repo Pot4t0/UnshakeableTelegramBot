@@ -54,12 +54,25 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
     attendance: 'No',
     reason: reason,
   });
+  const collection = await Database.getMongoRepository(SF_mongo).findOneBy({
+    teleUser: user[0].teleUser,
+  });
 
-  await Database.getMongoRepository(SF_mongo).updateOne(
-    { teleUser: user[0].teleUser },
-    { $set: { attendance: [false, reason], sf: '', timestamp: new Date() } }
-  );
-  await ctx.reply('Sent!');
+  if (!collection) {
+    const sf = new SF_mongo();
+    sf.teleUser = user[0].teleUser;
+    sf.attendance = ['N', reason];
+    sf.sf = '';
+    sf.timestamp = new Date();
+    await Database.getMongoRepository(SF_mongo).save(sf);
+    await ctx.reply('SF Received');
+  } else {
+    await Database.getMongoRepository(SF_mongo).updateOne(
+      { teleUser: user[0].teleUser },
+      { $set: { attendance: ['N', reason], sf: '', timestamp: new Date() } }
+    );
+    await ctx.reply('SF Overrided');
+  }
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
@@ -80,11 +93,29 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     attendance: 'Yes',
     reason: '',
   });
+  const collection = await Database.getMongoRepository(SF_mongo).findOneBy({
+    teleUser: user[0].teleUser,
+  });
+
+  if (!collection) {
+    const sfevent = new SF_mongo();
+    sfevent.teleUser = user[0].teleUser;
+    sfevent.attendance = ['Y', ''];
+    sfevent.sf = sf;
+    sfevent.timestamp = new Date();
+    await Database.getMongoRepository(SF_mongo).save(sfevent);
+    await ctx.reply('SF Received');
+  } else {
+    await Database.getMongoRepository(SF_mongo).updateOne(
+      { teleUser: user[0].teleUser },
+      { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } }
+    );
+    await ctx.reply('SF Overrided');
+  }
 
   await Database.getMongoRepository(SF_mongo).updateOne(
     { teleUser: user[0].teleUser },
     { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } }
   );
-  await ctx.reply('Sent!');
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };

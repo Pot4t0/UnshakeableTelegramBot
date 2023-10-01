@@ -52,8 +52,22 @@ const sendSfEvent_2_no = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         attendance: 'No',
         reason: reason,
     });
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [false, reason], sf: '', timestamp: new Date() } });
-    yield ctx.reply('Sent!');
+    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).findOneBy({
+        teleUser: user[0].teleUser,
+    });
+    if (!collection) {
+        const sf = new _tableEntity_1.SF_mongo();
+        sf.teleUser = user[0].teleUser;
+        sf.attendance = ['N', reason];
+        sf.sf = '';
+        sf.timestamp = new Date();
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).save(sf);
+        yield ctx.reply('SF Received');
+    }
+    else {
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: ['N', reason], sf: '', timestamp: new Date() } });
+        yield ctx.reply('SF Overrided');
+    }
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendSfEvent_2_no = sendSfEvent_2_no;
@@ -73,8 +87,23 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         attendance: 'Yes',
         reason: '',
     });
+    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).findOneBy({
+        teleUser: user[0].teleUser,
+    });
+    if (!collection) {
+        const sfevent = new _tableEntity_1.SF_mongo();
+        sfevent.teleUser = user[0].teleUser;
+        sfevent.attendance = ['Y', ''];
+        sfevent.sf = sf;
+        sfevent.timestamp = new Date();
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).save(sfevent);
+        yield ctx.reply('SF Received');
+    }
+    else {
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: ['Y', ''], sf: '', timestamp: new Date() } });
+        yield ctx.reply('SF Overrided');
+    }
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).updateOne({ teleUser: user[0].teleUser }, { $set: { attendance: [true, ''], sf: sf, timestamp: new Date() } });
-    yield ctx.reply('Sent!');
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendSfEvent_2_yes = sendSfEvent_2_yes;

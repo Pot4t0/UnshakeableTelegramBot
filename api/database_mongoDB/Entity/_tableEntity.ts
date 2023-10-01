@@ -65,7 +65,7 @@ export class Wishes {
   wishText: string;
 }
 
-@Entity('sf')
+@Entity('sf_mongo')
 export class SF_mongo {
   @ObjectIdColumn()
   id: ObjectId;
@@ -74,8 +74,8 @@ export class SF_mongo {
   @Column()
   sf: string;
   @Column('simple-array', { nullable: true })
-  attendance: [];
-  @Column((type) => Date)
+  attendance: string[];
+  @Column()
   timestamp: Date;
 }
 
