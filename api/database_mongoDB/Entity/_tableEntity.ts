@@ -65,7 +65,7 @@ export class Wishes {
   wishText: string;
 }
 
-@Entity('sf_mongo')
+@Entity('sf')
 export class SF_mongo {
   @ObjectIdColumn()
   id: ObjectId;
