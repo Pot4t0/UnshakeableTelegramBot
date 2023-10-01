@@ -95,7 +95,7 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
     attendance: 'Yes',
     reason: '',
   });
-  const collection = await Database.getMongoRepository(SF_mongo).find({
+  const collection = await Database.getMongoRepository(SF_mongo).findOneBy({
     teleUser: teleUserName,
   });
 

@@ -88,7 +88,7 @@ const sendSfEvent_2_yes = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         attendance: 'Yes',
         reason: '',
     });
-    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).find({
+    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).findOneBy({
         teleUser: teleUserName,
     });
     if (!collection) {
