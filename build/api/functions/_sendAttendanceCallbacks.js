@@ -321,14 +321,12 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
     yield ctx.reply('1');
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const callback = yield ctx.update.callback_query.data.substring('dinnerAttendance-'.length);
-    yield ctx.reply('2');
     if (callback == 'Y') {
         const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
             teleUser: ctx.update.callback_query.from.username,
         });
         yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
         const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.attendance || ''];
-        yield ctx.reply('1');
         yield sheet.loadCells();
         const weCell = yield sheet.getCellByA1(`F${user[0].attendanceRow}`);
         const lgCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);

@@ -80,7 +80,7 @@ bot.callbackQuery(
 );
 bot.callbackQuery(
   /^dinnerAttendance-/g,
-  sendAttendanceCallback.sendAttendanceReply
+  sendAttendanceCallback.dinnerAttendance
 );
 
 // /adminWelfare Callbacks

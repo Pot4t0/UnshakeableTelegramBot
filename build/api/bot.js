@@ -52,7 +52,7 @@ bot.callbackQuery('yesLGAttendance', _index_1.sendAttendanceCallback.withLG_yesL
 bot.callbackQuery('noLGAttendance', _index_1.sendAttendanceCallback.withLG_noLG_1);
 bot.callbackQuery('yesSpecialAttendance', _index_1.sendAttendanceCallback.yesSpecialAttendance);
 bot.callbackQuery('noSpecialAttendance', _index_1.sendAttendanceCallback.noSpecialAttendance_1);
-bot.callbackQuery(/^dinnerAttendance-/g, _index_1.sendAttendanceCallback.sendAttendanceReply);
+bot.callbackQuery(/^dinnerAttendance-/g, _index_1.sendAttendanceCallback.dinnerAttendance);
 // /adminWelfare Callbacks
 //See Wish Callbacks
 bot.callbackQuery('seeWelfareWishes', _index_1.adminWelfareCallback.seeWish_1);

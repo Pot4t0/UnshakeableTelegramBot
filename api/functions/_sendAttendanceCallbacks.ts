@@ -341,7 +341,6 @@ export const dinnerAttendance = async (
   const callback = await ctx.update.callback_query.data.substring(
     'dinnerAttendance-'.length
   );
-  await ctx.reply('2');
   if (callback == 'Y') {
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.callback_query.from.username,
@@ -351,7 +350,6 @@ export const dinnerAttendance = async (
       await unshakeableAttendanceSpreadsheet.sheetsByTitle[
         ctx.session.attendance || ''
       ];
-    await ctx.reply('1');
     await sheet.loadCells();
     const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
     const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
