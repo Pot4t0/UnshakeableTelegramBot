@@ -336,13 +336,13 @@ export const withLG_noLG_2 = async (ctx: Filter<BotContext, 'message'>) => {
 export const dinnerAttendance = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
+  await ctx.reply('1');
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   const callback = await ctx.update.callback_query.data.substring(
     'dinnerAttendance-'.length
   );
+  await ctx.reply('2');
   if (callback == 'Y') {
-    await ctx.reply('Y');
-
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.callback_query.from.username,
     });
@@ -361,8 +361,6 @@ export const dinnerAttendance = async (
     const dinnerReasonCell = await sheet.getCellByA1(
       `J${user[0].attendanceRow}`
     );
-    await ctx.reply('2');
-
     weCell.value = ctx.session.weAttendance;
     reasonCell.value = ctx.session.weReason;
     lgCell.value = ctx.session.eventName;

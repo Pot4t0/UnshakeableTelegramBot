@@ -318,10 +318,11 @@ const withLG_noLG_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.withLG_noLG_2 = withLG_noLG_2;
 const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.reply('1');
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const callback = yield ctx.update.callback_query.data.substring('dinnerAttendance-'.length);
+    yield ctx.reply('2');
     if (callback == 'Y') {
-        yield ctx.reply('Y');
         const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
             teleUser: ctx.update.callback_query.from.username,
         });
@@ -335,7 +336,6 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         const lgReasonCell = yield sheet.getCellByA1(`D${user[0].attendanceRow}`);
         const dinnerCell = yield sheet.getCellByA1(`I${user[0].attendanceRow}`);
         const dinnerReasonCell = yield sheet.getCellByA1(`J${user[0].attendanceRow}`);
-        yield ctx.reply('2');
         weCell.value = ctx.session.weAttendance;
         reasonCell.value = ctx.session.weReason;
         lgCell.value = ctx.session.eventName;
