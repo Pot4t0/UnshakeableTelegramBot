@@ -9,6 +9,7 @@ import {
   sendsfFunctions,
 } from './_index';
 import { BotContext } from '../app/_index';
+import { adminsf } from './_commands';
 
 export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
   switch (ctx.session.botOnType) {
@@ -152,6 +153,10 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
     }
     case 29: {
       await sendAttendanceCallback.dinnerAttendanceReason(ctx);
+      break;
+    }
+    case 30: {
+      await adminSFCallback.manualSFNo(ctx);
       break;
     }
   }

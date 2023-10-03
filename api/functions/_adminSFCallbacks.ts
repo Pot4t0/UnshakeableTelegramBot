@@ -162,3 +162,111 @@ export const sendSpecificReminder_3 = async (
   }
   ctx.session = await initial();
 };
+
+export const manualSF = async (ctx: CallbackQueryContext<BotContext>) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const name = await Database.getRepository(Names).find();
+  const inlineKeyboard = new InlineKeyboard(
+    name.map((n) => [
+      {
+        text: n.nameText,
+        callback_data: `manualSFName-${n.teleUser}`,
+      },
+    ])
+  );
+  await ctx.reply(
+    'Welcome to Unshakeable Telegram Bot\nPlease select your name:',
+    {
+      reply_markup: inlineKeyboard,
+    }
+  );
+};
+
+export const sendsf = async (ctx: CallbackQueryContext<BotContext>) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  ctx.session.name = await ctx.update.callback_query.data.substring(
+    'manualSFName-'.length
+  );
+  const inlineKeyboard = new InlineKeyboard([
+    [
+      {
+        text: 'Yes',
+        callback_data: 'manualSendSF-yes',
+      },
+    ],
+    [
+      {
+        text: 'No',
+        callback_data: 'manualSendSF-no',
+      },
+    ],
+  ]);
+  await ctx.reply('Attendance', {
+    reply_markup: inlineKeyboard,
+  });
+};
+
+export const manualSFYesNo = async (ctx: CallbackQueryContext<BotContext>) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const callback = await ctx.update.callback_query.data.substring(
+    'manualSendSF-'.length
+  );
+  if (callback == 'yes') {
+    const sfmsg = '';
+    await gsheet.unshakeableSFSpreadsheet.loadInfo();
+    const sheet =
+      gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    const teleUserName = (await ctx.session.name) || '';
+    const user = await Database.getMongoRepository(Names).find({
+      teleUser: teleUserName,
+    });
+    await sheet.addRow({
+      timeStamp: Date(),
+      name: user[0].nameText,
+      sermonFeedback: sfmsg,
+      attendance: 'Yes',
+      reason: '',
+    });
+    await ctx.reply('Sent!');
+    ctx.session = await initial();
+    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  } else if (callback == 'no') {
+    await ctx.reply(
+      `
+    Reason
+    `,
+      {
+        reply_markup: { force_reply: true },
+      }
+    );
+    ctx.session.botOnType = 30;
+  } else {
+    await ctx.reply('ERROR! Pls try again.');
+    ctx.session = await initial();
+  }
+};
+
+//ctx.session.botOnType = 30;
+export const manualSFNo = async (ctx: Filter<BotContext, 'message'>) => {
+  const reason = (await ctx.message.text) || '';
+  await gsheet.unshakeableSFSpreadsheet.loadInfo();
+  const sheet =
+    gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+  const teleUserName = (await ctx.session.name) || '';
+  const user = await Database.getMongoRepository(Names).find({
+    teleUser: teleUserName,
+  });
+  await sheet.addRow({
+    timeStamp: Date(),
+    name: user[0].nameText,
+    sermonFeedback: '',
+    attendance: 'No',
+    reason: reason,
+  });
+
+  await ctx.reply('Sent!');
+
+  ctx.session = await initial();
+
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+};

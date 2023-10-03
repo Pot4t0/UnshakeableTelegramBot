@@ -150,6 +150,10 @@ const botOnContext = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             yield _index_1.sendAttendanceCallback.dinnerAttendanceReason(ctx);
             break;
         }
+        case 30: {
+            yield _index_1.adminSFCallback.manualSFNo(ctx);
+            break;
+        }
     }
 });
 exports.botOnContext = botOnContext;

@@ -9,12 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = void 0;
+exports.manualSFNo = exports.manualSFYesNo = exports.sendsf = exports.manualSF = exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = void 0;
 const grammy_1 = require("grammy");
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
 const _db_functions_1 = require("./_db_functions");
 const _SessionData_1 = require("../models/_SessionData");
+const _index_1 = require("../gsheets/_index");
 // Reminder Management
 const reminderManagement = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -131,3 +132,96 @@ const sendSpecificReminder_3 = (ctx) => __awaiter(void 0, void 0, void 0, functi
     ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.sendSpecificReminder_3 = sendSpecificReminder_3;
+const manualSF = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
+    const inlineKeyboard = new grammy_1.InlineKeyboard(name.map((n) => [
+        {
+            text: n.nameText,
+            callback_data: `manualSFName-${n.teleUser}`,
+        },
+    ]));
+    yield ctx.reply('Welcome to Unshakeable Telegram Bot\nPlease select your name:', {
+        reply_markup: inlineKeyboard,
+    });
+});
+exports.manualSF = manualSF;
+const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    ctx.session.name = yield ctx.update.callback_query.data.substring('manualSFName-'.length);
+    const inlineKeyboard = new grammy_1.InlineKeyboard([
+        [
+            {
+                text: 'Yes',
+                callback_data: 'manualSendSF-yes',
+            },
+        ],
+        [
+            {
+                text: 'No',
+                callback_data: 'manualSendSF-no',
+            },
+        ],
+    ]);
+    yield ctx.reply('Attendance', {
+        reply_markup: inlineKeyboard,
+    });
+});
+exports.sendsf = sendsf;
+const manualSFYesNo = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    const callback = yield ctx.update.callback_query.data.substring('manualSendSF-'.length);
+    if (callback == 'yes') {
+        const sfmsg = '';
+        yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
+        const sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+        const teleUserName = (yield ctx.session.name) || '';
+        const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+            teleUser: teleUserName,
+        });
+        yield sheet.addRow({
+            timeStamp: Date(),
+            name: user[0].nameText,
+            sermonFeedback: sfmsg,
+            attendance: 'Yes',
+            reason: '',
+        });
+        yield ctx.reply('Sent!');
+        ctx.session = yield (0, _SessionData_1.initial)();
+        yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    }
+    else if (callback == 'no') {
+        yield ctx.reply(`
+    Reason
+    `, {
+            reply_markup: { force_reply: true },
+        });
+        ctx.session.botOnType = 30;
+    }
+    else {
+        yield ctx.reply('ERROR! Pls try again.');
+        ctx.session = yield (0, _SessionData_1.initial)();
+    }
+});
+exports.manualSFYesNo = manualSFYesNo;
+//ctx.session.botOnType = 30;
+const manualSFNo = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    const reason = (yield ctx.message.text) || '';
+    yield _index_1.gsheet.unshakeableSFSpreadsheet.loadInfo();
+    const sheet = _index_1.gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    const teleUserName = (yield ctx.session.name) || '';
+    const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+        teleUser: teleUserName,
+    });
+    yield sheet.addRow({
+        timeStamp: Date(),
+        name: user[0].nameText,
+        sermonFeedback: '',
+        attendance: 'No',
+        reason: reason,
+    });
+    yield ctx.reply('Sent!');
+    ctx.session = yield (0, _SessionData_1.initial)();
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+});
+exports.manualSFNo = manualSFNo;

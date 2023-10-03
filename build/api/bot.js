@@ -142,6 +142,9 @@ bot.callbackQuery('manageSFReminder', _index_1.adminSFCallback.reminderManagemen
 bot.callbackQuery('sendSFNotInReminder', _index_1.adminSFCallback.sendNotInReminder_1);
 bot.callbackQuery('sendSFSpecificReminder', _index_1.adminSFCallback.sendSpecificReminder_1);
 bot.callbackQuery(/^reminderSFSpecificNames-/g, _index_1.adminSFCallback.sendSpecificReminder_2);
+bot.callbackQuery('manualSF', _index_1.adminSFCallback.manualSF);
+bot.callbackQuery(/^manualSFName-/g, _index_1.adminSFCallback.sendsf);
+bot.callbackQuery(/^manualSendSF-/g, _index_1.adminSFCallback.manualSFYesNo);
 // /adminattendance Callbacks
 bot.callbackQuery('addAttendanceSheet', _index_1.adminAttendanceCallback.addAttendanceSheet);
 bot.callbackQuery('yesLGAddAttendance', _index_1.adminAttendanceCallback.addAttendanceSheet_Yes_1);

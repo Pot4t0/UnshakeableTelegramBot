@@ -213,6 +213,10 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                     text: 'Send Reminder',
                     callback_data: 'manageSFReminder',
                 },
+                {
+                    text: 'Manual Send SF',
+                    callback_data: 'manualSF',
+                },
             ],
         ]);
         yield ctx.reply(`

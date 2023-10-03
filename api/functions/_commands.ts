@@ -232,6 +232,10 @@ export const adminsf = async (ctx: CommandContext<BotContext>) => {
           text: 'Send Reminder',
           callback_data: 'manageSFReminder',
         },
+        {
+          text: 'Manual Send SF',
+          callback_data: 'manualSF',
+        },
       ],
     ]);
 

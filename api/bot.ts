@@ -264,6 +264,9 @@ bot.callbackQuery(
   /^reminderSFSpecificNames-/g,
   adminSFCallback.sendSpecificReminder_2
 );
+bot.callbackQuery('manualSF', adminSFCallback.manualSF);
+bot.callbackQuery(/^manualSFName-/g, adminSFCallback.sendsf);
+bot.callbackQuery(/^manualSendSF-/g, adminSFCallback.manualSFYesNo);
 
 // /adminattendance Callbacks
 bot.callbackQuery(

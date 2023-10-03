@@ -22,13 +22,13 @@ const addAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* 
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
-                text: 'Yes',
+                text: 'Got LG',
                 callback_data: 'yesLGAddAttendance',
             },
         ],
         [
             {
-                text: 'No',
+                text: 'No LG',
                 callback_data: 'noLGAddAttendance',
             },
         ],

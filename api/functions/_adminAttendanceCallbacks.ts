@@ -15,13 +15,13 @@ export const addAttendanceSheet = async (
   const inlineKeyboard = new InlineKeyboard([
     [
       {
-        text: 'Yes',
+        text: 'Got LG',
         callback_data: 'yesLGAddAttendance',
       },
     ],
     [
       {
-        text: 'No',
+        text: 'No LG',
         callback_data: 'noLGAddAttendance',
       },
     ],
