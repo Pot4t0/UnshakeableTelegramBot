@@ -289,7 +289,7 @@ const withLG_noLG_1 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 exports.withLG_noLG_1 = withLG_noLG_1;
 //botontype = 20;
 const withLG_noLG_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.session.text = (yield ctx.message.text) || '';
+    ctx.session.text = yield ctx.message.text;
     ctx.session.eventName = 'N';
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const callback = ctx.session.attendance || '';
@@ -359,10 +359,10 @@ const dinnerAttendanceReason = (ctx) => __awaiter(void 0, void 0, void 0, functi
     ctx.session.botOnType = yield undefined;
     const reason = (yield ctx.message.text) || '';
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: ctx.update.message.from.username,
+        teleUser: yield ctx.update.message.from.username,
     });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.attendance || ''];
+    const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[(yield ctx.session.attendance) || ''];
     yield sheet.loadCells();
     const weCell = yield sheet.getCellByA1(`F${user[0].attendanceRow}`);
     const lgCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
