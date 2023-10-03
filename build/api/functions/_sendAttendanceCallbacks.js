@@ -348,13 +348,14 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         yield ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
-        ctx.session.botOnType = 28;
+        ctx.session.botOnType = 29;
     }
     else {
         yield ctx.reply('Error! Pls try again');
     }
 });
 exports.dinnerAttendance = dinnerAttendance;
+//botontype = 29
 const dinnerAttendanceReason = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.botOnType = yield undefined;
     const reason = (yield ctx.message.text) || '';

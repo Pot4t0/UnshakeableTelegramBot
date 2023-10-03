@@ -372,11 +372,12 @@ export const dinnerAttendance = async (
     await ctx.reply('AW 😭.\nWhats the reason?', {
       reply_markup: { force_reply: true },
     });
-    ctx.session.botOnType = 28;
+    ctx.session.botOnType = 29;
   } else {
     await ctx.reply('Error! Pls try again');
   }
 };
+//botontype = 29
 export const dinnerAttendanceReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
