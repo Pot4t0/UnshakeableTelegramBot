@@ -150,5 +150,8 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
       await sendAttendanceCallback.noSpecialAttendance_2(ctx);
       break;
     }
+    case 29: {
+      break;
+    }
   }
 };

@@ -10,6 +10,8 @@ export interface SessionData {
   reminderUser?: string;
   botOnType?: number;
   text?: string;
+  weAttendance?: string;
+  weReason?: string;
 }
 export function initial(): SessionData {
   return {
@@ -22,5 +24,7 @@ export function initial(): SessionData {
     reminderUser: undefined,
     botOnType: undefined,
     text: undefined,
+    weAttendance: undefined,
+    weReason: undefined,
   };
 }

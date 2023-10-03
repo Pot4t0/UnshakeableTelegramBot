@@ -168,27 +168,45 @@ export const noSpecialAttendance_2 = async (
 };
 export const noLG_yes = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-  const user = await Database.getMongoRepository(Names).find({
-    teleUser: ctx.update.callback_query.from.username,
+  ctx.session.weAttendance = 'Y';
+  const inlineKeyboard = [
+    [
+      {
+        text: 'Yes',
+        callback_data: 'dinnerAttendance-Y',
+      },
+    ],
+    [
+      {
+        text: 'No',
+        callback_data: 'dinnerAttendance-N',
+      },
+    ],
+  ];
+  await ctx.reply('Nice!\nAre you coming for dinner?', {
+    reply_markup: { inline_keyboard: inlineKeyboard },
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-  const sheet =
-    await unshakeableAttendanceSpreadsheet.sheetsByTitle[
-      ctx.session.attendance || ''
-    ];
-  await sheet.loadCells();
-  const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
-  const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
-  const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
-  const lgReasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
-  weCell.value = 'Y';
-  reasonCell.value = '';
-  lgCell.value = ctx.session.eventName;
-  lgReasonCell.value = ctx.session.text;
-  await sheet.saveUpdatedCells();
-  await ctx.reply('Attendance logged! Thanks for submitting!');
-  ctx.session = await initial();
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  //   const user = await Database.getMongoRepository(Names).find({
+  //     teleUser: ctx.update.callback_query.from.username,
+  //   });
+  //   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  //   const sheet =
+  //     await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+  //       ctx.session.attendance || ''
+  //     ];
+  //   await sheet.loadCells();
+  //   const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
+  //   const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
+  //   const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
+  //   const lgReasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+  //   weCell.value = 'Y';
+  //   reasonCell.value = '';
+  //   lgCell.value = ctx.session.eventName;
+  //   lgReasonCell.value = ctx.session.text;
+  //   await sheet.saveUpdatedCells();
+  //   await ctx.reply('Attendance logged! Thanks for submitting!');
+  //   ctx.session = await initial();
+  //   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 export const noLG_no_1 = async (ctx: CallbackQueryContext<BotContext>) => {
@@ -201,28 +219,46 @@ export const noLG_no_1 = async (ctx: CallbackQueryContext<BotContext>) => {
 //botontype = 19;
 export const noLG_no_2 = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = await undefined;
-  const reason = (await ctx.message.text) || '';
-  const user = await Database.getMongoRepository(Names).find({
-    teleUser: ctx.update.message.from.username,
+  ctx.session.weReason = (await ctx.message.text) || '';
+  ctx.session.weAttendance = await 'N';
+  const inlineKeyboard = [
+    [
+      {
+        text: 'Yes',
+        callback_data: 'dinnerAttendance-Y',
+      },
+    ],
+    [
+      {
+        text: 'No',
+        callback_data: 'dinnerAttendance-N',
+      },
+    ],
+  ];
+  await ctx.reply('Are you coming for dinner?', {
+    reply_markup: { inline_keyboard: inlineKeyboard },
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-  const sheet =
-    await unshakeableAttendanceSpreadsheet.sheetsByTitle[
-      ctx.session.attendance || ''
-    ];
-  await sheet.loadCells();
-  const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
-  const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
-  const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
-  const lgReasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
-  weCell.value = 'N';
-  reasonCell.value = reason;
-  lgCell.value = ctx.session.eventName;
-  lgReasonCell.value = ctx.session.text;
-  await sheet.saveUpdatedCells();
-  await ctx.reply('Attendance logged! Thanks for submitting!');
-  ctx.session = await initial();
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  // const user = await Database.getMongoRepository(Names).find({
+  //   teleUser: ctx.update.message.from.username,
+  // });
+  // await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  // const sheet =
+  //   await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+  //     ctx.session.attendance || ''
+  //   ];
+  // await sheet.loadCells();
+  // const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
+  // const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
+  // const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
+  // const lgReasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+  // weCell.value = 'N';
+  // reasonCell.value = reason;
+  // lgCell.value = ctx.session.eventName;
+  // lgReasonCell.value = ctx.session.text;
+  // await sheet.saveUpdatedCells();
+  // await ctx.reply('Attendance logged! Thanks for submitting!');
+  // ctx.session = await initial();
+  // await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 export const withLG_yesLG = async (ctx: CallbackQueryContext<BotContext>) => {
@@ -293,5 +329,81 @@ export const withLG_noLG_2 = async (ctx: Filter<BotContext, 'message'>) => {
   await ctx.reply(`Are you coming for Worship Experience on ${weDate.value}?`, {
     reply_markup: { inline_keyboard: inlineKeyboard },
   });
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+};
+
+export const dinnerAttendance = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const callback = await ctx.update.callback_query.data.substring(
+    'dinnerAttendance-'.length
+  );
+  if (callback == 'Y') {
+    const user = await Database.getMongoRepository(Names).find({
+      teleUser: ctx.update.callback_query.from.username,
+    });
+    await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet =
+      await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+        ctx.session.attendance || ''
+      ];
+    await sheet.loadCells();
+    const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
+    const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
+    const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
+    const lgReasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+    const dinnerCell = await sheet.getCellByA1(`I${user[0].attendanceRow}`);
+    const dinnerReasonCell = await sheet.getCellByA1(
+      `J${user[0].attendanceRow}`
+    );
+    weCell.value = ctx.session.weAttendance;
+    reasonCell.value = ctx.session.weReason;
+    lgCell.value = ctx.session.eventName;
+    lgReasonCell.value = ctx.session.text;
+    dinnerCell.value = 'Y';
+    dinnerReasonCell.value = '';
+    await sheet.saveUpdatedCells();
+    await ctx.reply('Attendance logged! Thanks for submitting!');
+    ctx.session = await initial();
+    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  } else if (callback == '') {
+    await ctx.reply('AW 😭.\nWhats the reason?', {
+      reply_markup: { force_reply: true },
+    });
+    ctx.session.botOnType = 28;
+  } else {
+    await ctx.reply('Error! Pls try again');
+  }
+};
+export const dinnerAttendanceReason = async (
+  ctx: Filter<BotContext, 'message'>
+) => {
+  ctx.session.botOnType = await undefined;
+  const reason = (await ctx.message.text) || '';
+  const user = await Database.getMongoRepository(Names).find({
+    teleUser: ctx.update.message.from.username,
+  });
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const sheet =
+    await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+      ctx.session.attendance || ''
+    ];
+  await sheet.loadCells();
+  const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
+  const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
+  const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
+  const lgReasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+  const dinnerCell = await sheet.getCellByA1(`I${user[0].attendanceRow}`);
+  const dinnerReasonCell = await sheet.getCellByA1(`J${user[0].attendanceRow}`);
+  weCell.value = ctx.session.weAttendance;
+  reasonCell.value = ctx.session.weReason;
+  lgCell.value = ctx.session.eventName;
+  lgReasonCell.value = ctx.session.text;
+  dinnerCell.value = 'N';
+  dinnerReasonCell.value = reason;
+  await sheet.saveUpdatedCells();
+  await ctx.reply('Attendance logged! Thanks for submitting!');
+  ctx.session = await initial();
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
