@@ -15,7 +15,7 @@ export const sendAttendanceReply = async (
     'svcLGAttendance-'.length
   );
   const sheet = await unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-  ctx.session.attendance = callback;
+  ctx.session.attendance = await callback;
   await sheet.loadCells();
   const lgCell = await sheet.getCellByA1('C3');
   const lgDateCell = await sheet.getCellByA1('C2');
@@ -368,7 +368,7 @@ export const dinnerAttendance = async (
     await ctx.reply('Attendance logged! Thanks for submitting!');
     ctx.session = await initial();
     await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-  } else if (callback == '') {
+  } else if (callback == 'N') {
     await ctx.reply('AW 😭.\nWhats the reason?', {
       reply_markup: { force_reply: true },
     });

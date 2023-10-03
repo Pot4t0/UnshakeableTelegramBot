@@ -20,7 +20,7 @@ const sendAttendanceReply = (ctx) => __awaiter(void 0, void 0, void 0, function*
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const callback = yield ctx.update.callback_query.data.substring('svcLGAttendance-'.length);
     const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-    ctx.session.attendance = callback;
+    ctx.session.attendance = yield callback;
     yield sheet.loadCells();
     const lgCell = yield sheet.getCellByA1('C3');
     const lgDateCell = yield sheet.getCellByA1('C2');
@@ -344,7 +344,7 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         ctx.session = yield (0, _SessionData_1.initial)();
         yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
-    else if (callback == '') {
+    else if (callback == 'N') {
         yield ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
