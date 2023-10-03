@@ -151,6 +151,7 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
       break;
     }
     case 29: {
+      await sendAttendanceCallback.dinnerAttendanceReason(ctx);
       break;
     }
   }

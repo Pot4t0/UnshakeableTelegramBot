@@ -78,6 +78,10 @@ bot.callbackQuery(
   'noSpecialAttendance',
   sendAttendanceCallback.noSpecialAttendance_1
 );
+bot.callbackQuery(
+  /^dinnerAttendance-/g,
+  sendAttendanceCallback.sendAttendanceReply
+);
 
 // /adminWelfare Callbacks
 //See Wish Callbacks
