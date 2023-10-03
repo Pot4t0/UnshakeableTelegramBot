@@ -12,6 +12,8 @@ function initial() {
         reminderUser: undefined,
         botOnType: undefined,
         text: undefined,
+        weAttendance: undefined,
+        weReason: undefined,
     };
 }
 exports.initial = initial;

@@ -168,7 +168,8 @@ export const noSpecialAttendance_2 = async (
 };
 export const noLG_yes = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-  ctx.session.weAttendance = 'Y';
+  ctx.session.weAttendance = await 'Y';
+  ctx.session.weReason = await '';
   const inlineKeyboard = [
     [
       {
