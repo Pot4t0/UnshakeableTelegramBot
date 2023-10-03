@@ -341,6 +341,8 @@ export const dinnerAttendance = async (
     'dinnerAttendance-'.length
   );
   if (callback == 'Y') {
+    await ctx.reply('Y');
+
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.callback_query.from.username,
     });
@@ -349,6 +351,7 @@ export const dinnerAttendance = async (
       await unshakeableAttendanceSpreadsheet.sheetsByTitle[
         ctx.session.attendance || ''
       ];
+    await ctx.reply('1');
     await sheet.loadCells();
     const weCell = await sheet.getCellByA1(`F${user[0].attendanceRow}`);
     const lgCell = await sheet.getCellByA1(`C${user[0].attendanceRow}`);
@@ -358,6 +361,8 @@ export const dinnerAttendance = async (
     const dinnerReasonCell = await sheet.getCellByA1(
       `J${user[0].attendanceRow}`
     );
+    await ctx.reply('2');
+
     weCell.value = ctx.session.weAttendance;
     reasonCell.value = ctx.session.weReason;
     lgCell.value = ctx.session.eventName;
