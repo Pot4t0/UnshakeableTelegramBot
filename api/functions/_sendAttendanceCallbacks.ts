@@ -381,7 +381,7 @@ export const dinnerAttendanceReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   ctx.session.botOnType = await undefined;
-  const reason = (await ctx.message.text) || '';
+  const reason = await ctx.message.text;
   const user = await Database.getMongoRepository(Names).find({
     teleUser: ctx.update.message.from.username,
   });
