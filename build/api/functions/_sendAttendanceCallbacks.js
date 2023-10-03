@@ -318,7 +318,6 @@ const withLG_noLG_2 = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.withLG_noLG_2 = withLG_noLG_2;
 const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.reply('1');
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     const callback = yield ctx.update.callback_query.data.substring('dinnerAttendance-'.length);
     if (callback == 'Y') {

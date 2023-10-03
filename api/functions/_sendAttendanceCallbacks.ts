@@ -304,7 +304,7 @@ export const withLG_noLG_1 = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 //botontype = 20;
 export const withLG_noLG_2 = async (ctx: Filter<BotContext, 'message'>) => {
-  ctx.session.text = (await ctx.message.text) || '';
+  ctx.session.text = await ctx.message.text;
   ctx.session.eventName = 'N';
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const callback = ctx.session.attendance || '';
@@ -336,7 +336,6 @@ export const withLG_noLG_2 = async (ctx: Filter<BotContext, 'message'>) => {
 export const dinnerAttendance = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.reply('1');
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   const callback = await ctx.update.callback_query.data.substring(
     'dinnerAttendance-'.length
