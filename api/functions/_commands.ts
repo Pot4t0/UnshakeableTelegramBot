@@ -45,7 +45,28 @@ export const help = async (ctx: CommandContext<BotContext>) => {
 	`);
 };
 export const settings = async (ctx: CommandContext<BotContext>) => {
-  await ctx.reply('Settings (in development)');
+  const access = await roleAccess(['SGL', 'LGL', 'it'], ctx);
+  if (access) {
+    const inlineKeyboard = new InlineKeyboard([
+      [
+        {
+          text: 'Bot Announcements',
+          callback_data: 'settingsAnnouncements',
+        },
+      ],
+      [
+        {
+          text: 'Make New User',
+          callback_data: 'settingsNewUser',
+        },
+      ],
+    ]);
+    await ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
+      reply_markup: inlineKeyboard,
+    });
+  } else {
+    await ctx.reply('No Access to Bot Settings');
+  }
 };
 
 export const sendsf = async (ctx: CommandContext<BotContext>) => {

@@ -13,6 +13,7 @@ import {
   sendAttendanceCallback,
   sendWishCallback,
   sendsfFunctions,
+  settingsCallbackx,
   startCallback,
 } from './functions/_index';
 
@@ -53,6 +54,12 @@ bot.callbackQuery('confirm_YES', startCallback.confirmReply_Yes);
 bot.callbackQuery('select_YES', startCallback.confirmReply_Yes);
 bot.callbackQuery('confirm_NO', startCallback.confirmReply_No);
 bot.callbackQuery('select_NO', startCallback.selectreply_No);
+
+// /settings Callbacks
+bot.callbackQuery(
+  'settingsAnnouncements',
+  settingsCallbackx.settingsAnnouncements_Input
+);
 
 // /sendsf Callbacks
 bot.callbackQuery('AttendanceSF-yes', sendsfFunctions.sendSfEvent_1);

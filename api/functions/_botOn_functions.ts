@@ -7,6 +7,7 @@ import {
   sendAttendanceCallback,
   sendWishCallback,
   sendsfFunctions,
+  settingsCallbackx,
 } from './_index';
 import { BotContext } from '../app/_index';
 import { adminsf } from './_commands';
@@ -157,6 +158,10 @@ export const botOnContext = async (ctx: Filter<BotContext, 'message'>) => {
     }
     case 30: {
       await adminSFCallback.manualSFNo(ctx);
+      break;
+    }
+    case 31: {
+      await settingsCallbackx.settingsAnnouncements_Output(ctx);
       break;
     }
   }

@@ -9,3 +9,4 @@ export * as sendsfFunctions from './_sendSFCallback';
 export * as adminSFCallback from './_adminSFCallbacks';
 export * as adminAttendanceCallback from './_adminAttendanceCallbacks';
 export * as sendAttendanceCallback from './_sendAttendanceCallbacks';
+export * as settingsCallbackx from './_settingsCallbacks';

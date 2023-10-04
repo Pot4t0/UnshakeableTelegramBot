@@ -154,6 +154,10 @@ const botOnContext = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             yield _index_1.adminSFCallback.manualSFNo(ctx);
             break;
         }
+        case 31: {
+            yield _index_1.settingsCallbackx.settingsAnnouncements_Output(ctx);
+            break;
+        }
     }
 });
 exports.botOnContext = botOnContext;

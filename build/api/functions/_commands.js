@@ -49,7 +49,29 @@ const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.help = help;
 const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.reply('Settings (in development)');
+    const access = yield (0, _db_functions_1.roleAccess)(['SGL', 'LGL', 'it'], ctx);
+    if (access) {
+        const inlineKeyboard = new grammy_1.InlineKeyboard([
+            [
+                {
+                    text: 'Bot Announcements',
+                    callback_data: 'settingsAnnouncements',
+                },
+            ],
+            [
+                {
+                    text: 'Make New User',
+                    callback_data: 'settingsNewUser',
+                },
+            ],
+        ]);
+        yield ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
+            reply_markup: inlineKeyboard,
+        });
+    }
+    else {
+        yield ctx.reply('No Access to Bot Settings');
+    }
 });
 exports.settings = settings;
 const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

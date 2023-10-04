@@ -39,6 +39,8 @@ bot.callbackQuery('confirm_YES', _index_1.startCallback.confirmReply_Yes);
 bot.callbackQuery('select_YES', _index_1.startCallback.confirmReply_Yes);
 bot.callbackQuery('confirm_NO', _index_1.startCallback.confirmReply_No);
 bot.callbackQuery('select_NO', _index_1.startCallback.selectreply_No);
+// /settings Callbacks
+bot.callbackQuery('settingsAnnouncements', _index_1.settingsCallbackx.settingsAnnouncements_Input);
 // /sendsf Callbacks
 bot.callbackQuery('AttendanceSF-yes', _index_1.sendsfFunctions.sendSfEvent_1);
 bot.callbackQuery('AttendanceSF-no', _index_1.sendsfFunctions.sendSfEvent_1_no);

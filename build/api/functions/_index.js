@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendAttendanceCallback = exports.adminAttendanceCallback = exports.adminSFCallback = exports.sendsfFunctions = exports.botOnFunctions = exports.dbFunctions = exports.startCallback = exports.Command = exports.adminbdayCallback = exports.adminWelfareCallback = exports.sendWishCallback = void 0;
+exports.settingsCallbackx = exports.sendAttendanceCallback = exports.adminAttendanceCallback = exports.adminSFCallback = exports.sendsfFunctions = exports.botOnFunctions = exports.dbFunctions = exports.startCallback = exports.Command = exports.adminbdayCallback = exports.adminWelfareCallback = exports.sendWishCallback = void 0;
 exports.sendWishCallback = __importStar(require("./_sendWishCallback"));
 exports.adminWelfareCallback = __importStar(require("./_adminWelfareCallbacks"));
 exports.adminbdayCallback = __importStar(require("./_adminBdayCallbacks"));
@@ -35,3 +35,4 @@ exports.sendsfFunctions = __importStar(require("./_sendSFCallback"));
 exports.adminSFCallback = __importStar(require("./_adminSFCallbacks"));
 exports.adminAttendanceCallback = __importStar(require("./_adminAttendanceCallbacks"));
 exports.sendAttendanceCallback = __importStar(require("./_sendAttendanceCallbacks"));
+exports.settingsCallbackx = __importStar(require("./_settingsCallbacks"));

@@ -4,8 +4,6 @@ import { Database } from '../database_mongoDB/_db-init';
 import { Events, Names, Wishes } from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
-import { IsNull } from 'typeorm';
-import { eventNames } from 'process';
 
 // See Wish Callbacks
 export const seeWish_1 = async (ctx: CallbackQueryContext<BotContext>) => {
