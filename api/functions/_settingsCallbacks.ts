@@ -32,12 +32,11 @@ export const settingsAnnouncements_Output = async (
 
   await Promise.all(
     sendUsers.map(async (n) => {
-      //   await sendMessageUser(n, announcement, ctx);
-      await ctx.reply(n + '\n' + announcement);
+      await sendMessageUser(n, announcement, ctx);
     })
   );
 
-  await ctx.reply(`Reminder sent!`);
+  await ctx.reply(`Announcement sent!`);
 
   ctx.session = await initial();
 };

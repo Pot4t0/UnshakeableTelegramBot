@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.settingsAnnouncements_Output = exports.settingsAnnouncements_Input = void 0;
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
+const _db_functions_1 = require("./_db_functions");
 const _SessionData_1 = require("../models/_SessionData");
 const settingsAnnouncements_Input = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -31,10 +32,9 @@ const settingsAnnouncements_Output = (ctx) => __awaiter(void 0, void 0, void 0, 
         .map((n) => n.teleUser)
         .filter((n) => n != '');
     yield Promise.all(sendUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
-        //   await sendMessageUser(n, announcement, ctx);
-        yield ctx.reply(n + '\n' + announcement);
+        yield (0, _db_functions_1.sendMessageUser)(n, announcement, ctx);
     })));
-    yield ctx.reply(`Reminder sent!`);
+    yield ctx.reply(`Announcement sent!`);
     ctx.session = yield (0, _SessionData_1.initial)();
 });
 exports.settingsAnnouncements_Output = settingsAnnouncements_Output;
