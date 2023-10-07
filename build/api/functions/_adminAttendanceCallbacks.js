@@ -422,7 +422,7 @@ const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, functi
         let lgNotCmgMsg = '\n\nNot Coming 😢\n';
         let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
         let weNotCmgMsg = '\n\nNot Coming 😢\n';
-        let dinnerCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
+        let dinnerCmgMsg = `\n\nDinner Aft Service (${weDateCell.value}):\n\nComing 🥳\n`;
         let dinnerNotCmgMsg = '\n\nNot Coming 😢\n';
         // for (let i = 4; i <= totalNames.length + 3; i++) {
         yield Promise.all(totalNames.map((n) => __awaiter(void 0, void 0, void 0, function* () {
