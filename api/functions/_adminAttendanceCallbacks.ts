@@ -512,7 +512,7 @@ export const sendAttendanceToLGChat = async (
     let lgNotCmgMsg = '\n\nNot Coming 😢\n';
     let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
     let weNotCmgMsg = '\n\nNot Coming 😢\n';
-    let dinnerCmgMsg = `\n\nDinner Aft Service (${weDateCell.value}):\n\nComing 🥳\n`;
+    let dinnerCmgMsg = `\n\nDinner (${weDateCell.value}):\n\nComing 🥳\n`;
     let dinnerNotCmgMsg = '\n\nNot Coming 😢\n';
 
     // for (let i = 4; i <= totalNames.length + 3; i++) {
@@ -555,7 +555,7 @@ export const sendAttendanceToLGChat = async (
       dinnerCmgMsg +
       dinnerNotCmgMsg;
   }
-  // await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
-  await ctx.api.sendMessage(611527651, msg);
+  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  // await ctx.api.sendMessage(611527651, msg);
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
