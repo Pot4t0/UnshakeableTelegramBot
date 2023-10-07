@@ -60,6 +60,12 @@ export const settings = async (ctx: CommandContext<BotContext>) => {
           callback_data: 'settingsNewUser',
         },
       ],
+      [
+        {
+          text: 'Delete Exitisng User',
+          callback_data: 'settingsDeleteUser',
+        },
+      ],
     ]);
     await ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
       reply_markup: inlineKeyboard,

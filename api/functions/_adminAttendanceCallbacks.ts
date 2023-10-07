@@ -492,45 +492,70 @@ export const sendAttendanceToLGChat = async (
   if (checkSpecialCell.value == 'Special Event') {
     let cmgMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
     let notCmgMsg = '\n\nNot Coming 😢\n';
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-      const attendName = await sheet.getCellByA1(`B${i}`);
-      const lgCell = await sheet.getCellByA1(`C${i}`);
-      const lgReasonCell = await sheet.getCellByA1(`D${i}`);
-      if (lgCell.value == 'Y') {
-        cmgMsg += `\n${attendName.value}`;
-      } else {
-        notCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
-      }
-    }
+    // for (let i = 4; i <= totalNames.length + 3; i++) {
+    await Promise.all(
+      totalNames.map(async (n) => {
+        const i = await n.attendanceRow;
+        const attendName = await sheet.getCellByA1(`B${i}`);
+        const lgCell = await sheet.getCellByA1(`C${i}`);
+        const lgReasonCell = await sheet.getCellByA1(`D${i}`);
+        if (lgCell.value == 'Y') {
+          cmgMsg += `\n${attendName.value}`;
+        } else {
+          notCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+        }
+      })
+    );
     msg += cmgMsg + notCmgMsg;
   } else {
     let lgComingMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
     let lgNotCmgMsg = '\n\nNot Coming 😢\n';
     let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
     let weNotCmgMsg = '\n\nNot Coming 😢\n';
-    for (let i = 4; i <= totalNames.length + 3; i++) {
-      const attendName = await sheet.getCellByA1(`B${i}`);
-      const weCell = await sheet.getCellByA1(`F${i}`);
-      const weReasonCell = await sheet.getCellByA1(`G${i}`);
-      const lgCell = await sheet.getCellByA1(`C${i}`);
-      const lgReasonCell = await sheet.getCellByA1(`D${i}`);
-      if (lgCheckCell.value != 'No LG') {
-        if (lgCell.value == 'Y') {
-          lgComingMsg += `\n${attendName.value}`;
-        } else {
-          lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+    let dinnerCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
+    let dinnerNotCmgMsg = '\n\nNot Coming 😢\n';
+
+    // for (let i = 4; i <= totalNames.length + 3; i++) {
+    await Promise.all(
+      totalNames.map(async (n) => {
+        const i = await n.attendanceRow;
+        const attendName = await sheet.getCellByA1(`B${i}`);
+        const weCell = await sheet.getCellByA1(`F${i}`);
+        const weReasonCell = await sheet.getCellByA1(`G${i}`);
+        const lgCell = await sheet.getCellByA1(`C${i}`);
+        const lgReasonCell = await sheet.getCellByA1(`D${i}`);
+        const dinnerCell = await sheet.getCellByA1(`I${i}`);
+        const dinnerReasonCell = await sheet.getCellByA1(`J${i}`);
+        if (lgCheckCell.value != 'No LG') {
+          if (lgCell.value == 'Y') {
+            lgComingMsg += `\n${attendName.value}`;
+          } else {
+            lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
+          }
         }
-      }
-      if (weCheckCell.value != 'No WE') {
-        if (weCell.value == 'Y') {
-          weCmgMsg += `\n${attendName.value}`;
-        } else {
-          weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+        if (weCheckCell.value != 'No WE') {
+          if (weCell.value == 'Y') {
+            weCmgMsg += `\n${attendName.value}`;
+          } else {
+            weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
+          }
+          if (dinnerCell.value == 'Y') {
+            dinnerCmgMsg += `\n${attendName.value}`;
+          } else {
+            dinnerNotCmgMsg += `\n${attendName.value} - ${dinnerReasonCell.value}`;
+          }
         }
-      }
-    }
-    msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
+      })
+    );
+    msg +=
+      lgComingMsg +
+      lgNotCmgMsg +
+      weCmgMsg +
+      weNotCmgMsg +
+      dinnerCmgMsg +
+      dinnerNotCmgMsg;
   }
-  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  // await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  await ctx.api.sendMessage(611527651, msg);
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };

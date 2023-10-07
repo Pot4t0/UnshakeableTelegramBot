@@ -64,6 +64,12 @@ const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                     callback_data: 'settingsNewUser',
                 },
             ],
+            [
+                {
+                    text: 'Delete Exitisng User',
+                    callback_data: 'settingsDeleteUser',
+                },
+            ],
         ]);
         yield ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
             reply_markup: inlineKeyboard,

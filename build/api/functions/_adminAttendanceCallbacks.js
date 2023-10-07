@@ -402,7 +402,9 @@ const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, functi
     if (checkSpecialCell.value == 'Special Event') {
         let cmgMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
         let notCmgMsg = '\n\nNot Coming 😢\n';
-        for (let i = 4; i <= totalNames.length + 3; i++) {
+        // for (let i = 4; i <= totalNames.length + 3; i++) {
+        yield Promise.all(totalNames.map((n) => __awaiter(void 0, void 0, void 0, function* () {
+            const i = yield n.attendanceRow;
             const attendName = yield sheet.getCellByA1(`B${i}`);
             const lgCell = yield sheet.getCellByA1(`C${i}`);
             const lgReasonCell = yield sheet.getCellByA1(`D${i}`);
@@ -412,7 +414,7 @@ const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, functi
             else {
                 notCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
             }
-        }
+        })));
         msg += cmgMsg + notCmgMsg;
     }
     else {
@@ -420,12 +422,18 @@ const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, functi
         let lgNotCmgMsg = '\n\nNot Coming 😢\n';
         let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
         let weNotCmgMsg = '\n\nNot Coming 😢\n';
-        for (let i = 4; i <= totalNames.length + 3; i++) {
+        let dinnerCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
+        let dinnerNotCmgMsg = '\n\nNot Coming 😢\n';
+        // for (let i = 4; i <= totalNames.length + 3; i++) {
+        yield Promise.all(totalNames.map((n) => __awaiter(void 0, void 0, void 0, function* () {
+            const i = yield n.attendanceRow;
             const attendName = yield sheet.getCellByA1(`B${i}`);
             const weCell = yield sheet.getCellByA1(`F${i}`);
             const weReasonCell = yield sheet.getCellByA1(`G${i}`);
             const lgCell = yield sheet.getCellByA1(`C${i}`);
             const lgReasonCell = yield sheet.getCellByA1(`D${i}`);
+            const dinnerCell = yield sheet.getCellByA1(`I${i}`);
+            const dinnerReasonCell = yield sheet.getCellByA1(`J${i}`);
             if (lgCheckCell.value != 'No LG') {
                 if (lgCell.value == 'Y') {
                     lgComingMsg += `\n${attendName.value}`;
@@ -441,11 +449,24 @@ const sendAttendanceToLGChat = (ctx) => __awaiter(void 0, void 0, void 0, functi
                 else {
                     weNotCmgMsg += `\n${attendName.value} - ${weReasonCell.value}`;
                 }
+                if (dinnerCell.value == 'Y') {
+                    dinnerCmgMsg += `\n${attendName.value}`;
+                }
+                else {
+                    dinnerNotCmgMsg += `\n${attendName.value} - ${dinnerReasonCell.value}`;
+                }
             }
-        }
-        msg += lgComingMsg + lgNotCmgMsg + weCmgMsg + weNotCmgMsg;
+        })));
+        msg +=
+            lgComingMsg +
+                lgNotCmgMsg +
+                weCmgMsg +
+                weNotCmgMsg +
+                dinnerCmgMsg +
+                dinnerNotCmgMsg;
     }
-    yield ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+    // await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+    yield ctx.api.sendMessage(611527651, msg);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.sendAttendanceToLGChat = sendAttendanceToLGChat;
