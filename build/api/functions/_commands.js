@@ -20,6 +20,10 @@ const _index_1 = require("../gsheets/_index");
  *  Purpose is to tag the username with the name list inside the "names" collection within UnshakeableDB
  */
 const start = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
+        return false;
+    }
     const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(name.map((n) => [
         {
@@ -33,8 +37,8 @@ const start = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.start = start;
 const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
+    var _b;
+    if (((_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.chat.type) !== 'private') {
         return false;
     }
     yield ctx.reply(`
@@ -53,6 +57,10 @@ const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.help = help;
 const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    if (((_c = ctx.update.message) === null || _c === void 0 ? void 0 : _c.chat.type) !== 'private') {
+        return false;
+    }
     const access = yield (0, _db_functions_1.roleAccess)(['SGL', 'LGL', 'it'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -85,6 +93,10 @@ const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.settings = settings;
 const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _d;
+    if (((_d = ctx.update.message) === null || _d === void 0 ? void 0 : _d.chat.type) !== 'private') {
+        return false;
+    }
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -109,9 +121,12 @@ const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.sendsf = sendsf;
 const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _e, _f;
+    if (((_e = ctx.update.message) === null || _e === void 0 ? void 0 : _e.chat.type) !== 'private') {
+        return false;
+    }
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: (_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.from.username,
+        teleUser: (_f = ctx.update.message) === null || _f === void 0 ? void 0 : _f.from.username,
     });
     const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         where: {
@@ -130,6 +145,10 @@ const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.sendWish = sendWish;
 const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _g;
+    if (((_g = ctx.update.message) === null || _g === void 0 ? void 0 : _g.chat.type) !== 'private') {
+        return false;
+    }
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
     const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
@@ -149,6 +168,10 @@ const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.sendattendance = sendattendance;
 const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _h;
+    if (((_h = ctx.update.message) === null || _h === void 0 ? void 0 : _h.chat.type) !== 'private') {
+        return false;
+    }
     const access = yield (0, _db_functions_1.roleAccess)(['welfare', 'welfareIC', 'LGL', 'it'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -193,6 +216,10 @@ const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.adminWelfare = adminWelfare;
 const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _j;
+    if (((_j = ctx.update.message) === null || _j === void 0 ? void 0 : _j.chat.type) !== 'private') {
+        return false;
+    }
     const access = yield (0, _db_functions_1.roleAccess)(['bday', 'bdayIC', 'LGL', 'it'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -237,6 +264,10 @@ const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.adminbday = adminbday;
 const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _k;
+    if (((_k = ctx.update.message) === null || _k === void 0 ? void 0 : _k.chat.type) !== 'private') {
+        return false;
+    }
     const access = yield (0, _db_functions_1.roleAccess)(['admin', 'adminIC', 'LGL', 'it'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -269,6 +300,10 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.adminsf = adminsf;
 const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _l;
+    if (((_l = ctx.update.message) === null || _l === void 0 ? void 0 : _l.chat.type) !== 'private') {
+        return false;
+    }
     const access = yield (0, _db_functions_1.roleAccess)(['SGL', 'LGL', 'it'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([

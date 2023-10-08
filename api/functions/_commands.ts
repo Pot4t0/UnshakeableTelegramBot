@@ -12,6 +12,9 @@ import { title } from 'process';
  *  Purpose is to tag the username with the name list inside the "names" collection within UnshakeableDB
  */
 export const start = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const name = await Database.getRepository(Names).find();
   const inlineKeyboard = new InlineKeyboard(
     name.map((n) => [
@@ -48,6 +51,9 @@ export const help = async (ctx: CommandContext<BotContext>) => {
 	`);
 };
 export const settings = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const access = await roleAccess(['SGL', 'LGL', 'it'], ctx);
   if (access) {
     const inlineKeyboard = new InlineKeyboard([
@@ -79,6 +85,9 @@ export const settings = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const sendsf = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const inlineKeyboard = new InlineKeyboard([
     [
       {
@@ -106,6 +115,9 @@ export const sendsf = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const sendWish = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const user = await Database.getMongoRepository(Names).find({
     teleUser: ctx.update.message?.from.username,
   });
@@ -128,6 +140,9 @@ export const sendWish = async (ctx: CommandContext<BotContext>) => {
   });
 };
 export const sendattendance = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
@@ -153,6 +168,9 @@ export const sendattendance = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const adminWelfare = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const access = await roleAccess(['welfare', 'welfareIC', 'LGL', 'it'], ctx);
 
   if (access) {
@@ -203,6 +221,9 @@ export const adminWelfare = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const adminbday = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const access = await roleAccess(['bday', 'bdayIC', 'LGL', 'it'], ctx);
 
   if (access) {
@@ -253,6 +274,9 @@ export const adminbday = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const adminsf = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const access = await roleAccess(['admin', 'adminIC', 'LGL', 'it'], ctx);
 
   if (access) {
@@ -291,6 +315,9 @@ export const adminsf = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const adminattendance = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   const access = await roleAccess(['SGL', 'LGL', 'it'], ctx);
 
   if (access) {
