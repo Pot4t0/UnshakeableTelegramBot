@@ -30,6 +30,9 @@ export const start = async (ctx: CommandContext<BotContext>) => {
 };
 
 export const help = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
   await ctx.reply(`
 	Help List
   \nIf there is any issue within the Bot or any feedback pls pm @whysominh for technical help ☺️

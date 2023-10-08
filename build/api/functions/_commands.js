@@ -33,6 +33,10 @@ const start = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.start = start;
 const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
+        return false;
+    }
     yield ctx.reply(`
 	Help List
   \nIf there is any issue within the Bot or any feedback pls pm @whysominh for technical help ☺️
@@ -105,9 +109,9 @@ const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.sendsf = sendsf;
 const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+    var _b;
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: (_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.from.username,
+        teleUser: (_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.from.username,
     });
     const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         where: {
