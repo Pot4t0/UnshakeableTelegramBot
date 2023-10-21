@@ -11,6 +11,7 @@ import { gsheet } from '../gsheets/_index';
 import { unshakeableAttendanceSpreadsheet } from '../gsheets/_gsheet_init';
 import { sheets } from 'googleapis/build/src/apis/sheets';
 import { arch } from 'os';
+import { afterEach } from 'node:test';
 
 export const addAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
@@ -607,10 +608,10 @@ export const archiveAttendance_archive = async (
   ).findOneBy({
     name: 'Archive',
   });
-  const archiveSheetArray = await archiveSheet?.archive;
-  const archive = new Attendance_mongo();
-  archive.archive = archiveSheetArray?.concat(callback) || archive.archive;
-  await Database.getMongoRepository(Attendance_mongo).save(archive);
+  await Database.getMongoRepository(Attendance_mongo).updateOne(
+    { name: 'Archive' },
+    { $set: { archive: archiveSheet?.archive.concat(callback) } }
+  );
 };
 export const unarchiveAttendance = async (
   ctx: CallbackQueryContext<BotContext>

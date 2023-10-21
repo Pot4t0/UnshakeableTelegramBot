@@ -502,10 +502,7 @@ const archiveAttendance_archive = (ctx) => __awaiter(void 0, void 0, void 0, fun
     const archiveSheet = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
         name: 'Archive',
     });
-    const archiveSheetArray = yield (archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive);
-    const archive = new _tableEntity_1.Attendance_mongo();
-    archive.archive = (archiveSheetArray === null || archiveSheetArray === void 0 ? void 0 : archiveSheetArray.concat(callback)) || archive.archive;
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).save(archive);
+    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).updateOne({ name: 'Archive' }, { $set: { archive: archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive.concat(callback) } });
 });
 exports.archiveAttendance_archive = archiveAttendance_archive;
 const unarchiveAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () { });
