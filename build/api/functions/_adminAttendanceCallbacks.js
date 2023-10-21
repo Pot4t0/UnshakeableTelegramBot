@@ -531,7 +531,8 @@ const unarchiveAttendance_unarchive = (ctx) => __awaiter(void 0, void 0, void 0,
     });
     if (archiveSheet) {
         const index = yield archiveSheet.archive.indexOf(callback);
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).updateOne({ name: 'Archive' }, { $set: { archive: archiveSheet.archive.splice(index, 1) } });
+        yield archiveSheet.archive.splice(index, 1);
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).updateOne({ name: 'Archive' }, { $set: { archive: archiveSheet.archive } });
         yield ctx.reply(`${callback} unarchived!`);
     }
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();

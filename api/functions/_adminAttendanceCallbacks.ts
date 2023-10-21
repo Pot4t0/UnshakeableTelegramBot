@@ -654,9 +654,10 @@ export const unarchiveAttendance_unarchive = async (
   });
   if (archiveSheet) {
     const index = await archiveSheet.archive.indexOf(callback);
+    await archiveSheet.archive.splice(index, 1);
     await Database.getMongoRepository(Attendance_mongo).updateOne(
       { name: 'Archive' },
-      { $set: { archive: archiveSheet.archive.splice(index, 1) } }
+      { $set: { archive: archiveSheet.archive } }
     );
     await ctx.reply(`${callback} unarchived!`);
   }
