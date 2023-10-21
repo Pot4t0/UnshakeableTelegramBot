@@ -612,6 +612,7 @@ export const archiveAttendance_archive = async (
     { name: 'Archive' },
     { $set: { archive: archiveSheet?.archive.concat(callback) } }
   );
+  await ctx.reply(`${callback} archived!`);
 };
 export const unarchiveAttendance = async (
   ctx: CallbackQueryContext<BotContext>

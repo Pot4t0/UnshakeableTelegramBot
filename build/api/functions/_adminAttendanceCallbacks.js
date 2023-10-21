@@ -503,6 +503,7 @@ const archiveAttendance_archive = (ctx) => __awaiter(void 0, void 0, void 0, fun
         name: 'Archive',
     });
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).updateOne({ name: 'Archive' }, { $set: { archive: archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive.concat(callback) } });
+    yield ctx.reply(`${callback} archived!`);
 });
 exports.archiveAttendance_archive = archiveAttendance_archive;
 const unarchiveAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () { });
