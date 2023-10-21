@@ -12,6 +12,7 @@ import { unshakeableAttendanceSpreadsheet } from '../gsheets/_gsheet_init';
 import { sheets } from 'googleapis/build/src/apis/sheets';
 import { arch } from 'os';
 import { afterEach } from 'node:test';
+import { text } from 'stream/consumers';
 
 export const addAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
@@ -613,7 +614,51 @@ export const archiveAttendance_archive = async (
     { $set: { archive: archiveSheet?.archive.concat(callback) } }
   );
   await ctx.reply(`${callback} archived!`);
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
-export const unarchiveAttendance = async (
+export const unarchiveAttendance_select = async (
   ctx: CallbackQueryContext<BotContext>
-) => {};
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const archiveSheet = await Database.getMongoRepository(
+    Attendance_mongo
+  ).findOneBy({
+    name: 'Archive',
+  });
+  const inlineKeyboard = new InlineKeyboard(
+    archiveSheet?.archive.map((n) => [
+      { text: n, callback_data: `unarchiveSheet-${n}` },
+    ])
+  );
+
+  await ctx.reply('Which sheet would you like to unarchive?', {
+    reply_markup: inlineKeyboard,
+  });
+};
+
+export const unarchiveAttendance_unarchive = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const callback = await ctx.update.callback_query.data.substring(
+    'unarchiveSheet-'.length
+  );
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const sheet =
+    await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  await sheet.updateProperties({ hidden: false });
+  const archiveSheet = await Database.getMongoRepository(
+    Attendance_mongo
+  ).findOneBy({
+    name: 'Archive',
+  });
+  const index = await archiveSheet?.archive.indexOf(callback);
+  if (index) {
+    await Database.getMongoRepository(Attendance_mongo).updateOne(
+      { name: 'Archive' },
+      { $set: { archive: archiveSheet?.archive.splice(index, 1) } }
+    );
+    await ctx.reply(`${callback} unarchived!`);
+  }
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+};

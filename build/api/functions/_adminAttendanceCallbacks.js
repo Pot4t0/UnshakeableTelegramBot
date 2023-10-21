@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unarchiveAttendance = exports.archiveAttendance_archive = exports.archiveAttendance_select = exports.sendAttendanceToLGChat = exports.selectSvcDateChat = exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = exports.noDelete = exports.yesDelete = exports.confirmDelete = exports.delAttendanceSheet = exports.specialAddAttendance_3 = exports.specialAddAttendance_2 = exports.specialAddAttendance_1 = exports.addAttendanceSheet_No_2 = exports.addAttendanceSheet_No_1 = exports.addAttendanceSheet_Yes_3 = exports.addAttendanceSheet_Yes_2 = exports.addAttendanceSheet_Yes_1 = exports.addAttendanceSheet = void 0;
+exports.unarchiveAttendance_unarchive = exports.unarchiveAttendance_select = exports.archiveAttendance_archive = exports.archiveAttendance_select = exports.sendAttendanceToLGChat = exports.selectSvcDateChat = exports.sendSpecificReminder_3 = exports.sendSpecificReminder_2 = exports.sendSpecificReminder_1 = exports.sendNotInReminder_3 = exports.sendNotInReminder_2 = exports.sendNotInReminder_1 = exports.reminderManagement = exports.noDelete = exports.yesDelete = exports.confirmDelete = exports.delAttendanceSheet = exports.specialAddAttendance_3 = exports.specialAddAttendance_2 = exports.specialAddAttendance_1 = exports.addAttendanceSheet_No_2 = exports.addAttendanceSheet_No_1 = exports.addAttendanceSheet_Yes_3 = exports.addAttendanceSheet_Yes_2 = exports.addAttendanceSheet_Yes_1 = exports.addAttendanceSheet = void 0;
 const grammy_1 = require("grammy");
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
@@ -504,7 +504,36 @@ const archiveAttendance_archive = (ctx) => __awaiter(void 0, void 0, void 0, fun
     });
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).updateOne({ name: 'Archive' }, { $set: { archive: archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive.concat(callback) } });
     yield ctx.reply(`${callback} archived!`);
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 exports.archiveAttendance_archive = archiveAttendance_archive;
-const unarchiveAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () { });
-exports.unarchiveAttendance = unarchiveAttendance;
+const unarchiveAttendance_select = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    const archiveSheet = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
+        name: 'Archive',
+    });
+    const inlineKeyboard = new grammy_1.InlineKeyboard(archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive.map((n) => [
+        { text: n, callback_data: `unarchiveSheet-${n}` },
+    ]));
+    yield ctx.reply('Which sheet would you like to unarchive?', {
+        reply_markup: inlineKeyboard,
+    });
+});
+exports.unarchiveAttendance_select = unarchiveAttendance_select;
+const unarchiveAttendance_unarchive = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    const callback = yield ctx.update.callback_query.data.substring('unarchiveSheet-'.length);
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+    yield sheet.updateProperties({ hidden: false });
+    const archiveSheet = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
+        name: 'Archive',
+    });
+    const index = yield (archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive.indexOf(callback));
+    if (index) {
+        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).updateOne({ name: 'Archive' }, { $set: { archive: archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive.splice(index, 1) } });
+        yield ctx.reply(`${callback} unarchived!`);
+    }
+    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+});
+exports.unarchiveAttendance_unarchive = unarchiveAttendance_unarchive;
