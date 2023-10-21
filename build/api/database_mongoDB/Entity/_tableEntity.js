@@ -142,6 +142,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Object)
 ], Attendance_mongo.prototype, "response", void 0);
+__decorate([
+    (0, typeorm_1.Column)('simple-array', { nullable: true }),
+    __metadata("design:type", Array)
+], Attendance_mongo.prototype, "archive", void 0);
 exports.Attendance_mongo = Attendance_mongo = __decorate([
     (0, typeorm_1.Entity)('attendance')
 ], Attendance_mongo);

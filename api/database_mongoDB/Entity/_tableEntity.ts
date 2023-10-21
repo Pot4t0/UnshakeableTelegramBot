@@ -89,6 +89,8 @@ export class Attendance_mongo {
   type: string;
   @Column()
   response: {};
+  @Column('simple-array', { nullable: true })
+  archive: string[];
 }
 
 // attendance collection

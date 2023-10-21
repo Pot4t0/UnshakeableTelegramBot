@@ -19,8 +19,8 @@ import {
 
 const token = process.env.BOT_TOKEN || '';
 // Create an instance of the `Bot` class and pass your bot token to it.
-
 const bot = new Bot<BotContext>(token); // <-- put your bot token between the ""
+
 if (!token) throw new Error('BOT_TOKEN is unset');
 
 bot.use(session({ initial }));
@@ -333,6 +333,15 @@ bot.callbackQuery('chatAttendance', adminAttendanceCallback.selectSvcDateChat);
 bot.callbackQuery(
   /^selectSvcDateChat-/g,
   adminAttendanceCallback.sendAttendanceToLGChat
+);
+//Archive Sheet
+bot.callbackQuery(
+  'archiveAttendance',
+  adminAttendanceCallback.archiveAttendance_select
+);
+bot.callbackQuery(
+  /^archiveSheet-/g,
+  adminAttendanceCallback.archiveAttendance_archive
 );
 
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**

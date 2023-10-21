@@ -1,12 +1,14 @@
 import { CommandContext, InlineKeyboard } from 'grammy';
 import { BotContext } from '../app/_index';
 import { Database } from '../database_mongoDB/_db-init';
-import { Events, Names } from '../database_mongoDB/Entity/_tableEntity';
+import {
+  Attendance_mongo,
+  Events,
+  Names,
+} from '../database_mongoDB/Entity/_tableEntity';
 import { roleAccess } from './_db_functions';
-import { datacatalog } from 'googleapis/build/src/apis/datacatalog';
 import { unshakeableAttendanceSpreadsheet } from '../gsheets/_gsheet_init';
 import { gsheet } from '../gsheets/_index';
-import { title } from 'process';
 
 /* / start command
  *  Purpose is to tag the username with the name list inside the "names" collection within UnshakeableDB
@@ -143,23 +145,29 @@ export const sendattendance = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
   }
+  const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
+    name: 'Archive',
+  });
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const archivedSheetsArray = (await archivedSheets)
+    .map((n) => n.archive)
+    .flat();
   const inlineKeyboard = new InlineKeyboard(
     ghseetArray
       .filter((n) => n != template)
       .filter((n) => n != special_template)
+      .filter((n) => !archivedSheetsArray.includes(n.title))
       .map((n) => [
         { text: n.title, callback_data: `svcLGAttendance-${n.title}` },
       ])
   );
   await ctx.reply(
     `Hi there! We will be collecting attendance every week!
-  \nWhich worship experience date is it?
-  `,
+  \nWhich worship experience date is it?`,
     {
       reply_markup: inlineKeyboard,
     }
@@ -346,6 +354,18 @@ export const adminattendance = async (ctx: CommandContext<BotContext>) => {
           callback_data: 'chatAttendance',
         },
       ],
+      [
+        {
+          text: 'Archive Attendance Sheet',
+          callback_data: 'archiveAttendance',
+        },
+      ],
+      [
+        {
+          text: 'Unarchive Attendance Sheet',
+          callback_data: 'unarchiveAttendance',
+        },
+      ],
     ]);
 
     await ctx.reply(
@@ -358,6 +378,8 @@ export const adminattendance = async (ctx: CommandContext<BotContext>) => {
 	\n1. Create a new google sheet every week to collect attendance
   \n2. Delete old google sheets to declutter the google sheet
   \n3. Use reminder system to chase those that did not submit
+  \n4. Archive old attendance sheets
+  \n5. Unarchive archived attendance
 	`,
       {
         reply_markup: inlineKeyboard,

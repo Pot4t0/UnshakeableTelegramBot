@@ -166,6 +166,9 @@ bot.callbackQuery('sendAttendanceSpecificReminder', _index_1.adminAttendanceCall
 bot.callbackQuery(/^reminderAttendanceSpecificNames-/g, _index_1.adminAttendanceCallback.sendSpecificReminder_2);
 bot.callbackQuery('chatAttendance', _index_1.adminAttendanceCallback.selectSvcDateChat);
 bot.callbackQuery(/^selectSvcDateChat-/g, _index_1.adminAttendanceCallback.sendAttendanceToLGChat);
+//Archive Sheet
+bot.callbackQuery('archiveAttendance', _index_1.adminAttendanceCallback.archiveAttendance_select);
+bot.callbackQuery(/^archiveSheet-/g, _index_1.adminAttendanceCallback.archiveAttendance_archive);
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
 bot.on('message', _index_1.botOnFunctions.botOnContext); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.

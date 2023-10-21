@@ -149,19 +149,25 @@ const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (((_g = ctx.update.message) === null || _g === void 0 ? void 0 : _g.chat.type) !== 'private') {
         return false;
     }
+    const archivedSheets = _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
+        name: 'Archive',
+    });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
     const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
     const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    const archivedSheetsArray = (yield archivedSheets)
+        .map((n) => n.archive)
+        .flat();
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
         .filter((n) => n != special_template)
+        .filter((n) => !archivedSheetsArray.includes(n.title))
         .map((n) => [
         { text: n.title, callback_data: `svcLGAttendance-${n.title}` },
     ]));
     yield ctx.reply(`Hi there! We will be collecting attendance every week!
-  \nWhich worship experience date is it?
-  `, {
+  \nWhich worship experience date is it?`, {
         reply_markup: inlineKeyboard,
     });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
@@ -331,6 +337,18 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
                     callback_data: 'chatAttendance',
                 },
             ],
+            [
+                {
+                    text: 'Archive Attendance Sheet',
+                    callback_data: 'archiveAttendance',
+                },
+            ],
+            [
+                {
+                    text: 'Unarchive Attendance Sheet',
+                    callback_data: 'unarchiveAttendance',
+                },
+            ],
         ]);
         yield ctx.reply(`
 	Unshakeable Attendance Matters
@@ -341,6 +359,8 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
 	\n1. Create a new google sheet every week to collect attendance
   \n2. Delete old google sheets to declutter the google sheet
   \n3. Use reminder system to chase those that did not submit
+  \n4. Archive old attendance sheets
+  \n5. Unarchive archived attendance
 	`, {
             reply_markup: inlineKeyboard,
         });

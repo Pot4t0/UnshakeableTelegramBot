@@ -1,12 +1,16 @@
 import { CallbackQueryContext, Filter, InlineKeyboard } from 'grammy';
 import { BotContext } from '../app/_index';
 import { Database } from '../database_mongoDB/_db-init';
-import { Names } from '../database_mongoDB/Entity/_tableEntity';
+import {
+  Attendance_mongo,
+  Names,
+} from '../database_mongoDB/Entity/_tableEntity';
 import { sendMessageUser } from './_db_functions';
 import { initial } from '../models/_SessionData';
 import { gsheet } from '../gsheets/_index';
 import { unshakeableAttendanceSpreadsheet } from '../gsheets/_gsheet_init';
 import { sheets } from 'googleapis/build/src/apis/sheets';
+import { arch } from 'os';
 
 export const addAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
@@ -559,3 +563,54 @@ export const sendAttendanceToLGChat = async (
   // await ctx.api.sendMessage(611527651, msg);
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
+
+export const archiveAttendance_select = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
+    name: 'Archive',
+  });
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+  const special_template =
+    unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
+  const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const archivedSheetsArray = (await archivedSheets)
+    .map((n) => n.archive)
+    .flat();
+  const inlineKeyboard = new InlineKeyboard(
+    ghseetArray
+      .filter((n) => n != template)
+      .filter((n) => n != special_template)
+      .filter((n) => !archivedSheetsArray.includes(n.title))
+      .map((n) => [{ text: n.title, callback_data: `archiveSheet-${n.title}` }])
+  );
+  await ctx.reply('Which sheet would you like to archive?', {
+    reply_markup: inlineKeyboard,
+  });
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+};
+export const archiveAttendance_archive = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {
+  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  const callback = await ctx.update.callback_query.data.substring(
+    'archiveSheet-'.length
+  );
+  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const sheet =
+    await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  await sheet.updateProperties({ hidden: true });
+  // const archiveSheet = await Database.getMongoRepository(
+  //   Attendance_mongo
+  // ).findOneBy({
+  //   name: 'Archive',
+  // });
+  const archive = new Attendance_mongo();
+  archive.archive = archive.archive.concat(callback);
+  await Database.getMongoRepository(Attendance_mongo).save(archive);
+};
+export const unarchiveAttendance = async (
+  ctx: CallbackQueryContext<BotContext>
+) => {};
