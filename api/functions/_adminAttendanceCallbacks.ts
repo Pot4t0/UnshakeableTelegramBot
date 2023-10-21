@@ -602,13 +602,14 @@ export const archiveAttendance_archive = async (
   const sheet =
     await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
   await sheet.updateProperties({ hidden: true });
-  // const archiveSheet = await Database.getMongoRepository(
-  //   Attendance_mongo
-  // ).findOneBy({
-  //   name: 'Archive',
-  // });
+  const archiveSheet = await Database.getMongoRepository(
+    Attendance_mongo
+  ).findOneBy({
+    name: 'Archive',
+  });
+  const archiveSheetArray = await archiveSheet?.archive;
   const archive = new Attendance_mongo();
-  archive.archive = archive.archive.concat(callback);
+  archive.archive = archiveSheetArray?.concat(callback) || archive.archive;
   await Database.getMongoRepository(Attendance_mongo).save(archive);
 };
 export const unarchiveAttendance = async (

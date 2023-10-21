@@ -499,13 +499,12 @@ const archiveAttendance_archive = (ctx) => __awaiter(void 0, void 0, void 0, fun
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
     yield sheet.updateProperties({ hidden: true });
-    // const archiveSheet = await Database.getMongoRepository(
-    //   Attendance_mongo
-    // ).findOneBy({
-    //   name: 'Archive',
-    // });
+    const archiveSheet = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
+        name: 'Archive',
+    });
+    const archiveSheetArray = yield (archiveSheet === null || archiveSheet === void 0 ? void 0 : archiveSheet.archive);
     const archive = new _tableEntity_1.Attendance_mongo();
-    archive.archive = archive.archive.concat(callback);
+    archive.archive = (archiveSheetArray === null || archiveSheetArray === void 0 ? void 0 : archiveSheetArray.concat(callback)) || archive.archive;
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).save(archive);
 });
 exports.archiveAttendance_archive = archiveAttendance_archive;
