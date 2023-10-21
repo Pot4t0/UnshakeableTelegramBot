@@ -652,7 +652,7 @@ export const unarchiveAttendance_unarchive = async (
   ).findOneBy({
     name: 'Archive',
   });
-  const index = await archiveSheet?.archive.indexOf(callback);
+  const index = archiveSheet?.archive.indexOf(callback);
   if (index) {
     await Database.getMongoRepository(Attendance_mongo).updateOne(
       { name: 'Archive' },
