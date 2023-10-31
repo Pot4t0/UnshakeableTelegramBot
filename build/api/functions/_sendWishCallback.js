@@ -43,11 +43,11 @@ const FinalReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             teleUser: name,
             wishText: wish,
         });
-        yield ctx.reply('Wish Received');
+        yield ctx.reply(`Wish Received$ ${eventName}`);
     }
     else {
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).updateOne({ teleUser: name, eventName: eventName }, { $set: { wishText: wish } });
-        yield ctx.reply('Wish Overrided');
+        yield ctx.reply(`Wish Overrided to ${eventName}`);
     }
     ctx.session = (0, _SessionData_1.initial)();
     // }

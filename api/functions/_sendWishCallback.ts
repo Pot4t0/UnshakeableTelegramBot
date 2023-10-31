@@ -36,13 +36,13 @@ export const FinalReply = async (ctx: Filter<BotContext, 'message'>) => {
       teleUser: name,
       wishText: wish,
     });
-    await ctx.reply('Wish Received');
+    await ctx.reply(`Wish Received$ ${eventName}`);
   } else {
     await Database.getMongoRepository(Wishes).updateOne(
       { teleUser: name, eventName: eventName },
       { $set: { wishText: wish } }
     );
-    await ctx.reply('Wish Overrided');
+    await ctx.reply(`Wish Overrided to ${eventName}`);
   }
   ctx.session = initial();
   // }
