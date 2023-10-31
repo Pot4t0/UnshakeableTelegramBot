@@ -36,7 +36,7 @@ export const FinalReply = async (ctx: Filter<BotContext, 'message'>) => {
       teleUser: name,
       wishText: wish,
     });
-    await ctx.reply(`Wish Received$ ${eventName}`);
+    await ctx.reply(`Wish Received to ${eventName}`);
   } else {
     await Database.getMongoRepository(Wishes).updateOne(
       { teleUser: name, eventName: eventName },

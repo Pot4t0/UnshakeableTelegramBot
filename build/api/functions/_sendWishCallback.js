@@ -43,7 +43,7 @@ const FinalReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             teleUser: name,
             wishText: wish,
         });
-        yield ctx.reply(`Wish Received$ ${eventName}`);
+        yield ctx.reply(`Wish Received to ${eventName}`);
     }
     else {
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).updateOne({ teleUser: name, eventName: eventName }, { $set: { wishText: wish } });
