@@ -124,6 +124,7 @@ export const sendNotInReminder_2 = async (
 export const sendNotInReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
+  const prefix = "<b>Welfare Team:</b>/n";
   const reminder = (await ctx.message.text) || '';
   const wishEventName = (await ctx.session.eventName) || '';
   const inWishes = await Database.getMongoRepository(Wishes).find({
@@ -154,7 +155,7 @@ export const sendNotInReminder_3 = async (
 
   await Promise.all(
     notInUsers.map(async (n) => {
-      await sendMessageUser(n, reminder, ctx);
+      await sendMessageUser(n, prefix + reminder, ctx);
     })
   );
 
@@ -232,8 +233,9 @@ export const sendSpecificReminder_4 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   if (ctx.session.reminderUser) {
+    const prefix = "<b>Welfare Team:</b>/n";
     const reminder = (await ctx.message.text) || '';
-    await sendMessageUser(ctx.session.reminderUser, reminder, ctx);
+    await sendMessageUser(ctx.session.reminderUser, prefix + reminder, ctx);
     await ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
   }
   ctx.session = await initial();

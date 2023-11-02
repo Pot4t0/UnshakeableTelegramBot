@@ -85,6 +85,7 @@ export const sendNotInReminder_3 = async (
     parseInt(textDateArray[1]) - 1,
     parseInt(textDateArray[0]) - 7 + 3
   ); // offsetted to the wk before tues
+  const prefix = "<b>Admin Team:</b>/n";
   const reminder = (await ctx.session.text) || '';
   const InSF = await Database.getMongoRepository(SF_mongo).find({
     where: {
@@ -102,7 +103,7 @@ export const sendNotInReminder_3 = async (
 
   await Promise.all(
     notInUsers.map(async (n) => {
-      await sendMessageUser(n, reminder, ctx);
+      await sendMessageUser(n, prefix + reminder, ctx);
     })
   );
 
@@ -156,8 +157,9 @@ export const sendSpecificReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   if (ctx.session.reminderUser) {
+    const prefix = "<b>Admin Team:</b>/n";
     const reminder = (await ctx.message.text) || '';
-    await sendMessageUser(ctx.session.reminderUser, reminder, ctx);
+    await sendMessageUser(ctx.session.reminderUser, prefix + reminder, ctx);
     await ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
   }
   ctx.session = await initial();

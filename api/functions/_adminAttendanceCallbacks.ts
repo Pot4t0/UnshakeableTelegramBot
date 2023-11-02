@@ -364,6 +364,7 @@ export const sendNotInReminder_3 = async (
     where: { teleUser: { $not: { $eq: '' } } },
   });
 
+  const prefix = "<b>Attendance Team:</b>/n";
   const reminder = ctx.session.text || '';
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const sheet =
@@ -376,7 +377,7 @@ export const sendNotInReminder_3 = async (
       totalNames.map(async (i) => {
         const checkCell = await sheet.getCellByA1(`C${i.attendanceRow}`);
         if (checkCell.value == null) {
-          await sendMessageUser(i.teleUser, reminder, ctx);
+          await sendMessageUser(i.teleUser, prefix + reminder, ctx);
         }
       })
     );
@@ -444,8 +445,9 @@ export const sendSpecificReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   if (ctx.session.reminderUser) {
+    const prefix = "<b>Attendance Team:</b>/n";
     const reminder = (await ctx.message.text) || '';
-    await sendMessageUser(ctx.session.reminderUser, reminder, ctx);
+    await sendMessageUser(ctx.session.reminderUser, prefix + reminder, ctx);
     await ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
   }
   ctx.session = await initial();
