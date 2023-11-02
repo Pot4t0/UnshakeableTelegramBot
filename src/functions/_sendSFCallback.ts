@@ -66,7 +66,7 @@ export const sendSfEvent_2_no = async (ctx: Filter<BotContext, 'message'>) => {
   reasonCell.value = reason;
   (timeStampCell.value = Date()), await data_sheet.saveUpdatedCells();
 
-  await ctx.reply('Sent!');
+  await ctx.reply('Sent! Your SF has been recorded successfully.');
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
@@ -98,6 +98,6 @@ export const sendSfEvent_2_yes = async (ctx: Filter<BotContext, 'message'>) => {
   reasonCell.value = '';
   timeStampCell.value = Date();
   await data_sheet.saveUpdatedCells();
-  await ctx.reply('Sent!');
+  await ctx.reply('Sent! Your SF has been recorded successfully.');
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };

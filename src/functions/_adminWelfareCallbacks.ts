@@ -118,6 +118,7 @@ export const sendNotInReminder_2 = async (
 export const sendNotInReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
+  const prefix = "<b>Welfare Team:</b>\n";
   const reminder = (await ctx.message.text) || '';
   const inWishes = await Database.getMongoRepository(Wishes).find({
     where: {
@@ -133,7 +134,7 @@ export const sendNotInReminder_3 = async (
     .map((n) => `${n.teleUser}`)
     .filter((n) => n != '');
   for (let i = 0; i < notInUsers.length; i++) {
-    await sendMessageUser(notInUsers[i], reminder, ctx);
+    await sendMessageUser(notInUsers[i], prefix + reminder, ctx);
   }
   await ctx.reply(`Reminder sent!`);
 
@@ -209,8 +210,9 @@ export const sendSpecificReminder_4 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   if (ctx.session.reminderUser) {
+    const prefix = "<b>Welfare Team:</b>\n";
     const reminder = (await ctx.message.text) || '';
-    await sendMessageUser(ctx.session.reminderUser, reminder, ctx);
+    await sendMessageUser(ctx.session.reminderUser, prefix + reminder, ctx);
     await ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
   }
   ctx.session = await initial();

@@ -93,7 +93,7 @@ export const sendWish = async (ctx: CommandContext<BotContext>) => {
     ])
   );
 
-  await ctx.reply('Choose upcoming Event ', {
+  await ctx.reply('Choose an upcoming Event ', {
     reply_markup: inlineKeyboard,
   });
 };

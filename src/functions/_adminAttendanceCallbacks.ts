@@ -355,6 +355,7 @@ export const sendNotInReminder_3 = async (
     'notInReminderAttendance-'.length
   );
   const totalNames = await Database.getMongoRepository(Names).find({});
+  const prefix = "<b>Attendance Team:</b>\n";
   const reminder = ctx.session.text || '';
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const sheet =
@@ -369,7 +370,7 @@ export const sendNotInReminder_3 = async (
         const user = await Database.getMongoRepository(Names).find({
           attendanceRow: i,
         });
-        await sendMessageUser(user[0].teleUser, reminder, ctx);
+        await sendMessageUser(user[0].teleUser, prefix + reminder, ctx);
       }
     }
   } else {
@@ -380,7 +381,7 @@ export const sendNotInReminder_3 = async (
         const user = await Database.getMongoRepository(Names).find({
           attendanceRow: i,
         });
-        await sendMessageUser(user[0].teleUser, reminder, ctx);
+        await sendMessageUser(user[0].teleUser, prefix + reminder, ctx);
       }
     }
   }
@@ -434,8 +435,9 @@ export const sendSpecificReminder_3 = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   if (ctx.session.reminderUser) {
+    const prefix = "<b>Attendance Team:</b>\n";
     const reminder = (await ctx.message.text) || '';
-    await sendMessageUser(ctx.session.reminderUser, reminder, ctx);
+    await sendMessageUser(ctx.session.reminderUser, prefix + reminder, ctx);
     await ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
   }
   ctx.session = await initial();
