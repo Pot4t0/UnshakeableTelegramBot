@@ -461,7 +461,7 @@ const sendAttendanceToLGChat_Execution = async (
       dinnerNotCmgMsg +
       nvrSubmitMsg;
   }
-  // await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
   console.log(msg);
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
