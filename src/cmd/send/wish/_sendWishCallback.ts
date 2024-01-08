@@ -6,7 +6,9 @@ export const sendWish = (bot: Bot<BotContext>) => {
 };
 
 const sendWish_WishMessage = async (ctx: CallbackQueryContext<BotContext>) => {
-  const event = ctx.update.callback_query.data.substring('eventName-'.length);
+  const event = ctx.update.callback_query.data.substring(
+    'sendWishEvent-'.length
+  );
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   ctx.session.eventName = event;
   ctx.session.botOnType = 1;

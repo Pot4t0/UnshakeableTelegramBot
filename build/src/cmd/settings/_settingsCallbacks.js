@@ -36,7 +36,7 @@ const settingsAnnouncements_Write = (ctx) => __awaiter(void 0, void 0, void 0, f
 // Used in _botOn_functions.ts
 // Refer to case botOntype = 31
 const settingsAnnouncements_Send = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const announcement = ctx.message.text;
+    const announcement = '<b>Bot Announcement:</b>\n' + ctx.message.text;
     if (announcement == null || ctx.session.botOnType == null) {
         (0, exports.settingsAnnouncements_Send)(ctx);
     }

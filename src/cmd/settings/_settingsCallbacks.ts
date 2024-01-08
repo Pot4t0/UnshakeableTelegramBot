@@ -35,7 +35,7 @@ const settingsAnnouncements_Write = async (
 export const settingsAnnouncements_Send = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
-  const announcement = ctx.message.text;
+  const announcement = '<b>Bot Announcement:</b>\n' + ctx.message.text;
   if (announcement == null || ctx.session.botOnType == null) {
     settingsAnnouncements_Send(ctx);
   } else {

@@ -15,7 +15,7 @@ const sendWish = (bot) => {
 };
 exports.sendWish = sendWish;
 const sendWish_WishMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const event = ctx.update.callback_query.data.substring('eventName-'.length);
+    const event = ctx.update.callback_query.data.substring('sendWishEvent-'.length);
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     ctx.session.eventName = event;
     ctx.session.botOnType = 1;
