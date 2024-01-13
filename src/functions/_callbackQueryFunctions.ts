@@ -20,7 +20,7 @@ export const callbackQueryHandler = (bot: Bot<BotContext>) => {
   // /sendattendance Callbacks
   send.attendance(bot);
   // /adminWelfare Callbacks
-  admin.attendance(bot);
+  admin.welfare(bot);
   // /adminbday Callbacks
   admin.bday(bot);
   // /adminsf Callbacks
