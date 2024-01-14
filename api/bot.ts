@@ -26,18 +26,27 @@ botOnHandler(bot); //Refer to switch case in botOn_functions.ts to understand ho
 // bot.start();
 
 //grammY webhook http (Vercel)
-export default webhookCallback(bot, 'http', async (ctx: Context, next) => {
-  try {
-    await next();
-  } catch (error) {
-    console.error('Webhook Error:', error);
+try {
+  webhookCallback(bot, 'http', async (ctx: Context, next) => {
+    try {
+      await next();
+    } catch (error) {
+      console.error('Webhook Error:', error);
 
-    // Send an error message to the user
-    const errorMessage =
-      'An error occurred while processing your request. Please try again later.';
-    await ctx.reply(errorMessage);
-  }
-});
+      // Send an error message to the user
+      const errorMessage =
+        'An error occurred while processing your request. Please try again later.';
+      await ctx.reply(errorMessage);
+    }
+  });
+} catch (error) {
+  bot.use(async (ctx) => {
+    ctx.reply(
+      'An error occurred while processing your request. Please try again later.'
+    );
+  });
+  console.error('Webhook Error:', error);
+}
 //Vercel Edge Runtime
 // export const config = {
 //   runtime: 'edge',

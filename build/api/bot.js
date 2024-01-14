@@ -31,17 +31,25 @@ if (!bot) {
 // Comment this out when deploying
 // bot.start();
 //grammY webhook http (Vercel)
-exports.default = (0, grammy_1.webhookCallback)(bot, 'http', (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield next();
-    }
-    catch (error) {
-        console.error('Webhook Error:', error);
-        // Send an error message to the user
-        const errorMessage = 'An error occurred while processing your request. Please try again later.';
-        yield ctx.reply(errorMessage);
-    }
-}));
+try {
+    (0, grammy_1.webhookCallback)(bot, 'http', (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield next();
+        }
+        catch (error) {
+            console.error('Webhook Error:', error);
+            // Send an error message to the user
+            const errorMessage = 'An error occurred while processing your request. Please try again later.';
+            yield ctx.reply(errorMessage);
+        }
+    }));
+}
+catch (error) {
+    bot.use((ctx) => __awaiter(void 0, void 0, void 0, function* () {
+        ctx.reply('An error occurred while processing your request. Please try again later.');
+    }));
+    console.error('Webhook Error:', error);
+}
 //Vercel Edge Runtime
 // export const config = {
 //   runtime: 'edge',
