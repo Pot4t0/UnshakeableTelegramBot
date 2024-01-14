@@ -1,37 +1,32 @@
-import { Context, webhookCallback } from 'grammy';
-import { init_bot } from './functions/_initialise';
-import { botOnHandler } from './functions/_botOn_functions';
-import { commands } from './cmd/_commands';
-import { callbackQueryHandler } from './functions/_index';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const grammy_1 = require("grammy");
+const _initialise_1 = require("./functions/_initialise");
+const _botOn_functions_1 = require("./functions/_botOn_functions");
+const _commands_1 = require("./cmd/_commands");
+const _index_1 = require("./functions/_index");
 //Initialise Bot as bot
-const bot = init_bot();
+const bot = (0, _initialise_1.init_bot)();
 if (!bot) {
-  throw new Error('Bot not initialised');
+    throw new Error('Bot not initialised');
 }
-
 // Command Functions
 //Initialise Bot Commands
-commands(bot);
-
+(0, _commands_1.commands)(bot);
 // CallBackQuery Function
-callbackQueryHandler(bot);
-
+(0, _index_1.callbackQueryHandler)(bot);
 // Bot.on method **(KEEP THIS AT END OF PROGRAM)**
 // THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
-botOnHandler(bot); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
-
+(0, _botOn_functions_1.botOnHandler)(bot); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot (TESTING ONLY)
 // Comment this out when deploying
-// bot.start();
-
+bot.start();
 //grammY webhook http (Vercel)
-export default webhookCallback(bot, 'http');
+exports.default = (0, grammy_1.webhookCallback)(bot, 'http');
 //Vercel Edge Runtime
 // export const config = {
 //   runtime: 'edge',
 // };
-
 // export default async function handler(request: Request) {
 //   const urlParams = new URL(request.url).searchParams;
 //   const query = Object.fromEntries(urlParams);
@@ -42,7 +37,6 @@ export default webhookCallback(bot, 'http');
 //   } catch (e) {
 //     body = null;
 //   }
-
 //   return new Response(
 //     JSON.stringify({
 //       body,

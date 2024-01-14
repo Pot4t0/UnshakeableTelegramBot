@@ -23,7 +23,7 @@ botOnHandler(bot); //Refer to switch case in botOn_functions.ts to understand ho
 
 // Start the bot (TESTING ONLY)
 // Comment this out when deploying
-// bot.start();
+bot.start();
 
 //grammY webhook http (Vercel)
 export default webhookCallback(bot, 'http');
