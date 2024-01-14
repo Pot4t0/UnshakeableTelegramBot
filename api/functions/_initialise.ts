@@ -12,6 +12,5 @@ export const init_bot = () => {
   if (!token) throw new Error('BOT_TOKEN is unset');
   bot.use(session({ initial }));
   bot.use(conversations());
-
   return bot;
 };

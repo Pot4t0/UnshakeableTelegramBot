@@ -133,5 +133,8 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       await settingsAnnouncements_Send(ctx);
       break;
     }
+    default: {
+      await ctx.reply('Sorry I do not understand. Please try again!');
+    }
   }
 };

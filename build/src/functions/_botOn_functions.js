@@ -130,5 +130,8 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             yield (0, _settingsCallbacks_1.settingsAnnouncements_Send)(ctx);
             break;
         }
+        default: {
+            yield ctx.reply('Sorry I do not understand. Please try again!');
+        }
     }
 });
