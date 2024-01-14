@@ -13,6 +13,7 @@ exports.start = void 0;
 const grammy_1 = require("grammy");
 const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
+const _telefunctions_1 = require("../../app/_telefunctions");
 const start = (bot) => {
     bot.callbackQuery(/^nameStart-/g, startReply);
     bot.callbackQuery('confirm_YES', confirmReply_Yes);
@@ -28,7 +29,7 @@ const startReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             nameText: { $eq: nameStart },
         },
     });
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard_confirm = new grammy_1.InlineKeyboard([
         [{ text: 'Yes', callback_data: 'confirm_YES' }],
         [{ text: 'No', callback_data: 'confirm_NO' }],

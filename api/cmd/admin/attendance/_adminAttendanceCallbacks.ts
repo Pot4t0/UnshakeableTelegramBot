@@ -13,6 +13,7 @@ import {
   adminAttendanceBotOn,
   createEventDBDoc,
 } from './__adminAttendanceInternal';
+import { removeInLineButton } from '../../../app/_telefunctions';
 
 // Admin Attendance Callbacks
 export const adminAttendance = (bot: Bot<BotContext>) => {
@@ -67,7 +68,7 @@ export const adminAttendance = (bot: Bot<BotContext>) => {
 export const addAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const inlineKeyboard = new InlineKeyboard([
     [
       {
@@ -128,7 +129,7 @@ const removeEventDBDoc = async (title: string) => {
 const addAttendanceSheet_LGEventLGDateMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await ctx.reply('Enter Worship Experience Date in dd/mm/yyyy: ', {
     reply_markup: { force_reply: true },
   });
@@ -140,7 +141,7 @@ const addAttendanceSheet_LGEventLGDateMessage = async (
 const addAttendanceSheet_NoLGEventWEDateMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await ctx.reply('Enter WE Date in dd/mm/yyyy: ', {
     reply_markup: { force_reply: true },
   });
@@ -152,7 +153,7 @@ const addAttendanceSheet_NoLGEventWEDateMessage = async (
 const addAttendanceSheet_SpecialEventMealMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const inlineKeyboard = new InlineKeyboard([
     [
       {
@@ -187,7 +188,7 @@ const addAttendanceSheet_SpecialEventMealMessage = async (
 const addAttendanceSheet_SpecialEventNameMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const meal = await ctx.update.callback_query.data.substring(
     'addSpecialAttendannce-'.length
   );
@@ -203,7 +204,7 @@ const addAttendanceSheet_SpecialEventNameMessage = async (
 export const delAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
@@ -226,7 +227,7 @@ export const delAttendanceSheet = async (
 export const delAttendanceeSheet_CfmMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const sheetName = await ctx.update.callback_query.data.substring(
     'delAttendanceeSheet-'.length
   );
@@ -253,7 +254,7 @@ export const delAttendanceeSheet_CfmMessage = async (
 export const delAttendanceeSheet_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const cfm = await ctx.update.callback_query.data.substring(
     'CfmDelAttendanceSheet-'.length
   );
@@ -280,7 +281,7 @@ export const delAttendanceeSheet_Execution = async (
 //Reminder Management
 //Choose which event to send reminder for
 const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
@@ -306,7 +307,7 @@ const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
 const attendanceReminder_Menu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const title = await ctx.update.callback_query.data.substring(
     'sendAttendanceReminder-'.length
   );
@@ -318,7 +319,7 @@ const attendanceReminder_Menu = async (
 const attendanceReminder_Msg = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
 
   const title = ctx.session.name;
   if (title) {
@@ -333,7 +334,7 @@ const attendanceReminder_Msg = async (
 const sendAttendanceToLGChat_EventMenu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const activeEvents = await Database.getMongoRepository(Attendance_mongo).find(
     {
       name: 'Active',
@@ -355,7 +356,7 @@ const sendAttendanceToLGChat_EventMenu = async (
 const sendAttendanceToLGChat_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'sendAttendanceToLGChat-'.length
   );
@@ -461,8 +462,9 @@ const sendAttendanceToLGChat_Execution = async (
       dinnerNotCmgMsg +
       nvrSubmitMsg;
   }
-  // await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
   console.log(msg);
+  await ctx.reply(`Sent to LG Chat!`);
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
@@ -470,7 +472,7 @@ const sendAttendanceToLGChat_Execution = async (
 const archiveAttendance_Menu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
     name: 'Archive',
   });
@@ -497,7 +499,7 @@ const archiveAttendance_Menu = async (
 const archiveAttendance_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'archiveSheet-'.length
   );
@@ -525,7 +527,7 @@ const archiveAttendance_Execution = async (
 const unarchiveAttendance_Menu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const archiveSheet = await Database.getMongoRepository(
     Attendance_mongo
   ).findOneBy({
@@ -549,7 +551,7 @@ const unarchiveAttendance_Menu = async (
 const unarchiveAttendance_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'unarchiveSheet-'.length
   );

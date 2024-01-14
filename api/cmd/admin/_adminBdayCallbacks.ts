@@ -8,6 +8,7 @@ import {
   team,
   wish,
 } from '../../database_mongoDB/functions/_index';
+import { removeInLineButton } from '../../app/_telefunctions';
 
 export const adminBday = (bot: Bot<BotContext>) => {
   //Birthday View Callbacks
@@ -28,7 +29,8 @@ export const adminBday = (bot: Bot<BotContext>) => {
 // Reminder Management
 //Choose which event to send reminder for
 const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  let msg;
+  if (ctx.message) await removeInLineButton(ctx);
   const event = await Database.getMongoRepository(Events).find({
     eventTeam: 'Bday',
   });
@@ -50,10 +52,10 @@ const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 //Choose which reminder to send (Not In / Specific)
 const reminder_Menu = async (ctx: CallbackQueryContext<BotContext>) => {
-  const title = await ctx.update.callback_query.data.substring(
+  const title = ctx.update.callback_query.data.substring(
     'sendBirthdayReminder-'.length
   );
-  ctx.session.name = await title;
+  ctx.session.name = title;
   await reminder.reminderMenu(ctx, 'Birthday');
 };
 //Send Not In Reminder Messaage

@@ -2,6 +2,7 @@ import { Bot, CallbackQueryContext, InlineKeyboard, Keyboard } from 'grammy';
 import { BotContext } from '../../app/_index';
 import { Database } from '../../database_mongoDB/_db-init';
 import { Names } from '../../database_mongoDB/Entity/_tableEntity';
+import { removeInLineButton } from '../../app/_telefunctions';
 
 export const start = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^nameStart-/g, startReply);
@@ -20,7 +21,7 @@ const startReply = async (ctx: CallbackQueryContext<BotContext>) => {
       nameText: { $eq: nameStart },
     },
   });
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const inlineKeyboard_confirm = new InlineKeyboard([
     [{ text: 'Yes', callback_data: 'confirm_YES' }],
     [{ text: 'No', callback_data: 'confirm_NO' }],

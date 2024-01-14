@@ -11,52 +11,60 @@ export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
   const sfmsg = await ctx.message.text;
   const teleUserName = await ctx.update.message.from.username;
   const sheet = ctx.session.gSheet;
-  if (sfmsg == null) {
-    sendToSheet_SF(ctx);
-  } else {
-    if (sfmsg && teleUserName && sheet) {
-      const user = await Database.getMongoRepository(Names).find({
-        teleUser: teleUserName,
-      });
-      const newRow = await sheet.addRow({
-        timeStamp: Date(),
-        name: user[0].nameText,
-        sermonFeedback: sfmsg,
-        attendance: 'Yes',
-        reason: '',
-      });
-
-      if (newRow) {
-        const collection = await Database.getMongoRepository(
-          SF_mongo
-        ).findOneBy({
+  await ctx.reply('Processing... Please wait...');
+  try {
+    if (sfmsg == null) {
+      sendToSheet_SF(ctx);
+    } else {
+      if (sfmsg && teleUserName && sheet) {
+        const user = await Database.getMongoRepository(Names).find({
           teleUser: teleUserName,
         });
-        if (!collection) {
-          const sfevent = new SF_mongo();
-          sfevent.teleUser = teleUserName;
-          sfevent.attendance = ['Y'];
-          sfevent.sf = sfmsg;
-          sfevent.timestamp = new Date();
-          await Database.getMongoRepository(SF_mongo).save(sfevent);
+        const newRow = await sheet.addRow({
+          timeStamp: Date(),
+          name: user[0].nameText,
+          sermonFeedback: sfmsg,
+          attendance: 'Yes',
+          reason: '',
+        });
+
+        if (newRow) {
+          const collection = await Database.getMongoRepository(
+            SF_mongo
+          ).findOneBy({
+            teleUser: teleUserName,
+          });
+          if (!collection) {
+            const sfevent = new SF_mongo();
+            sfevent.teleUser = teleUserName;
+            sfevent.attendance = ['Y'];
+            sfevent.sf = sfmsg;
+            sfevent.timestamp = new Date();
+            await Database.getMongoRepository(SF_mongo).save(sfevent);
+          } else {
+            await Database.getMongoRepository(SF_mongo).updateOne(
+              { teleUser: teleUserName },
+              { $set: { attendance: ['Y'], sf: sfmsg, timestamp: new Date() } }
+            );
+          }
+          await ctx.reply('Sent! Your SF has been recorded successfully.');
         } else {
-          await Database.getMongoRepository(SF_mongo).updateOne(
-            { teleUser: teleUserName },
-            { $set: { attendance: ['Y'], sf: sfmsg, timestamp: new Date() } }
-          );
+          await ctx.reply('ERROR! Failed to log SF. Pls try again!');
+          console.log('SendSF Failed');
         }
-        await ctx.reply('Sent! Your SF has been recorded successfully.');
       } else {
-        await ctx.reply('ERROR! Failed to log SF. Pls try again!');
+        await ctx.reply('ERROR! Pls try again!');
         console.log('SendSF Failed');
       }
-    } else {
-      await ctx.reply('ERROR! Pls try again!');
-      console.log('SendSF Failed');
+      await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+      ctx.session = await initial();
     }
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-    ctx.session = await initial();
+  } catch (err) {
+    await ctx.reply('ERROR! Please try again!');
+    console.log(err);
   }
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  ctx.session = await initial();
 };
 
 // Send to Google Sheets Reason
@@ -67,56 +75,64 @@ export const sendToSheet_Reason = async (
   const teleUserName = await ctx.update.message.from.username;
   const reason = await ctx.message.text;
   const sheet = ctx.session.gSheet;
-  if (reason == null) {
-    sendToSheet_Reason(ctx);
-  } else {
-    if (reason && teleUserName && sheet) {
-      const user = await Database.getMongoRepository(Names).find({
-        teleUser: teleUserName,
-      });
-      const newRow = await sheet.addRow({
-        timeStamp: Date(),
-        name: user[0].nameText,
-        sermonFeedback: '',
-        attendance: 'No',
-        reason: reason,
-      });
-      if (newRow) {
-        const collection = await Database.getMongoRepository(
-          SF_mongo
-        ).findOneBy({
+  await ctx.reply('Processing... Please wait...');
+  try {
+    if (reason == null) {
+      sendToSheet_Reason(ctx);
+    } else {
+      if (reason && teleUserName && sheet) {
+        const user = await Database.getMongoRepository(Names).find({
           teleUser: teleUserName,
         });
+        const newRow = await sheet.addRow({
+          timeStamp: Date(),
+          name: user[0].nameText,
+          sermonFeedback: '',
+          attendance: 'No',
+          reason: reason,
+        });
+        if (newRow) {
+          const collection = await Database.getMongoRepository(
+            SF_mongo
+          ).findOneBy({
+            teleUser: teleUserName,
+          });
 
-        if (!collection) {
-          const sf = new SF_mongo();
-          sf.teleUser = teleUserName;
-          sf.attendance = ['N', reason];
-          sf.sf = '';
-          sf.timestamp = new Date();
-          await Database.getMongoRepository(SF_mongo).save(sf);
+          if (!collection) {
+            const sf = new SF_mongo();
+            sf.teleUser = teleUserName;
+            sf.attendance = ['N', reason];
+            sf.sf = '';
+            sf.timestamp = new Date();
+            await Database.getMongoRepository(SF_mongo).save(sf);
+          } else {
+            await Database.getMongoRepository(SF_mongo).updateOne(
+              { teleUser: teleUserName },
+              {
+                $set: {
+                  attendance: ['N', reason],
+                  sf: '',
+                  timestamp: new Date(),
+                },
+              }
+            );
+          }
+          await ctx.reply('Sent! Your SF has been recorded successfully.');
         } else {
-          await Database.getMongoRepository(SF_mongo).updateOne(
-            { teleUser: teleUserName },
-            {
-              $set: {
-                attendance: ['N', reason],
-                sf: '',
-                timestamp: new Date(),
-              },
-            }
-          );
+          await ctx.reply('ERROR! Failed to log SF. Pls try again!');
+          console.log('SendSF Failed');
         }
-        await ctx.reply('Sent! Your SF has been recorded successfully.');
       } else {
-        await ctx.reply('ERROR! Failed to log SF. Pls try again!');
+        await ctx.reply('ERROR! Please try again!');
         console.log('SendSF Failed');
       }
-    } else {
-      await ctx.reply('ERROR! Please try again!');
-      console.log('SendSF Failed');
+      await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+      ctx.session = await initial();
     }
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-    ctx.session = await initial();
+  } catch (err) {
+    await ctx.reply('ERROR! Please try again!');
+    console.log(err);
   }
+  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  ctx.session = await initial();
 };

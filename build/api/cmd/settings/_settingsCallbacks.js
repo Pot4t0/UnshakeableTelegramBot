@@ -14,6 +14,7 @@ const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
 const _index_1 = require("../../database_mongoDB/functions/_index");
+const _telefunctions_1 = require("../../app/_telefunctions");
 // Settings Callbacks
 // Any overall bot admin settings
 const settings = (bot) => {
@@ -23,7 +24,7 @@ const settings = (bot) => {
 exports.settings = settings;
 // Settings Announcements Input
 const settingsAnnouncements_Write = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield ctx.reply(`Write down the bot announcement msg. It wll broadcast to everyone using the bot.
 	  `, {
         reply_markup: {

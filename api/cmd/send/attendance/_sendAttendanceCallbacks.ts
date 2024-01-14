@@ -11,6 +11,7 @@ import {
   logReasonBotOnSpecial,
   logReasonBotOnWE,
 } from './_sendAttendanceInternal';
+import { removeInLineButton } from '../../../app/_telefunctions';
 
 //Send Attendance Callbacks
 // For Special Event
@@ -34,7 +35,7 @@ export const sendAttendance = (bot: Bot<BotContext>) => {
 const attendanceEventDecision = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const callback = await ctx.update.callback_query.data.substring(
     'svcLGAttendance-'.length
@@ -149,7 +150,7 @@ const attendanceEventDecision = async (
 
 // Special Event Attendance Logging Function
 const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'SpecialAttendance-'.length
   );
@@ -209,7 +210,7 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
 
 // WE Attendance Logging Function
 const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'WeAttendance-'.length
   );
@@ -264,7 +265,7 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
 
 // LG Attendance Logging Function
 const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'lgAttendance-'.length
   );
@@ -305,7 +306,7 @@ const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
 // Proceeds to move to LG Attendance Function (LG Event)
 // If Attendance is No, it will proceed to Dinner Attendance Reason Function at botOnType = 29
 const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
     'dinnerAttendance-'.length
   );

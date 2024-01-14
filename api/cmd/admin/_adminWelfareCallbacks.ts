@@ -8,6 +8,7 @@ import {
   team,
   wish,
 } from '../../database_mongoDB/functions/_index';
+import { removeInLineButton } from '../../app/_telefunctions';
 
 export const adminWelfare = (bot: Bot<BotContext>) => {
   //Wish View Callbacks
@@ -28,7 +29,7 @@ export const adminWelfare = (bot: Bot<BotContext>) => {
 // Reminder Management
 //Choose which event to send reminder for
 const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const event = await Database.getMongoRepository(Events).find({
     eventTeam: 'Welfare',
   });

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendsf = void 0;
 const _index_1 = require("../../../gsheets/_index");
+const _telefunctions_1 = require("../../../app/_telefunctions");
 //Send SF Callbacks
 const sendsf = (bot) => __awaiter(void 0, void 0, void 0, function* () {
     bot.callbackQuery('AttendanceSF-yes', sendSF);
@@ -20,7 +21,7 @@ exports.sendsf = sendsf;
 // Send SF Callback
 // For attendance = yes
 const sendSF = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.attendance = yield ctx.update.callback_query.data.substring('AttendanceSF-'.length);
     yield ctx.reply(`
   For those who have no clue on what to write for sermon feedback, you can share about what you learnt from the sermon or comment on the entire service in general. Feel free to express your thoughts on the service! You are strongly encouraged to write sermon feedback because they benefit both you and the preacher. 😎
@@ -36,7 +37,7 @@ const sendSF = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 // Send Reason Callback
 // For attendance = no
 const sendReason = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.attendance = yield ctx.update.callback_query.data.substring('AttendanceSF-'.length);
     yield ctx.reply(`
 	Reason for not attending service :(

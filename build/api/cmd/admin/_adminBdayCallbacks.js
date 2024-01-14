@@ -14,6 +14,7 @@ const grammy_1 = require("grammy");
 const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _index_1 = require("../../database_mongoDB/functions/_index");
+const _telefunctions_1 = require("../../app/_telefunctions");
 const adminBday = (bot) => {
     //Birthday View Callbacks
     _index_1.wish.wishView(bot, 'Birthday');
@@ -30,7 +31,9 @@ exports.adminBday = adminBday;
 // Reminder Management
 //Choose which event to send reminder for
 const reminderSystem = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    let msg;
+    if (ctx.message)
+        yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: 'Bday',
     });
@@ -47,8 +50,8 @@ const reminderSystem = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Choose which reminder to send (Not In / Specific)
 const reminder_Menu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const title = yield ctx.update.callback_query.data.substring('sendBirthdayReminder-'.length);
-    ctx.session.name = yield title;
+    const title = ctx.update.callback_query.data.substring('sendBirthdayReminder-'.length);
+    ctx.session.name = title;
     yield _index_1.reminder.reminderMenu(ctx, 'Birthday');
 });
 //Send Not In Reminder Messaage

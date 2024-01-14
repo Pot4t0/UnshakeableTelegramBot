@@ -18,6 +18,7 @@ const _index_1 = require("../../../gsheets/_index");
 const _gsheet_init_1 = require("../../../gsheets/_gsheet_init");
 const _index_2 = require("../../../database_mongoDB/functions/_index");
 const __adminAttendanceInternal_1 = require("./__adminAttendanceInternal");
+const _telefunctions_1 = require("../../../app/_telefunctions");
 // Admin Attendance Callbacks
 const adminAttendance = (bot) => {
     // Add Attendance Sheet Menu
@@ -55,7 +56,7 @@ exports.adminAttendance = adminAttendance;
 // LG Event, No LG Event, Special Event
 // Special Event will have an optional meal option
 const addAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -100,7 +101,7 @@ const removeEventDBDoc = (title) => __awaiter(void 0, void 0, void 0, function* 
 // Add Sheet With LG
 // LG Event LG Date
 const addAttendanceSheet_LGEventLGDateMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield ctx.reply('Enter Worship Experience Date in dd/mm/yyyy: ', {
         reply_markup: { force_reply: true },
     });
@@ -109,7 +110,7 @@ const addAttendanceSheet_LGEventLGDateMessage = (ctx) => __awaiter(void 0, void 
 // Add Sheet without LG
 // No LG Event Worship Experience Date
 const addAttendanceSheet_NoLGEventWEDateMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield ctx.reply('Enter WE Date in dd/mm/yyyy: ', {
         reply_markup: { force_reply: true },
     });
@@ -118,7 +119,7 @@ const addAttendanceSheet_NoLGEventWEDateMessage = (ctx) => __awaiter(void 0, voi
 // Add Sheet Special Event
 // Special Event Meal Options
 const addAttendanceSheet_SpecialEventMealMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -151,7 +152,7 @@ const addAttendanceSheet_SpecialEventMealMessage = (ctx) => __awaiter(void 0, vo
 });
 // Special Event Name
 const addAttendanceSheet_SpecialEventNameMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const meal = yield ctx.update.callback_query.data.substring('addSpecialAttendannce-'.length);
     ctx.session.eventMeal = meal;
     yield ctx.reply('Enter Special Event Name:', {
@@ -162,7 +163,7 @@ const addAttendanceSheet_SpecialEventNameMessage = (ctx) => __awaiter(void 0, vo
 // Delete Attendance Sheet
 // Able to delete any attendance sheet except for template and special event template
 const delAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
     const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
@@ -181,7 +182,7 @@ const delAttendanceSheet = (ctx) => __awaiter(void 0, void 0, void 0, function* 
 exports.delAttendanceSheet = delAttendanceSheet;
 // Delete Attendance Sheet Confirmation Message
 const delAttendanceeSheet_CfmMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const sheetName = yield ctx.update.callback_query.data.substring('delAttendanceeSheet-'.length);
     ctx.session.eventName = sheetName;
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -205,7 +206,7 @@ const delAttendanceeSheet_CfmMessage = (ctx) => __awaiter(void 0, void 0, void 0
 exports.delAttendanceeSheet_CfmMessage = delAttendanceeSheet_CfmMessage;
 // Delete Attendance Sheet Execution
 const delAttendanceeSheet_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const cfm = yield ctx.update.callback_query.data.substring('CfmDelAttendanceSheet-'.length);
     if (cfm == 'Y') {
         if (ctx.session.eventName) {
@@ -232,7 +233,7 @@ exports.delAttendanceeSheet_Execution = delAttendanceeSheet_Execution;
 //Reminder Management
 //Choose which event to send reminder for
 const attendanceReminder = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
     const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
@@ -250,14 +251,14 @@ const attendanceReminder = (ctx) => __awaiter(void 0, void 0, void 0, function* 
 });
 //Choose which reminder to send (Not In / Specific)
 const attendanceReminder_Menu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const title = yield ctx.update.callback_query.data.substring('sendAttendanceReminder-'.length);
     ctx.session.name = yield title;
     yield _index_2.reminder.reminderMenu(ctx, 'Attendance');
 });
 //Send Not In Reminder Messaage
 const attendanceReminder_Msg = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const title = ctx.session.name;
     if (title) {
         const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[title];
@@ -267,7 +268,7 @@ const attendanceReminder_Msg = (ctx) => __awaiter(void 0, void 0, void 0, functi
 //Send To LG Chat
 //Choose which event to send to LG Chat
 const sendAttendanceToLGChat_EventMenu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const activeEvents = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
         name: 'Active',
     });
@@ -283,7 +284,7 @@ const sendAttendanceToLGChat_EventMenu = (ctx) => __awaiter(void 0, void 0, void
 });
 //Send To LG Chat Execution
 const sendAttendanceToLGChat_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('sendAttendanceToLGChat-'.length);
     const totalNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({});
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
@@ -389,13 +390,14 @@ const sendAttendanceToLGChat_Execution = (ctx) => __awaiter(void 0, void 0, void
                 dinnerNotCmgMsg +
                 nvrSubmitMsg;
     }
-    // await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+    yield ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
     console.log(msg);
+    yield ctx.reply(`Sent to LG Chat!`);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 // Archive Attendance Sheet
 const archiveAttendance_Menu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const archivedSheets = _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
         name: 'Archive',
     });
@@ -417,7 +419,7 @@ const archiveAttendance_Menu = (ctx) => __awaiter(void 0, void 0, void 0, functi
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 const archiveAttendance_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('archiveSheet-'.length);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
@@ -434,7 +436,7 @@ const archiveAttendance_Execution = (ctx) => __awaiter(void 0, void 0, void 0, f
 });
 // Unarchive Attendance Sheet
 const unarchiveAttendance_Menu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const archiveSheet = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
         name: 'Archive',
     });
@@ -451,7 +453,7 @@ const unarchiveAttendance_Menu = (ctx) => __awaiter(void 0, void 0, void 0, func
     }
 });
 const unarchiveAttendance_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('unarchiveSheet-'.length);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];

@@ -17,28 +17,39 @@ const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const sendWish_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const wish = ctx.message.text;
     ctx.session.wish = wish;
-    if (wish == null) {
-        (0, exports.sendWish_Execution)(ctx);
+    yield ctx.reply('Processing... Please wait...');
+    try {
+        if (wish == null) {
+            (0, exports.sendWish_Execution)(ctx);
+        }
+        const eventName = ctx.session.eventName;
+        const name = ctx.message.from.username;
+        if (eventName || name) {
+            const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).findOneBy({
+                eventName: eventName,
+                teleUser: name,
+            });
+            if (!collection) {
+                yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).save({
+                    eventName: eventName,
+                    teleUser: name,
+                    wishText: wish,
+                });
+                yield ctx.reply(`Wish Received for ${eventName}`);
+            }
+            else {
+                yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).updateOne({ teleUser: name, eventName: eventName }, { $set: { wishText: wish } });
+                yield ctx.reply(`Wish Overriden for ${eventName}`);
+            }
+        }
+        else {
+            yield ctx.reply(`Wish Send Failed! Please try again!`);
+        }
     }
-    const eventName = ctx.session.eventName;
-    const name = ctx.message.from.username;
-    const collection = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).findOneBy({
-        eventName: eventName,
-        teleUser: name,
-    });
-    if (!collection) {
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).save({
-            eventName: eventName,
-            teleUser: name,
-            wishText: wish,
-        });
-        yield ctx.reply(`Wish Received for ${eventName}`);
-    }
-    else {
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).updateOne({ teleUser: name, eventName: eventName }, { $set: { wishText: wish } });
-        yield ctx.reply(`Wish Overriden for ${eventName}`);
+    catch (err) {
+        yield ctx.reply(`Wish Send Failed! Please try again!`);
+        console.log(err);
     }
     ctx.session = (0, _SessionData_1.initial)();
-    // }
 });
 exports.sendWish_Execution = sendWish_Execution;

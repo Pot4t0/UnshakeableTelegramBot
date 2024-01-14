@@ -14,6 +14,7 @@ const grammy_1 = require("grammy");
 const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _index_1 = require("../../database_mongoDB/functions/_index");
+const _telefunctions_1 = require("../../app/_telefunctions");
 const adminWelfare = (bot) => {
     //Wish View Callbacks
     _index_1.wish.wishView(bot, 'Welfare');
@@ -30,7 +31,7 @@ exports.adminWelfare = adminWelfare;
 // Reminder Management
 //Choose which event to send reminder for
 const reminderSystem = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: 'Welfare',
     });

@@ -1,6 +1,7 @@
 import { Bot, CallbackQueryContext } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { gsheet } from '../../../gsheets/_index';
+import { removeInLineButton } from '../../../app/_telefunctions';
 
 //Send SF Callbacks
 export const sendsf = async (bot: Bot<BotContext>) => {
@@ -11,7 +12,7 @@ export const sendsf = async (bot: Bot<BotContext>) => {
 // Send SF Callback
 // For attendance = yes
 const sendSF = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   ctx.session.attendance = await ctx.update.callback_query.data.substring(
     'AttendanceSF-'.length
   );
@@ -34,7 +35,7 @@ const sendSF = async (ctx: CallbackQueryContext<BotContext>) => {
 // Send Reason Callback
 // For attendance = no
 const sendReason = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   ctx.session.attendance = await ctx.update.callback_query.data.substring(
     'AttendanceSF-'.length
   );

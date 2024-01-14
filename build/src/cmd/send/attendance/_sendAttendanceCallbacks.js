@@ -16,6 +16,7 @@ const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _gsheet_init_1 = require("../../../gsheets/_gsheet_init");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _sendAttendanceInternal_1 = require("./_sendAttendanceInternal");
+const _telefunctions_1 = require("../../../app/_telefunctions");
 //Send Attendance Callbacks
 // For Special Event
 // Take Event Attendance (Yes/No) -> Take Reason (If no) -> Take Meal Attendance (if Have) -> Take Reason (if no) -> Log Attendance
@@ -36,7 +37,7 @@ exports.sendAttendance = sendAttendance;
 // Attendance Event Decision Function
 // Choose which attendance event message to send based on sheet data
 const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const callback = yield ctx.update.callback_query.data.substring('svcLGAttendance-'.length);
     const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
@@ -136,7 +137,7 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
 });
 // Special Event Attendance Logging Function
 const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('SpecialAttendance-'.length);
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
@@ -194,7 +195,7 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
 });
 // WE Attendance Logging Function
 const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('WeAttendance-'.length);
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
@@ -246,7 +247,7 @@ const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 // LG Attendance Logging Function
 const lgAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('lgAttendance-'.length);
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
@@ -284,7 +285,7 @@ const lgAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 // Proceeds to move to LG Attendance Function (LG Event)
 // If Attendance is No, it will proceed to Dinner Attendance Reason Function at botOnType = 29
 const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = yield ctx.update.callback_query.data.substring('dinnerAttendance-'.length);
     if (callback == 'Y') {
         const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({

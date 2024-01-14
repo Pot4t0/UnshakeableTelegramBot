@@ -9,29 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendWish = void 0;
-const _telefunctions_1 = require("../../../app/_telefunctions");
-const sendWish = (bot) => {
-    bot.callbackQuery(/^sendWishEvent-/g, sendWish_WishMessage);
-};
-exports.sendWish = sendWish;
-const sendWish_WishMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const event = ctx.update.callback_query.data.substring('sendWishEvent-'.length);
+exports.removeInLineButton = void 0;
+const removeInLineButton = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, _telefunctions_1.removeInLineButton)(ctx);
+        yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     }
     catch (err) {
         yield ctx.reply(`Error! Please do not spam the button!`);
         console.log(err);
     }
-    ctx.session.eventName = event;
-    ctx.session.botOnType = 1;
-    yield ctx.answerCallbackQuery({
-        text: event,
-    });
-    yield ctx.reply(`Enter Your Wish for ${event}: `, {
-        reply_markup: {
-            force_reply: true,
-        },
-    });
 });
+exports.removeInLineButton = removeInLineButton;

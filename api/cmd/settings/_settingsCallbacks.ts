@@ -4,6 +4,7 @@ import { Database } from '../../database_mongoDB/_db-init';
 import { Names } from '../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
 import { dbMessaging } from '../../database_mongoDB/functions/_index';
+import { removeInLineButton } from '../../app/_telefunctions';
 
 // Settings Callbacks
 // Any overall bot admin settings
@@ -16,7 +17,7 @@ export const settings = (bot: Bot<BotContext>) => {
 const settingsAnnouncements_Write = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await ctx.reply(
     `Write down the bot announcement msg. It wll broadcast to everyone using the bot.
 	  `,

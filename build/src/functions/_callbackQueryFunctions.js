@@ -19,7 +19,7 @@ const callbackQueryHandler = (bot) => {
     // /sendattendance Callbacks
     _index_5.send.attendance(bot);
     // /adminWelfare Callbacks
-    _index_3.admin.attendance(bot);
+    _index_3.admin.welfare(bot);
     // /adminbday Callbacks
     _index_3.admin.bday(bot);
     // /adminsf Callbacks
