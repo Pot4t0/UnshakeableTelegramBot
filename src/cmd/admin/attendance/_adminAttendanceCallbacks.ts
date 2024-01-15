@@ -409,24 +409,24 @@ const sendAttendanceToLGChat_Execution = async (
     );
     msg += cmgMsg + notCmgMsg + mealCmgMsg + mealNotCmgMsg + nvrSubmitMsg;
   } else {
-    let lgComingMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
-    let lgNotCmgMsg = '\n\nNot Coming (LG) 😢\n';
-    let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
-    let weNotCmgMsg = '\n\nNot Coming (WE) 😢\n';
-    let dinnerCmgMsg = `\n\nDinner (${weDateCell.value}):\n\nComing 🥳\n`;
-    let dinnerNotCmgMsg = '\n\nNot Coming (Dinner) 😢\n';
-    let nvrSubmitMsg = '\n\nYet to submit ❗️\n';
+    let lgComingMsg = `\n\n<b>${lgCheckCell.value} (${lgDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
+    let lgNotCmgMsg = '\n\n<b>Not Coming (LG) 😢</b>\n';
+    let weCmgMsg = `\n\n<b>${weCheckCell.value} (${weDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
+    let weNotCmgMsg = '\n\n<b>Not Coming (WE) 😢</b>\n';
+    let dinnerCmgMsg = `\n\n<b>Dinner (${weDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
+    let dinnerNotCmgMsg = '\n\n<b>Not Coming (Dinner) 😢</b>\n';
+    let nvrSubmitMsg = '\n\n<b>Yet to submit ❗️</b>\n';
 
     await Promise.all(
       totalNames.map(async (n) => {
-        const i = await n.attendanceRow;
-        const attendName = await sheet.getCellByA1(`B${i}`);
-        const weCell = await sheet.getCellByA1(`C${i}`);
-        const weReasonCell = await sheet.getCellByA1(`D${i}`);
-        const lgCell = await sheet.getCellByA1(`F${i}`);
-        const lgReasonCell = await sheet.getCellByA1(`G${i}`);
-        const dinnerCell = await sheet.getCellByA1(`I${i}`);
-        const dinnerReasonCell = await sheet.getCellByA1(`J${i}`);
+        const i = n.attendanceRow;
+        const attendName = sheet.getCellByA1(`B${i}`);
+        const weCell = sheet.getCellByA1(`C${i}`);
+        const weReasonCell = sheet.getCellByA1(`D${i}`);
+        const lgCell = sheet.getCellByA1(`F${i}`);
+        const lgReasonCell = sheet.getCellByA1(`G${i}`);
+        const dinnerCell = sheet.getCellByA1(`I${i}`);
+        const dinnerReasonCell = sheet.getCellByA1(`J${i}`);
         if (lgCheckCell.value != 'No LG') {
           if (lgCell.value == 'Y') {
             lgComingMsg += `\n${attendName.value}`;
@@ -462,10 +462,12 @@ const sendAttendanceToLGChat_Execution = async (
       dinnerNotCmgMsg +
       nvrSubmitMsg;
   }
-  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg, {
+    parse_mode: 'HTML',
+  });
   console.log(msg);
   await ctx.reply(`Sent to LG Chat!`);
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 // Archive Attendance Sheet

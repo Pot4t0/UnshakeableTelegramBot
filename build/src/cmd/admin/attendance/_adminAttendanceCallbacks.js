@@ -335,22 +335,22 @@ const sendAttendanceToLGChat_Execution = (ctx) => __awaiter(void 0, void 0, void
         msg += cmgMsg + notCmgMsg + mealCmgMsg + mealNotCmgMsg + nvrSubmitMsg;
     }
     else {
-        let lgComingMsg = `\n\n${lgCheckCell.value} (${lgDateCell.value}):\n\nComing 🥳\n`;
-        let lgNotCmgMsg = '\n\nNot Coming (LG) 😢\n';
-        let weCmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
-        let weNotCmgMsg = '\n\nNot Coming (WE) 😢\n';
-        let dinnerCmgMsg = `\n\nDinner (${weDateCell.value}):\n\nComing 🥳\n`;
-        let dinnerNotCmgMsg = '\n\nNot Coming (Dinner) 😢\n';
-        let nvrSubmitMsg = '\n\nYet to submit ❗️\n';
+        let lgComingMsg = `\n\n<b>${lgCheckCell.value} (${lgDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
+        let lgNotCmgMsg = '\n\n<b>Not Coming (LG) 😢</b>\n';
+        let weCmgMsg = `\n\n<b>${weCheckCell.value} (${weDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
+        let weNotCmgMsg = '\n\n<b>Not Coming (WE) 😢</b>\n';
+        let dinnerCmgMsg = `\n\n<b>Dinner (${weDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
+        let dinnerNotCmgMsg = '\n\n<b>Not Coming (Dinner) 😢</b>\n';
+        let nvrSubmitMsg = '\n\n<b>Yet to submit ❗️</b>\n';
         yield Promise.all(totalNames.map((n) => __awaiter(void 0, void 0, void 0, function* () {
-            const i = yield n.attendanceRow;
-            const attendName = yield sheet.getCellByA1(`B${i}`);
-            const weCell = yield sheet.getCellByA1(`C${i}`);
-            const weReasonCell = yield sheet.getCellByA1(`D${i}`);
-            const lgCell = yield sheet.getCellByA1(`F${i}`);
-            const lgReasonCell = yield sheet.getCellByA1(`G${i}`);
-            const dinnerCell = yield sheet.getCellByA1(`I${i}`);
-            const dinnerReasonCell = yield sheet.getCellByA1(`J${i}`);
+            const i = n.attendanceRow;
+            const attendName = sheet.getCellByA1(`B${i}`);
+            const weCell = sheet.getCellByA1(`C${i}`);
+            const weReasonCell = sheet.getCellByA1(`D${i}`);
+            const lgCell = sheet.getCellByA1(`F${i}`);
+            const lgReasonCell = sheet.getCellByA1(`G${i}`);
+            const dinnerCell = sheet.getCellByA1(`I${i}`);
+            const dinnerReasonCell = sheet.getCellByA1(`J${i}`);
             if (lgCheckCell.value != 'No LG') {
                 if (lgCell.value == 'Y') {
                     lgComingMsg += `\n${attendName.value}`;
@@ -390,10 +390,12 @@ const sendAttendanceToLGChat_Execution = (ctx) => __awaiter(void 0, void 0, void
                 dinnerNotCmgMsg +
                 nvrSubmitMsg;
     }
-    yield ctx.api.sendMessage(process.env.LG_CHATID || '', msg);
+    yield ctx.api.sendMessage(process.env.LG_CHATID || '', msg, {
+        parse_mode: 'HTML',
+    });
     console.log(msg);
     yield ctx.reply(`Sent to LG Chat!`);
-    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 // Archive Attendance Sheet
 const archiveAttendance_Menu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
