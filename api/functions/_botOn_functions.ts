@@ -134,7 +134,9 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       break;
     }
     default: {
-      await ctx.reply('Sorry I do not understand. Please try again!');
+      const chatid = ctx.message?.chat.id.toString();
+      if (chatid == process.env.LG_CHATID)
+        await ctx.reply('Sorry I do not understand. Please try again!');
     }
   }
 };

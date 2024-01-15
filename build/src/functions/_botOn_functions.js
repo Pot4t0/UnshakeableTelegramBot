@@ -21,6 +21,7 @@ const botOnHandler = (bot) => {
 };
 exports.botOnHandler = botOnHandler;
 const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     switch (ctx.session.botOnType) {
         // /sendwish BotOn Functions
         //Refer to finalWish Method in sendWishCallback.ts
@@ -131,7 +132,9 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             break;
         }
         default: {
-            yield ctx.reply('Sorry I do not understand. Please try again!');
+            const chatid = (_a = ctx.message) === null || _a === void 0 ? void 0 : _a.chat.id.toString();
+            if (chatid == process.env.LG_CHATID)
+                yield ctx.reply('Sorry I do not understand. Please try again!');
         }
     }
 });
