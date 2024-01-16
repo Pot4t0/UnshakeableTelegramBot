@@ -126,7 +126,7 @@ export const reminderSendAllNotIn_Execution = async (
             }
           })
         );
-        await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         await ctx.reply(`Reminder sent!`);
       } else {
         await ctx.reply(`Error in sending reminder!`);
@@ -188,7 +188,7 @@ export const reminderSendAllNotIn_Execution = async (
           teleUser: { $not: { $in: await InSF.map((n) => `${n.teleUser}`) } },
         },
       });
-      const notInUsersAdmin = await notInNamesAdmin
+      const notInUsersAdmin = notInNamesAdmin
         .map((n) => `${n.teleUser}`)
         .filter((n) => n != '');
 

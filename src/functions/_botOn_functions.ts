@@ -40,7 +40,6 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
     // Add Event Date Message
     case 4: {
       await eventDB.addEvent_ReceiveEventName(ctx);
-      // await adminWelfareCallback.addWelfareEvent_2(ctx);
       break;
     }
     //Add NotAllowedUser Meassage
@@ -51,13 +50,11 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
     //Used for editing welfare events (Event Name)
     case 6: {
       await eventDB.editEventName_Execution(ctx);
-      // await adminWelfareCallback.editWelfareEventName_2(ctx);
       break;
     }
     //Used for editing welfare events (Event Dtae)
     case 7: {
       await eventDB.editEventDate_Execution(ctx);
-      // adminWelfareCallback.editWelfareEventDate_2(ctx);
       break;
     }
 
@@ -107,14 +104,12 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       await adminAttendanceBotOn.addAttendanceSheet_SpecialEventDateMessage(
         ctx
       );
-      // await adminAttendanceCallbac k.sendNotInReminder_2(ctx);
       break;
     }
     case 25: {
       await adminAttendanceBotOn.addAttendanceSheet_CreateSpecialEventSheet(
         ctx
       );
-      // await adminAttendanceCallback.sendSpecificReminder_3(ctx);
       break;
     }
 
@@ -134,8 +129,8 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       break;
     }
     default: {
-      const chatid = ctx.message?.chat.id.toString();
-      if (chatid == process.env.LG_CHATID)
+      const chatid = ctx.chat.id.toString();
+      if (chatid != process.env.LG_CHATID)
         await ctx.reply('Sorry I do not understand. Please try again!');
     }
   }

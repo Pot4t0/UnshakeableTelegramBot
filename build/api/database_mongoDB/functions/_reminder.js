@@ -111,7 +111,7 @@ const reminderSendAllNotIn_Execution = (ctx) => __awaiter(void 0, void 0, void 0
                         console.log(prefix + reminderMsg + `(${i.teleUser})`);
                     }
                 })));
-                yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 yield ctx.reply(`Reminder sent!`);
             }
             else {
@@ -165,7 +165,7 @@ const reminderSendAllNotIn_Execution = (ctx) => __awaiter(void 0, void 0, void 0
                     teleUser: { $not: { $in: yield InSF.map((n) => `${n.teleUser}`) } },
                 },
             });
-            const notInUsersAdmin = yield notInNamesAdmin
+            const notInUsersAdmin = notInNamesAdmin
                 .map((n) => `${n.teleUser}`)
                 .filter((n) => n != '');
             yield Promise.all(notInUsersAdmin.map((n) => __awaiter(void 0, void 0, void 0, function* () {

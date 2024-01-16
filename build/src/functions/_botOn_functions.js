@@ -21,7 +21,6 @@ const botOnHandler = (bot) => {
 };
 exports.botOnHandler = botOnHandler;
 const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     switch (ctx.session.botOnType) {
         // /sendwish BotOn Functions
         //Refer to finalWish Method in sendWishCallback.ts
@@ -46,7 +45,6 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         // Add Event Date Message
         case 4: {
             yield _index_1.eventDB.addEvent_ReceiveEventName(ctx);
-            // await adminWelfareCallback.addWelfareEvent_2(ctx);
             break;
         }
         //Add NotAllowedUser Meassage
@@ -57,13 +55,11 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         //Used for editing welfare events (Event Name)
         case 6: {
             yield _index_1.eventDB.editEventName_Execution(ctx);
-            // await adminWelfareCallback.editWelfareEventName_2(ctx);
             break;
         }
         //Used for editing welfare events (Event Dtae)
         case 7: {
             yield _index_1.eventDB.editEventDate_Execution(ctx);
-            // adminWelfareCallback.editWelfareEventDate_2(ctx);
             break;
         }
         // sendSF BotOn Functions
@@ -108,12 +104,10 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         //reminders
         case 24: {
             yield _index_3.adminAttendanceBotOn.addAttendanceSheet_SpecialEventDateMessage(ctx);
-            // await adminAttendanceCallbac k.sendNotInReminder_2(ctx);
             break;
         }
         case 25: {
             yield _index_3.adminAttendanceBotOn.addAttendanceSheet_CreateSpecialEventSheet(ctx);
-            // await adminAttendanceCallback.sendSpecificReminder_3(ctx);
             break;
         }
         // /sendattendance Special Event Logging Reason
@@ -132,8 +126,8 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             break;
         }
         default: {
-            const chatid = (_a = ctx.message) === null || _a === void 0 ? void 0 : _a.chat.id.toString();
-            if (chatid == process.env.LG_CHATID)
+            const chatid = ctx.chat.id.toString();
+            if (chatid != process.env.LG_CHATID)
                 yield ctx.reply('Sorry I do not understand. Please try again!');
         }
     }

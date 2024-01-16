@@ -74,7 +74,7 @@ const eventView = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () 
     const allEvents = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: eventTeam,
     });
-    const eventListed = yield allEvents.map((n) => `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`);
+    const eventListed = allEvents.map((n) => `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`);
     yield ctx.reply(eventListed.join('\n\n'));
 });
 const addEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
@@ -230,7 +230,7 @@ const delEvent_PerformDeletion = (ctx, choice, eventName) => __awaiter(void 0, v
         yield ctx.reply(`Error in deletion! Please try again`);
         console.log('Session data not found! (eventName)');
     }
-    ctx.session = yield (0, _SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 });
 const editEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
     let eventName;
@@ -336,7 +336,7 @@ const editEventDate_Execution = (ctx) => __awaiter(void 0, void 0, void 0, funct
     }
     yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventDate: newEventDate } });
     yield ctx.reply(`Event Date changed to ${newEventDate}`);
-    ctx.session = yield (0, _SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 });
 exports.editEventDate_Execution = editEventDate_Execution;
 const editNotAllowedUser = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
@@ -363,7 +363,7 @@ const editNotAllowedUser = (ctx, eventName) => __awaiter(void 0, void 0, void 0,
 });
 const editNotAllowedUser_Execution = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
     yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-    let selectedName = yield ctx.update.callback_query.data.substring('editNotAllowedUserSelect-'.length);
+    let selectedName = ctx.update.callback_query.data.substring('editNotAllowedUserSelect-'.length);
     if (selectedName == 'ALL') {
         selectedName = '';
     }
@@ -374,5 +374,5 @@ const editNotAllowedUser_Execution = (ctx, eventName) => __awaiter(void 0, void 
     else {
         yield ctx.reply(`User ${selectedName} is excluded from ${eventName}`);
     }
-    ctx.session = yield (0, _SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 });

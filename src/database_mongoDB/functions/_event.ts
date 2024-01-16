@@ -81,7 +81,7 @@ const eventView = async (
   const allEvents = await Database.getMongoRepository(Events).find({
     eventTeam: eventTeam,
   });
-  const eventListed = await allEvents.map(
+  const eventListed = allEvents.map(
     (n) =>
       `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`
   );
@@ -284,7 +284,7 @@ const delEvent_PerformDeletion = async (
     await ctx.reply(`Error in deletion! Please try again`);
     console.log('Session data not found! (eventName)');
   }
-  ctx.session = await initial();
+  ctx.session = initial();
 };
 
 const editEvent = async (
@@ -432,7 +432,7 @@ export const editEventDate_Execution = async (
   );
 
   await ctx.reply(`Event Date changed to ${newEventDate}`);
-  ctx.session = await initial();
+  ctx.session = initial();
 };
 
 const editNotAllowedUser = async (
@@ -468,7 +468,7 @@ const editNotAllowedUser_Execution = async (
   eventName: string
 ) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-  let selectedName = await ctx.update.callback_query.data.substring(
+  let selectedName = ctx.update.callback_query.data.substring(
     'editNotAllowedUserSelect-'.length
   );
   if (selectedName == 'ALL') {
@@ -483,5 +483,5 @@ const editNotAllowedUser_Execution = async (
   } else {
     await ctx.reply(`User ${selectedName} is excluded from ${eventName}`);
   }
-  ctx.session = await initial();
+  ctx.session = initial();
 };

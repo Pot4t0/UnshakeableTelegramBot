@@ -1,7 +1,4 @@
-import {
-  GoogleSpreadsheet,
-  GoogleSpreadsheetCellErrorValue,
-} from 'google-spreadsheet';
+import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 import 'reflect-metadata';
 import 'dotenv/config';
