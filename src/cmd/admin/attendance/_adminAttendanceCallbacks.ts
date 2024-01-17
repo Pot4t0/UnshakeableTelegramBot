@@ -282,15 +282,22 @@ export const delAttendanceeSheet_Execution = async (
 //Choose which event to send reminder for
 const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
+  const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
+    name: 'Archive',
+  });
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const archivedSheetsArray = (await archivedSheets)
+    .map((n) => n.archive)
+    .flat();
   const inlineKeyboard = new InlineKeyboard(
     ghseetArray
       .filter((n) => n != template)
       .filter((n) => n != special_template)
+      .filter((n) => !archivedSheetsArray.includes(n.title))
       .map((n) => [
         { text: n.title, callback_data: `sendAttendanceReminder-${n.title}` },
       ])

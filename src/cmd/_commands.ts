@@ -277,10 +277,7 @@ const adminWelfare = async (ctx: CommandContext<BotContext>) => {
 };
 
 //Admin Birthday command
-const adminbday = async (
-  ctx: CommandContext<BotContext>,
-  next: () => Promise<void>
-) => {
+const adminbday = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
   }

@@ -245,7 +245,7 @@ const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 //Admin Birthday command
-const adminbday = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
+const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _j;
     if (((_j = ctx.update.message) === null || _j === void 0 ? void 0 : _j.chat.type) !== 'private') {
         return false;

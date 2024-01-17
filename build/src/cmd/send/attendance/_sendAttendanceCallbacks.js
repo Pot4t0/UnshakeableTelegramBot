@@ -190,7 +190,7 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     else {
         yield ctx.reply('Error! Pls try again');
         ctx.session = yield (0, _SessionData_1.initial)();
-        yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
 });
 // WE Attendance Logging Function
@@ -203,9 +203,10 @@ const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
+            yield ctx.reply('Processing... Please wait...');
             yield sheet.loadCells();
-            const attendanceCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
-            const reasonCell = yield sheet.getCellByA1(`D${user[0].attendanceRow}`);
+            const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+            const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
             yield sheet.saveUpdatedCells();
@@ -241,8 +242,8 @@ const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }
     else {
         yield ctx.reply('Error! Pls try again');
-        ctx.session = yield (0, _SessionData_1.initial)();
-        yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        ctx.session = (0, _SessionData_1.initial)();
+        _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
 });
 // LG Attendance Logging Function
@@ -255,15 +256,16 @@ const lgAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
+            yield ctx.reply('Processing... Please wait...');
             yield sheet.loadCells();
-            const attendanceCell = yield sheet.getCellByA1(`F${user[0].attendanceRow}`);
-            const reasonCell = yield sheet.getCellByA1(`G${user[0].attendanceRow}`);
+            const attendanceCell = sheet.getCellByA1(`F${user[0].attendanceRow}`);
+            const reasonCell = sheet.getCellByA1(`G${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
             yield sheet.saveUpdatedCells();
             yield ctx.reply('Attendance logged! Thanks for submitting!');
-            ctx.session = yield (0, _SessionData_1.initial)();
-            yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+            ctx.session = (0, _SessionData_1.initial)();
+            _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         }
     }
     else if (callback == 'N') {
@@ -348,6 +350,7 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
 const dinnerLogAttendance = (ctx, rowNo, eventName, dinnerAttendance, dinnerReason) => __awaiter(void 0, void 0, void 0, function* () {
     const sheet = ctx.session.gSheet;
     if (sheet) {
+        yield ctx.reply('Processing... Please wait...');
         yield sheet.loadCells();
         let dinnerA1 = ``;
         let dinnerReasonA1 = ``;

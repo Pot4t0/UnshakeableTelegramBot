@@ -204,7 +204,7 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   } else {
     await ctx.reply('Error! Pls try again');
     ctx.session = await initial();
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 
@@ -220,11 +220,10 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   if (callback == 'Y') {
     const sheet = ctx.session.gSheet;
     if (sheet) {
+      await ctx.reply('Processing... Please wait...');
       await sheet.loadCells();
-      const attendanceCell = await sheet.getCellByA1(
-        `C${user[0].attendanceRow}`
-      );
-      const reasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+      const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+      const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
       reasonCell.value = '';
       attendanceCell.value = 'Y';
       await sheet.saveUpdatedCells();
@@ -258,8 +257,8 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
     ctx.session.botOnType = logReasonBotOnWE;
   } else {
     await ctx.reply('Error! Pls try again');
-    ctx.session = await initial();
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    ctx.session = initial();
+    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 
@@ -275,17 +274,16 @@ const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   if (callback == 'Y') {
     const sheet = ctx.session.gSheet;
     if (sheet) {
+      await ctx.reply('Processing... Please wait...');
       await sheet.loadCells();
-      const attendanceCell = await sheet.getCellByA1(
-        `F${user[0].attendanceRow}`
-      );
-      const reasonCell = await sheet.getCellByA1(`G${user[0].attendanceRow}`);
+      const attendanceCell = sheet.getCellByA1(`F${user[0].attendanceRow}`);
+      const reasonCell = sheet.getCellByA1(`G${user[0].attendanceRow}`);
       reasonCell.value = '';
       attendanceCell.value = 'Y';
       await sheet.saveUpdatedCells();
       await ctx.reply('Attendance logged! Thanks for submitting!');
-      ctx.session = await initial();
-      await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+      ctx.session = initial();
+      gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
   } else if (callback == 'N') {
     ctx.session.attendance;
@@ -394,6 +392,7 @@ const dinnerLogAttendance = async (
 ) => {
   const sheet = ctx.session.gSheet;
   if (sheet) {
+    await ctx.reply('Processing... Please wait...');
     await sheet.loadCells();
     let dinnerA1 = ``;
     let dinnerReasonA1 = ``;

@@ -234,13 +234,20 @@ exports.delAttendanceeSheet_Execution = delAttendanceeSheet_Execution;
 //Choose which event to send reminder for
 const attendanceReminder = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
+    const archivedSheets = _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
+        name: 'Archive',
+    });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
     const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
     const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    const archivedSheetsArray = (yield archivedSheets)
+        .map((n) => n.archive)
+        .flat();
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
         .filter((n) => n != template)
         .filter((n) => n != special_template)
+        .filter((n) => !archivedSheetsArray.includes(n.title))
         .map((n) => [
         { text: n.title, callback_data: `sendAttendanceReminder-${n.title}` },
     ]));

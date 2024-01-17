@@ -33,8 +33,8 @@ const WeAttendanceLogReason = (ctx) => __awaiter(void 0, void 0, void 0, functio
         const sheet = ctx.session.gSheet;
         if (sheet) {
             yield sheet.loadCells();
-            const attendanceCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
-            const reasonCell = yield sheet.getCellByA1(`D${user[0].attendanceRow}`);
+            const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+            const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
             attendanceCell.value = 'N';
             reasonCell.value = reason;
             yield sheet.saveUpdatedCells();

@@ -26,10 +26,8 @@ export const WeAttendanceLogReason = async (
     const sheet = ctx.session.gSheet;
     if (sheet) {
       await sheet.loadCells();
-      const attendanceCell = await sheet.getCellByA1(
-        `C${user[0].attendanceRow}`
-      );
-      const reasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+      const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+      const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
       attendanceCell.value = 'N';
       reasonCell.value = reason;
       await sheet.saveUpdatedCells();
