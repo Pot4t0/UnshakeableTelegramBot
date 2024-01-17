@@ -48,11 +48,16 @@ const settingsAnnouncements_Send = (ctx) => __awaiter(void 0, void 0, void 0, fu
             .filter((n) => n != '');
         yield Promise.all(sendUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
             const sentMsg = yield _index_1.dbMessaging.sendMessageUser(n, announcement, ctx);
-            yield ctx.pinChatMessage(sentMsg.message_id);
+            try {
+                yield ctx.pinChatMessage(sentMsg.message_id);
+            }
+            catch (err) {
+                console.log(err);
+            }
             console.log(announcement + `(${n})`);
         })));
         yield ctx.reply(`Announcement sent!`);
-        ctx.session = yield (0, _SessionData_1.initial)();
+        ctx.session = (0, _SessionData_1.initial)();
     }
 });
 exports.settingsAnnouncements_Send = settingsAnnouncements_Send;

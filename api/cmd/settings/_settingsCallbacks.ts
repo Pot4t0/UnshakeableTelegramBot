@@ -47,14 +47,18 @@ export const settingsAnnouncements_Send = async (
     await Promise.all(
       sendUsers.map(async (n) => {
         const sentMsg = await dbMessaging.sendMessageUser(n, announcement, ctx);
-        await ctx.pinChatMessage(sentMsg.message_id);
+        try {
+          await ctx.pinChatMessage(sentMsg.message_id);
+        } catch (err) {
+          console.log(err);
+        }
         console.log(announcement + `(${n})`);
       })
     );
 
     await ctx.reply(`Announcement sent!`);
 
-    ctx.session = await initial();
+    ctx.session = initial();
   }
 };
 
