@@ -49,7 +49,7 @@ const settingsAnnouncements_Send = (ctx) => __awaiter(void 0, void 0, void 0, fu
         yield Promise.all(sendUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
             const sentMsg = yield _index_1.dbMessaging.sendMessageUser(n, announcement, ctx);
             try {
-                yield ctx.pinChatMessage(sentMsg.message_id);
+                yield ctx.api.pinChatMessage(sentMsg.chat.id, sentMsg.message_id);
             }
             catch (err) {
                 console.log(err);
