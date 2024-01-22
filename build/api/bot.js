@@ -20,7 +20,7 @@ if (!bot) {
 (0, _botOn_functions_1.botOnHandler)(bot); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 // Start the bot (TESTING ONLY)
 // Comment this out when deploying
-// bot.start();
+bot.start();
 //grammY webhook http (Vercel)
 exports.default = (0, grammy_1.webhookCallback)(bot, 'http');
 //Vercel Edge Runtime

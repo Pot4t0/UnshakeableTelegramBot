@@ -131,8 +131,8 @@ export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
 // Refer to user_shared case 2
 export const changeLGChat = async (ctx: Filter<BotContext, ':chat_shared'>) => {
   const chatid = ctx.update.message?.chat_shared.chat_id;
+  await ctx.reply('Processing... Please wait...');
   if (chatid) {
-    await ctx.reply('Processing... Please wait...');
     await Database.getMongoRepository(Settings).updateOne(
       { option: 'LG' },
       { $set: { config: [chatid.toString()] } }

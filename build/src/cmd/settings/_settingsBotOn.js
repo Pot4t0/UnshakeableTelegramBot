@@ -124,8 +124,8 @@ exports.addUser_FullName = addUser_FullName;
 const changeLGChat = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const chatid = (_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.chat_shared.chat_id;
+    yield ctx.reply('Processing... Please wait...');
     if (chatid) {
-        yield ctx.reply('Processing... Please wait...');
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).updateOne({ option: 'LG' }, { $set: { config: [chatid.toString()] } });
         yield ctx.reply(`LG Chat changed to ${chatid} Remember to add bot to the chat!`);
     }
