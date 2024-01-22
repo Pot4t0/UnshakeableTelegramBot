@@ -1,17 +1,20 @@
-import { Bot, Filter } from 'grammy';
+import { Bot, Filter, Keyboard } from 'grammy';
 import { BotContext } from '../app/_index';
 import { eventDB, reminder } from '../database_mongoDB/functions/_index';
-import { settingsAnnouncements_Send } from '../cmd/settings/_settingsCallbacks';
+
 import {
   sendAttendanceBotOn,
   sendWishBotOn,
   sendsfBotOn,
 } from '../cmd/send/_index';
 import { adminAttendanceBotOn, adminSFBotOn } from '../cmd/admin/_index';
+import { settingBotOn, settings } from '../cmd/settings/_index';
 
 // BotOn Functions
 // Case 1: /sendwish BotOn Functions
 export const botOnHandler = (bot: Bot<BotContext>) => {
+  bot.on(':user_shared', userSharedListener);
+  bot.on(':chat_shared', chatSharedListener);
   bot.on('message', anyMsgListener);
 };
 
@@ -125,7 +128,14 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
     // /settings announcements
     // Used for sending out announcement msg
     case 31: {
-      await settingsAnnouncements_Send(ctx);
+      await settingBotOn.settingsAnnouncements_Send(ctx);
+      break;
+    }
+    // /settings new user
+    // Used for adding new user
+    // User Full Name
+    case 32: {
+      await settingBotOn.addUser_FullName(ctx);
       break;
     }
     default: {
@@ -133,5 +143,33 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       if (chatid != process.env.LG_CHATID)
         await ctx.reply('Sorry I do not understand. Please try again!');
     }
+  }
+};
+
+const userSharedListener = async (ctx: Filter<BotContext, ':user_shared'>) => {
+  const request_id = ctx.update.message?.user_shared.request_id;
+  switch (request_id) {
+    // /settings new user
+    // Used to get full name of new user
+    case 1:
+      settingBotOn.addUser(ctx);
+      break;
+    default:
+      const chatid = ctx.chat.id.toString();
+      if (chatid != process.env.LG_CHATID)
+        await ctx.reply('Sorry I do not understand. Please try again!');
+  }
+};
+
+const chatSharedListener = async (ctx: Filter<BotContext, ':chat_shared'>) => {
+  const request_id = ctx.update.message?.chat_shared.request_id;
+  switch (request_id) {
+    case 1:
+      settingBotOn.changeLGChat(ctx);
+      break;
+    default:
+      const chatid = ctx.chat.id.toString();
+      if (chatid != process.env.LG_CHATID)
+        await ctx.reply('Sorry I do not understand. Please try again!');
   }
 };

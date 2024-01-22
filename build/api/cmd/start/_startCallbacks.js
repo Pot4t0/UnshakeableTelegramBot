@@ -39,7 +39,8 @@ const startReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         [{ text: 'No', callback_data: 'select_NO' }],
     ]);
     const chatid = yield name.map((n) => n.chat);
-    if (chatid.toString() == '') {
+    const teleUser = yield name.map((n) => n.teleUser);
+    if (chatid.toString() == '' || teleUser.toString() == '') {
         ctx.session.name = nameStart;
         yield ctx.reply(`${nameStart} chosen.\nIs this your name?`, {
             reply_markup: inlineKeyboard_confirm,

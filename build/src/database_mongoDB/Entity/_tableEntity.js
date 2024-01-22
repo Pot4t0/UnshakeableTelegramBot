@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Attendance_mongo = exports.SF_mongo = exports.Wishes = exports.Names = exports.Events = void 0;
+exports.Settings = exports.Attendance_mongo = exports.SF_mongo = exports.Wishes = exports.Names = exports.Events = void 0;
 const typeorm_1 = require("typeorm");
 //Declaring all collections within UnshakeableDB
 //events Collection
@@ -145,6 +145,25 @@ __decorate([
 exports.Attendance_mongo = Attendance_mongo = __decorate([
     (0, typeorm_1.Entity)('attendance')
 ], Attendance_mongo);
+// Settings Collection
+let Settings = class Settings {
+};
+exports.Settings = Settings;
+__decorate([
+    (0, typeorm_1.ObjectIdColumn)(),
+    __metadata("design:type", typeorm_1.ObjectId)
+], Settings.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Settings.prototype, "option", void 0);
+__decorate([
+    (0, typeorm_1.Column)('simple-array', { nullable: true }),
+    __metadata("design:type", Array)
+], Settings.prototype, "config", void 0);
+exports.Settings = Settings = __decorate([
+    (0, typeorm_1.Entity)('settings')
+], Settings);
 // attendance collection
 // @Entity('attendance')
 // export class Attendance {

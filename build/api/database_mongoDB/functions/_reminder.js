@@ -153,7 +153,7 @@ const reminderSendAllNotIn_Execution = (ctx) => __awaiter(void 0, void 0, void 0
             break;
         case 'Admin':
             const now = new Date();
-            const offSetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 5);
+            const offSetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 4);
             console.log('Date: ' + offSetDate);
             const InSF = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.SF_mongo).find({
                 where: {
@@ -162,7 +162,7 @@ const reminderSendAllNotIn_Execution = (ctx) => __awaiter(void 0, void 0, void 0
             });
             const notInNamesAdmin = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
                 where: {
-                    teleUser: { $not: { $in: yield InSF.map((n) => `${n.teleUser}`) } },
+                    teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
                 },
             });
             const notInUsersAdmin = notInNamesAdmin

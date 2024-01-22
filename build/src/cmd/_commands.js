@@ -75,9 +75,9 @@ const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 	\n/sendwish -->  Send wishes to upcoming welfare events
   \n/sendattendance -->  Send whether coming to LG/WE
 	\n/adminwelfare --> Management of admin for Welfare Team (only accessible to serving members)
-  \n/adminbday --> Management of admin for Bday Team (only accessible to serving members)
+  \n/adminbday --> Management of admin for Bday Events
   \n/adminsf --> Management of sermon feedback for Admin Team (only accessible to serving members)
-  \n/adminattendance --> Management of attendance
+  \n/adminattendance --> Management of attendance (only accessible to Admin Team)
 	`);
 });
 //Settings command
@@ -105,6 +105,12 @@ const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                 {
                     text: 'Delete Existing User',
                     callback_data: 'settingsDeleteUser',
+                },
+            ],
+            [
+                {
+                    text: 'Change LG Telegram Group',
+                    callback_data: 'settingsLGGroup',
                 },
             ],
         ]);
@@ -334,7 +340,7 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
     if (((_l = ctx.update.message) === null || _l === void 0 ? void 0 : _l.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'LGL', 'it'], ctx);
+    const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'LGL', 'it', 'admin', 'adminIC'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
             [

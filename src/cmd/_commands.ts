@@ -86,9 +86,9 @@ const help = async (ctx: CommandContext<BotContext>) => {
 	\n/sendwish -->  Send wishes to upcoming welfare events
   \n/sendattendance -->  Send whether coming to LG/WE
 	\n/adminwelfare --> Management of admin for Welfare Team (only accessible to serving members)
-  \n/adminbday --> Management of admin for Bday Team (only accessible to serving members)
+  \n/adminbday --> Management of admin for Bday Events
   \n/adminsf --> Management of sermon feedback for Admin Team (only accessible to serving members)
-  \n/adminattendance --> Management of attendance
+  \n/adminattendance --> Management of attendance (only accessible to Admin Team)
 	`);
 };
 
@@ -116,6 +116,12 @@ const settings = async (ctx: CommandContext<BotContext>) => {
         {
           text: 'Delete Existing User',
           callback_data: 'settingsDeleteUser',
+        },
+      ],
+      [
+        {
+          text: 'Change LG Telegram Group',
+          callback_data: 'settingsLGGroup',
         },
       ],
     ]);
@@ -383,7 +389,10 @@ const adminattendance = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
   }
-  const access = await dbSecurity.roleAccess(['SGL', 'LGL', 'it'], ctx);
+  const access = await dbSecurity.roleAccess(
+    ['SGL', 'LGL', 'it', 'admin', 'adminIC'],
+    ctx
+  );
 
   if (access) {
     const inlineKeyboard = new InlineKeyboard([

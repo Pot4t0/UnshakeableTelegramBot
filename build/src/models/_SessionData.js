@@ -4,6 +4,7 @@ exports.initial = void 0;
 function initial() {
     return {
         id: undefined,
+        chatId: undefined,
         attendance: undefined,
         eventName: undefined,
         eventDate: undefined,

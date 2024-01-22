@@ -37,23 +37,22 @@ const attendanceEventDecision = async (
 ) => {
   await removeInLineButton(ctx);
   await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-  const callback = await ctx.update.callback_query.data.substring(
+  const callback = ctx.update.callback_query.data.substring(
     'svcLGAttendance-'.length
   );
-  const sheet = await unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  const sheet = unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
   await sheet.loadCells();
 
   // Sesssion Data for Special Attendance
   // Google Sheet Event Object (ctx.session.gsheet)
   // Google Sheet Event Name (ctx.session.eventName)
-  ctx.session.attendance = await callback;
-  ctx.session.gSheet = await sheet;
+  ctx.session.attendance = callback;
+  ctx.session.gSheet = sheet;
 
-  const eventCell = await sheet.getCellByA1('C3');
-  const eventDateCell = await sheet.getCellByA1('C2');
-  const lgCell = await sheet.getCellByA1('F3');
-  const lgDateCell = await sheet.getCellByA1('F2');
-  const checkSpecialCell = await sheet.getCellByA1('B2');
+  const eventCell = sheet.getCellByA1('C3');
+  const eventDateCell = sheet.getCellByA1('C2');
+  const lgCell = sheet.getCellByA1('F3');
+  const checkSpecialCell = sheet.getCellByA1('B2');
 
   // Special Event
   // If Sheet contains "Special Event" at cell B2 then, it will send special event attendance message
@@ -151,7 +150,7 @@ const attendanceEventDecision = async (
 // Special Event Attendance Logging Function
 const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
-  const callback = await ctx.update.callback_query.data.substring(
+  const callback = ctx.update.callback_query.data.substring(
     'SpecialAttendance-'.length
   );
   const user = await Database.getMongoRepository(Names).find({
@@ -160,6 +159,7 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   if (callback == 'Y') {
     const sheet = ctx.session.gSheet;
     if (sheet) {
+      await ctx.reply('Processing... Please wait...');
       await sheet.loadCells();
       const attendanceCell = await sheet.getCellByA1(
         `C${user[0].attendanceRow}`
@@ -191,7 +191,7 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
       } else {
         await ctx.reply('Attendance logged! Thanks for submitting!');
         ctx.session = await initial();
-        await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
       }
     }
   } else if (callback == 'N') {

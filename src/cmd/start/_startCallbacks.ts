@@ -31,7 +31,8 @@ const startReply = async (ctx: CallbackQueryContext<BotContext>) => {
     [{ text: 'No', callback_data: 'select_NO' }],
   ]);
   const chatid = await name.map((n) => n.chat);
-  if (chatid.toString() == '') {
+  const teleUser = await name.map((n) => n.teleUser);
+  if (chatid.toString() == '' || teleUser.toString() == '') {
     ctx.session.name = nameStart;
     await ctx.reply(`${nameStart} chosen.\nIs this your name?`, {
       reply_markup: inlineKeyboard_confirm,

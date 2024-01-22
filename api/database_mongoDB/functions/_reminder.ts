@@ -175,7 +175,7 @@ export const reminderSendAllNotIn_Execution = async (
       const offSetDate = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate() - 5
+        now.getDate() - 4
       );
       console.log('Date: ' + offSetDate);
       const InSF = await Database.getMongoRepository(SF_mongo).find({
@@ -185,7 +185,7 @@ export const reminderSendAllNotIn_Execution = async (
       });
       const notInNamesAdmin = await Database.getMongoRepository(Names).find({
         where: {
-          teleUser: { $not: { $in: await InSF.map((n) => `${n.teleUser}`) } },
+          teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
         },
       });
       const notInUsersAdmin = notInNamesAdmin

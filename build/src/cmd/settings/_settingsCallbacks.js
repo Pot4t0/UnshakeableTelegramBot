@@ -9,16 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.settingsAnnouncements_Send = exports.settings = void 0;
-const _db_init_1 = require("../../database_mongoDB/_db-init");
-const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
-const _SessionData_1 = require("../../models/_SessionData");
-const _index_1 = require("../../database_mongoDB/functions/_index");
+exports.settings = void 0;
+const grammy_1 = require("grammy");
 const _telefunctions_1 = require("../../app/_telefunctions");
 // Settings Callbacks
 // Any overall bot admin settings
 const settings = (bot) => {
     bot.callbackQuery('settingsAnnouncements', settingsAnnouncements_Write); //Settings Announcements Input
+    bot.callbackQuery('settingsNewUser', newUserManagement); //Settings New User Management
+    bot.callbackQuery('settingsLGGroup', lgGroupManagement); //Settings Bot On
     //Settings Announcements Output is located in BotOnFunctions
 };
 exports.settings = settings;
@@ -33,32 +32,18 @@ const settingsAnnouncements_Write = (ctx) => __awaiter(void 0, void 0, void 0, f
     });
     ctx.session.botOnType = 31;
 });
-// Settings Announcements Output
-// Used in _botOn_functions.ts
-// Refer to case botOntype = 31
-const settingsAnnouncements_Send = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const announcement = '<b>Bot Announcement:</b>\n' + ctx.message.text;
-    if (announcement == null || ctx.session.botOnType == null) {
-        (0, exports.settingsAnnouncements_Send)(ctx);
-    }
-    else {
-        const allNames = _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
-        const sendUsers = (yield allNames)
-            .map((n) => n.teleUser)
-            .filter((n) => n != '');
-        yield Promise.all(sendUsers.map((n) => __awaiter(void 0, void 0, void 0, function* () {
-            const sentMsg = yield _index_1.dbMessaging.sendMessageUser(n, announcement, ctx);
-            try {
-                yield ctx.api.pinChatMessage(sentMsg.chat.id, sentMsg.message_id);
-            }
-            catch (err) {
-                console.log(err);
-            }
-            console.log(announcement + `(${n})`);
-        })));
-        yield ctx.reply(`Announcement sent!`);
-        ctx.session = (0, _SessionData_1.initial)();
-    }
+const newUserManagement = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+    const button = new grammy_1.Keyboard().requestUser('Add User', 1).oneTime(true);
+    yield ctx.reply('Click button to go to contact list', {
+        reply_markup: button,
+    });
 });
-exports.settingsAnnouncements_Send = settingsAnnouncements_Send;
-const newUserManagement = (ctx) => __awaiter(void 0, void 0, void 0, function* () { });
+const lgGroupManagement = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+    const button = new grammy_1.Keyboard().requestChat('Choose LG Chat', 1).oneTime(true);
+    yield ctx.reply(`Choose the updated LG Chat. It will let the Bot enter the chat and send messages.
+    `, {
+        reply_markup: button,
+    });
+});

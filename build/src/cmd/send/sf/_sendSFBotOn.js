@@ -72,7 +72,7 @@ const sendToSheet_SF = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         console.log(err);
     }
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-    ctx.session = yield (0, _SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 });
 exports.sendToSheet_SF = sendToSheet_SF;
 // Send to Google Sheets Reason
@@ -119,16 +119,16 @@ const sendToSheet_Reason = (ctx) => __awaiter(void 0, void 0, void 0, function* 
                             },
                         });
                     }
-                    yield ctx.reply('Sent! Your SF has been recorded successfully.');
+                    yield ctx.reply('Sent! Your reason has been recorded successfully.');
                 }
                 else {
-                    yield ctx.reply('ERROR! Failed to log SF. Pls try again!');
-                    console.log('SendSF Failed');
+                    yield ctx.reply('ERROR! Failed to log reason. Pls try again!');
+                    console.log('SendSF Reason Failed');
                 }
             }
             else {
                 yield ctx.reply('ERROR! Please try again!');
-                console.log('SendSF Failed');
+                console.log('SendSF Reason Failed');
             }
             yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
             ctx.session = yield (0, _SessionData_1.initial)();

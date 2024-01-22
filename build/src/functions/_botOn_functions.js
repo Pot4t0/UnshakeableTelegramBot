@@ -11,12 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.botOnHandler = void 0;
 const _index_1 = require("../database_mongoDB/functions/_index");
-const _settingsCallbacks_1 = require("../cmd/settings/_settingsCallbacks");
 const _index_2 = require("../cmd/send/_index");
 const _index_3 = require("../cmd/admin/_index");
+const _index_4 = require("../cmd/settings/_index");
 // BotOn Functions
 // Case 1: /sendwish BotOn Functions
 const botOnHandler = (bot) => {
+    bot.on(':user_shared', userSharedListener);
+    bot.on(':chat_shared', chatSharedListener);
     bot.on('message', anyMsgListener);
 };
 exports.botOnHandler = botOnHandler;
@@ -122,7 +124,14 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         // /settings announcements
         // Used for sending out announcement msg
         case 31: {
-            yield (0, _settingsCallbacks_1.settingsAnnouncements_Send)(ctx);
+            yield _index_4.settingBotOn.settingsAnnouncements_Send(ctx);
+            break;
+        }
+        // /settings new user
+        // Used for adding new user
+        // User Full Name
+        case 32: {
+            yield _index_4.settingBotOn.addUser_FullName(ctx);
             break;
         }
         default: {
@@ -130,5 +139,33 @@ const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             if (chatid != process.env.LG_CHATID)
                 yield ctx.reply('Sorry I do not understand. Please try again!');
         }
+    }
+});
+const userSharedListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const request_id = (_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.user_shared.request_id;
+    switch (request_id) {
+        // /settings new user
+        // Used to get full name of new user
+        case 1:
+            _index_4.settingBotOn.addUser(ctx);
+            break;
+        default:
+            const chatid = ctx.chat.id.toString();
+            if (chatid != process.env.LG_CHATID)
+                yield ctx.reply('Sorry I do not understand. Please try again!');
+    }
+});
+const chatSharedListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    const request_id = (_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.chat_shared.request_id;
+    switch (request_id) {
+        case 1:
+            _index_4.settingBotOn.changeLGChat(ctx);
+            break;
+        default:
+            const chatid = ctx.chat.id.toString();
+            if (chatid != process.env.LG_CHATID)
+                yield ctx.reply('Sorry I do not understand. Please try again!');
     }
 });

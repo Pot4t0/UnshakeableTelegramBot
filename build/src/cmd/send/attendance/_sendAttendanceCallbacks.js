@@ -39,19 +39,18 @@ exports.sendAttendance = sendAttendance;
 const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const callback = yield ctx.update.callback_query.data.substring('svcLGAttendance-'.length);
-    const sheet = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+    const callback = ctx.update.callback_query.data.substring('svcLGAttendance-'.length);
+    const sheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
     yield sheet.loadCells();
     // Sesssion Data for Special Attendance
     // Google Sheet Event Object (ctx.session.gsheet)
     // Google Sheet Event Name (ctx.session.eventName)
-    ctx.session.attendance = yield callback;
-    ctx.session.gSheet = yield sheet;
-    const eventCell = yield sheet.getCellByA1('C3');
-    const eventDateCell = yield sheet.getCellByA1('C2');
-    const lgCell = yield sheet.getCellByA1('F3');
-    const lgDateCell = yield sheet.getCellByA1('F2');
-    const checkSpecialCell = yield sheet.getCellByA1('B2');
+    ctx.session.attendance = callback;
+    ctx.session.gSheet = sheet;
+    const eventCell = sheet.getCellByA1('C3');
+    const eventDateCell = sheet.getCellByA1('C2');
+    const lgCell = sheet.getCellByA1('F3');
+    const checkSpecialCell = sheet.getCellByA1('B2');
     // Special Event
     // If Sheet contains "Special Event" at cell B2 then, it will send special event attendance message
     if (checkSpecialCell.value == 'Special Event') {
@@ -138,13 +137,14 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
 // Special Event Attendance Logging Function
 const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    const callback = yield ctx.update.callback_query.data.substring('SpecialAttendance-'.length);
+    const callback = ctx.update.callback_query.data.substring('SpecialAttendance-'.length);
     const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
     });
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
+            yield ctx.reply('Processing... Please wait...');
             yield sheet.loadCells();
             const attendanceCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
             const reasonCell = yield sheet.getCellByA1(`D${user[0].attendanceRow}`);
@@ -175,7 +175,7 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
             else {
                 yield ctx.reply('Attendance logged! Thanks for submitting!');
                 ctx.session = yield (0, _SessionData_1.initial)();
-                yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
             }
         }
     }

@@ -3,6 +3,7 @@ import { ObjectId } from 'typeorm';
 
 export interface SessionData {
   id?: ObjectId;
+  chatId?: number;
   team?: 'Attendance' | 'Welfare' | 'Admin' | 'Birthday';
   userRole?: 'attendance' | 'welfare' | 'admin' | 'bday';
   attendance?: string;
@@ -19,6 +20,7 @@ export interface SessionData {
 export function initial(): SessionData {
   return {
     id: undefined,
+    chatId: undefined,
     attendance: undefined,
     eventName: undefined,
     eventDate: undefined,

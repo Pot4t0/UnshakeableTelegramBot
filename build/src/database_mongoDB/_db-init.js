@@ -18,12 +18,26 @@ exports.Database = new typeorm_1.DataSource({
     type: 'mongodb',
     url: process.env.CONNECTION || '',
     database: 'UnshakeableDB',
-    entities: [_tableEntity_1.Names, _tableEntity_1.Events, _tableEntity_1.Wishes, _tableEntity_1.SF_mongo, _tableEntity_1.Attendance_mongo],
+    entities: [_tableEntity_1.Names, _tableEntity_1.Events, _tableEntity_1.Wishes, _tableEntity_1.SF_mongo, _tableEntity_1.Attendance_mongo, _tableEntity_1.Settings],
 });
 const init = () => __awaiter(void 0, void 0, void 0, function* () {
     yield exports.Database.initialize()
         .then(() => {
         console.log('Data Source has been initialized!');
+    })
+        .then(() => {
+        const promiseLG = exports.Database.getMongoRepository(_tableEntity_1.Settings).findOneBy({
+            option: 'LG',
+        });
+        promiseLG
+            .then((res) => {
+            const lgChat = res === null || res === void 0 ? void 0 : res.config[0];
+            process.env.LG_CHATID = lgChat;
+            console.log('LG Chat ID updated');
+        })
+            .catch((err) => {
+            console.log('Error could not get LG Chat ID', err);
+        });
     })
         .catch((err) => {
         console.error('Error during Data Source initialization', err);

@@ -80,6 +80,17 @@ export class Attendance_mongo {
   eventDate: string[];
 }
 
+// Settings Collection
+@Entity('settings')
+export class Settings {
+  @ObjectIdColumn()
+  id: ObjectId;
+  @Column()
+  option: string;
+  @Column('simple-array', { nullable: true })
+  config: string[];
+}
+
 // attendance collection
 // @Entity('attendance')
 // export class Attendance {
