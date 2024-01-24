@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@grammyjs/conversations": "^1.1.2",
+    "@types/luxon": "^3.4.2",
     "@vercel/analytics": "^1.0.2",
     "dotenv": "^16.3.1",
     "es6-shim": "^0.35.8",
@@ -27,11 +28,14 @@
     "google-spreadsheet": "^4.0.2",
     "googleapis": "^125.0.0",
     "grammy": "^1.19.3",
+    "luxon": "^3.4.4",
     "mariadb": "^3.2.0",
     "mongodb": "^5.7.0",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "tslib": "^2.6.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "typescipt": "^1.0.0",
+    "vercel": "^33.2.0"
   }
 }
