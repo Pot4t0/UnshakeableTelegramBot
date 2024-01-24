@@ -1,4 +1,4 @@
-import { Context, webhookCallback } from 'grammy';
+import { webhookCallback } from 'grammy';
 import { init_bot } from './functions/_initialise';
 import { botOnHandler } from './functions/_botOn_functions';
 import { commands } from './cmd/_commands';

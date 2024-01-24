@@ -97,7 +97,7 @@ export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
       await template.loadCells();
       const numberCell = template.getCellByA1(`A${highestAttendnaceRow}`);
       const nameCell = template.getCellByA1(`B${highestAttendnaceRow}`);
-      numberCell.value = highestAttendnaceRow;
+      numberCell.value = highestAttendnaceRow - 3;
       nameCell.value = fullName;
       await template.saveUpdatedCells();
 
@@ -108,12 +108,12 @@ export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
       const special_nameCell = special_template.getCellByA1(
         `B${highestAttendnaceRow}`
       );
-      special_numberCell.value = highestAttendnaceRow;
+      special_numberCell.value = highestAttendnaceRow - 3;
       special_nameCell.value = fullName;
       await special_template.saveUpdatedCells();
 
       await ctx.reply(
-        `${fullName} added! Please check Google Sheets!\n\nName: ${fullName}\nChat ID: ${chatId}\nAttendance Row: ${highestAttendnaceRow}\n`
+        `${fullName} added! Please change sermon feedback Google sheet accoridngly!\n\nName: ${fullName}\nChat ID: ${chatId}\nAttendance Row: ${highestAttendnaceRow}\n`
       );
     } else {
       await ctx.reply('User already exists!');

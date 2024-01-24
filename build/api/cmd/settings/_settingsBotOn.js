@@ -95,16 +95,16 @@ const addUser_FullName = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
             yield template.loadCells();
             const numberCell = template.getCellByA1(`A${highestAttendnaceRow}`);
             const nameCell = template.getCellByA1(`B${highestAttendnaceRow}`);
-            numberCell.value = highestAttendnaceRow;
+            numberCell.value = highestAttendnaceRow - 3;
             nameCell.value = fullName;
             yield template.saveUpdatedCells();
             yield special_template.loadCells();
             const special_numberCell = special_template.getCellByA1(`A${highestAttendnaceRow}`);
             const special_nameCell = special_template.getCellByA1(`B${highestAttendnaceRow}`);
-            special_numberCell.value = highestAttendnaceRow;
+            special_numberCell.value = highestAttendnaceRow - 3;
             special_nameCell.value = fullName;
             yield special_template.saveUpdatedCells();
-            yield ctx.reply(`${fullName} added! Please check Google Sheets!\n\nName: ${fullName}\nChat ID: ${chatId}\nAttendance Row: ${highestAttendnaceRow}\n`);
+            yield ctx.reply(`${fullName} added! Please change sermon feedback Google sheet accoridngly!\n\nName: ${fullName}\nChat ID: ${chatId}\nAttendance Row: ${highestAttendnaceRow}\n`);
         }
         else {
             yield ctx.reply('User already exists!');
