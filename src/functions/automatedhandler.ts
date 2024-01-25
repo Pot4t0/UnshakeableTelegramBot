@@ -8,7 +8,7 @@ import { Bot } from 'grammy';
 export const automated = (bot: Bot<BotContext>) => {
   const minute = DateTime.local().setZone('Asia/Singapore').minute;
   const hour = DateTime.local().setZone('Asia/Singapore').hour;
-  if (hour == 11)
+  if (hour == 13)
     bot.api.sendMessage(611527651, `Hour: ${hour} Minute: ${minute}`);
 };
 

@@ -14,7 +14,7 @@ const luxon_1 = require("luxon");
 const automated = (bot) => {
     const minute = luxon_1.DateTime.local().setZone('Asia/Singapore').minute;
     const hour = luxon_1.DateTime.local().setZone('Asia/Singapore').hour;
-    if (hour == 11)
+    if (hour == 13)
         bot.api.sendMessage(611527651, `Hour: ${hour} Minute: ${minute}`);
 };
 exports.automated = automated;
