@@ -5,11 +5,11 @@
       "maxDuration": 10
     }
   },
-  "regions": ["sin1"],
-  "crons": [
-    {
-      "path": "/api/bot.ts",
-      "schedule": "*/10 3 * * *"
-    }
-  ]
+  "regions": ["sin1"]
+  // "crons": [
+  //   {
+  //     "path": "/api/bot.ts",
+  //     "schedule": "*/10 3 * * *"
+  //   }
+  // ]
 }
