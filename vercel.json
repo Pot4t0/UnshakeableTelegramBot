@@ -5,5 +5,12 @@
       "maxDuration": 10
     }
   },
-  "regions": ["sin1"]
+
+  "regions": ["sin1"],
+  "crons": [
+    {
+      "path": "/api/bot.ts",
+      "schedule": "* 3 * * *"
+    }
+  ]
 }
