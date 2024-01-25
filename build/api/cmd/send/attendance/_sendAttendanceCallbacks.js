@@ -295,19 +295,19 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         });
         switch (ctx.session.eventName) {
             case 'Special Event':
-                dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                yield dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
                 yield ctx.reply('Attendance logged! Thanks for submitting!');
                 ctx.session = yield (0, _SessionData_1.initial)();
                 yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 break;
             case 'No LG':
-                dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                yield dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
                 yield ctx.reply('Attendance logged! Thanks for submitting!');
                 ctx.session = yield (0, _SessionData_1.initial)();
                 yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 break;
             case 'LG':
-                dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                yield dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
                 const sheet = ctx.session.gSheet;
                 if (sheet) {
                     const lgDateCell = yield sheet.getCellByA1('F2');

@@ -314,7 +314,7 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
     });
     switch (ctx.session.eventName) {
       case 'Special Event':
-        dinnerLogAttendance(
+        await dinnerLogAttendance(
           ctx,
           user[0].attendanceRow,
           ctx.session.eventName,
@@ -326,7 +326,7 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
         await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         break;
       case 'No LG':
-        dinnerLogAttendance(
+        await dinnerLogAttendance(
           ctx,
           user[0].attendanceRow,
           ctx.session.eventName,
@@ -338,7 +338,7 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
         await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         break;
       case 'LG':
-        dinnerLogAttendance(
+        await dinnerLogAttendance(
           ctx,
           user[0].attendanceRow,
           ctx.session.eventName,
