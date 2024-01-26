@@ -60,8 +60,8 @@ export const WeAttendanceLogReason = async (
   } catch (err) {
     await ctx.reply('Could not log reason! Please try again!');
     console.log(err);
-    ctx.session = await initial();
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    ctx.session = initial();
+    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 
@@ -71,8 +71,8 @@ export const WeAttendanceLogReason = async (
 export const lgAttendanceLogReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
-  ctx.session.botOnType = await undefined;
-  const reason = await ctx.message.text;
+  ctx.session.botOnType = undefined;
+  const reason = ctx.message.text;
   if (reason == null) {
     lgAttendanceLogReason(ctx);
   }
@@ -100,8 +100,8 @@ export const lgAttendanceLogReason = async (
     await ctx.reply('Could not log reason! Please try again!');
     console.log(err);
   }
-  ctx.session = await initial();
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  ctx.session = initial();
+  gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 // Special Attendance Logging Reason Function
@@ -110,8 +110,8 @@ export const lgAttendanceLogReason = async (
 export const SpecialAttendanceLogReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
-  ctx.session.botOnType = await undefined;
-  const reason = await ctx.message.text;
+  ctx.session.botOnType = undefined;
+  const reason = ctx.message.text;
   await ctx.reply('Processing... Please wait...');
   try {
     if (reason == null) {
@@ -124,10 +124,8 @@ export const SpecialAttendanceLogReason = async (
     const sheet = ctx.session.gSheet;
     if (sheet) {
       await sheet.loadCells();
-      const attendanceCell = await sheet.getCellByA1(
-        `C${user[0].attendanceRow}`
-      );
-      const reasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+      const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+      const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
       attendanceCell.value = 'N';
       reasonCell.value = reason;
       await sheet.saveUpdatedCells();
@@ -172,19 +170,19 @@ export const SpecialAttendanceLogReason = async (
 export const dinnerAttendanceReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
-  ctx.session.botOnType = await undefined;
-  const reason = await ctx.message.text;
+  ctx.session.botOnType = undefined;
+  const reason = ctx.message.text;
   if (reason == null) {
     dinnerAttendanceReason(ctx);
   } else {
     await ctx.reply('Processing... Please wait...');
     try {
       const user = await Database.getMongoRepository(Names).find({
-        teleUser: await ctx.update.message.from.username,
+        teleUser: ctx.update.message.from.username,
       });
       switch (ctx.session.eventName) {
         case 'Special Event':
-          dinnerLogAttendance(
+          await dinnerLogAttendance(
             ctx,
             user[0].attendanceRow,
             ctx.session.eventName,
@@ -192,11 +190,11 @@ export const dinnerAttendanceReason = async (
             reason
           );
           await ctx.reply('Attendance logged! Thanks for submitting!');
-          ctx.session = await initial();
-          await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+          ctx.session = initial();
+          gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
           break;
         case 'No LG':
-          dinnerLogAttendance(
+          await dinnerLogAttendance(
             ctx,
             user[0].attendanceRow,
             ctx.session.eventName,
@@ -204,11 +202,11 @@ export const dinnerAttendanceReason = async (
             reason
           );
           await ctx.reply('Attendance logged! Thanks for submitting!');
-          ctx.session = await initial();
-          await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+          ctx.session = initial();
+          gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
           break;
         case 'LG':
-          dinnerLogAttendance(
+          await dinnerLogAttendance(
             ctx,
             user[0].attendanceRow,
             ctx.session.eventName,
@@ -217,7 +215,7 @@ export const dinnerAttendanceReason = async (
           );
           const sheet = ctx.session.gSheet;
           if (sheet) {
-            const lgDateCell = await sheet.getCellByA1('F2');
+            const lgDateCell = sheet.getCellByA1('F2');
             const inlineKeyboard = [
               [
                 {
