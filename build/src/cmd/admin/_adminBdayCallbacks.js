@@ -23,9 +23,9 @@ const adminBday = (bot) => {
     //Birthday Team Management
     _index_1.team.teamManagement(bot, 'Birthday');
     //Birthday Reminder Mangement
-    bot.callbackQuery('manageBirthdayReminder', reminderSystem);
-    bot.callbackQuery(/^sendBirthdayReminder-/g, reminder_Menu);
-    bot.callbackQuery('sendReminder-Birthday', reminder_Msg);
+    bot.callbackQuery('manageBirthdayReminder', _telefunctions_1.loadFunction, reminderSystem);
+    bot.callbackQuery(/^sendBirthdayReminder-/g, _telefunctions_1.loadFunction, reminder_Menu);
+    bot.callbackQuery('sendReminder-Birthday', _telefunctions_1.loadFunction, reminder_Msg);
 };
 exports.adminBday = adminBday;
 // Reminder Management

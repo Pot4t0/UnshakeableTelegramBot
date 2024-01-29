@@ -6,6 +6,7 @@ import { Events, Names, SF_mongo, Wishes } from '../Entity/_tableEntity';
 import { gsheet } from '../../gsheets/_index';
 import { initial } from '../../models/_SessionData';
 import { dbMessaging } from './_index';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 // Reminder System
 // Database - contaims all chatid and telegramm username
@@ -211,9 +212,14 @@ export const reminderSendAllNotIn_Execution = async (
 // Reminder System - Send to specific user
 // Used in bot.ts
 export const specificReminder = async (bot: Bot<BotContext>) => {
-  bot.callbackQuery('sendSpecificReminder', sendSpecificReminder_ChooseMember);
+  bot.callbackQuery(
+    'sendSpecificReminder',
+    loadFunction,
+    sendSpecificReminder_ChooseMember
+  );
   bot.callbackQuery(
     /^reminderSpecificNames-/,
+    loadFunction,
     sendSpecificReminder_ReminderMsg
   );
 };
@@ -221,7 +227,7 @@ export const specificReminder = async (bot: Bot<BotContext>) => {
 const sendSpecificReminder_ChooseMember = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const name = await Database.getRepository(Names).find();
   const inlineKeyboard = new InlineKeyboard(
     name.map((n) => [
@@ -239,7 +245,7 @@ const sendSpecificReminder_ChooseMember = async (
 const sendSpecificReminder_ReminderMsg = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
 
   const telegramUser = await ctx.update.callback_query.data.substring(
     'reminderSpecificNames-'.length

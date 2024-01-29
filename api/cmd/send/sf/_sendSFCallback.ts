@@ -1,12 +1,12 @@
 import { Bot, CallbackQueryContext } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { gsheet } from '../../../gsheets/_index';
-import { removeInLineButton } from '../../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 
 //Send SF Callbacks
 export const sendsf = async (bot: Bot<BotContext>) => {
-  bot.callbackQuery('AttendanceSF-yes', sendSF);
-  bot.callbackQuery('AttendanceSF-no', sendReason);
+  bot.callbackQuery('AttendanceSF-yes', loadFunction, sendSF);
+  bot.callbackQuery('AttendanceSF-no', loadFunction, sendReason);
 };
 
 // Send SF Callback

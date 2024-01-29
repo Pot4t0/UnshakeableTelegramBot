@@ -9,6 +9,7 @@ import { BotContext } from '../../app/_context';
 import { Database } from '../_db-init';
 import { Events, Names, Wishes } from '../Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 //Events Database - Contains all events
 //Functions to manage events limited to each team (Birthday / Welfare)
@@ -21,8 +22,12 @@ export const eventManagement = async (
   bot: Bot<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
-  bot.callbackQuery(`manage${team}Event`, (ctx) => eventManageMenu(ctx, team));
-  bot.callbackQuery(`see${team}Events`, (ctx) => eventView(ctx, team));
+  bot.callbackQuery(`manage${team}Event`, loadFunction, (ctx) =>
+    eventManageMenu(ctx, team)
+  );
+  bot.callbackQuery(`see${team}Events`, loadFunction, (ctx) =>
+    eventView(ctx, team)
+  );
   addEvent(bot, team);
   delEvent(bot, team);
   editEvent(bot, team);
@@ -31,7 +36,7 @@ const eventManageMenu = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const inlineKeyboard = new InlineKeyboard([
     [
       {
@@ -71,7 +76,7 @@ const eventView = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   let eventTeam: 'Welfare' | 'Bday';
   if (team == 'Welfare') {
     eventTeam = 'Welfare';
@@ -102,7 +107,7 @@ const addEvent_Init = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
 
   ctx.session.name = team;
   ctx.reply(`Input ${team} event Name\ne.g. Minh's ORD`, {
@@ -162,7 +167,7 @@ const addEvent_CreateEvent = async (
   ctx: CallbackQueryContext<BotContext>,
   notAllowedUser: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
 
   const team = ctx.session.name;
   const eventName = ctx.session.eventName;
@@ -209,8 +214,7 @@ const delEvent_EventMenu = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
-
+  await removeInLineButton(ctx);
   let eventTeam: 'Welfare' | 'Bday';
   if (team == 'Birthday') {
     eventTeam = 'Bday';
@@ -235,10 +239,10 @@ const delEvent_EventMenu = async (
 };
 
 const delEvent_CfmMsg = async (
-  ctx: CallbackQueryContext<Context>,
+  ctx: CallbackQueryContext<BotContext>,
   eventName: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const inlineKeyboard = new InlineKeyboard([
     [
       {
@@ -264,7 +268,7 @@ const delEvent_PerformDeletion = async (
   choice: string,
   eventName: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
 
   if (eventName) {
     if (choice == 'Y') {
@@ -312,7 +316,7 @@ const editEvent_Init = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   let eventTeam: 'Welfare' | 'Bday';
   if (team == 'Birthday') {
     eventTeam = 'Bday';
@@ -340,7 +344,7 @@ const editEvent_EditMenu = async (
   eventName: string,
   team: 'Welfare' | 'Birthday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const getEvents = await Database.getMongoRepository(Events).find({
     eventName: eventName,
   });
@@ -381,7 +385,7 @@ const editEventName = async (
   ctx: CallbackQueryContext<BotContext>,
   eventName: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await ctx.reply(
     `The current event name is <b>${eventName}</b>\n What would like to change it to?`,
     {
@@ -411,7 +415,7 @@ export const editEventName_Execution = async (
 };
 
 const editEventDate = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   await ctx.reply('Change event date to: (dd/mm/yyyy) :', {
     reply_markup: { force_reply: true },
   });
@@ -439,7 +443,7 @@ const editNotAllowedUser = async (
   ctx: CallbackQueryContext<BotContext>,
   eventName: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const name = await Database.getRepository(Names).find();
   const inlineKeyboard = new InlineKeyboard(
     name
@@ -467,7 +471,7 @@ const editNotAllowedUser_Execution = async (
   ctx: CallbackQueryContext<BotContext>,
   eventName: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   let selectedName = ctx.update.callback_query.data.substring(
     'editNotAllowedUserSelect-'.length
   );

@@ -9,10 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeInLineButton = void 0;
+exports.loadFunction = exports.removeInLineButton = void 0;
 const removeInLineButton = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+        yield ctx.deleteMessage();
     }
     catch (err) {
         yield ctx.reply(`Error! Please do not spam the button!`);
@@ -20,3 +21,17 @@ const removeInLineButton = (ctx) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.removeInLineButton = removeInLineButton;
+//Adds Loading Message to indicate bot is processing (for long running functions)
+const loadFunction = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const chatid = (_a = ctx.chat) === null || _a === void 0 ? void 0 : _a.id;
+    if (chatid) {
+        const loading = yield ctx.reply('Processing... Please wait...');
+        yield next();
+        yield ctx.api.deleteMessage(chatid, loading.message_id);
+    }
+    else {
+        yield ctx.reply('Error! Please try again!');
+    }
+});
+exports.loadFunction = loadFunction;

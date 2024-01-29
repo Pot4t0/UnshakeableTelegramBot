@@ -12,10 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.automated = void 0;
 const luxon_1 = require("luxon");
 const automated = (bot) => {
-    const minute = luxon_1.DateTime.local().setZone('Asia/Singapore').minute;
-    const hour = luxon_1.DateTime.local().setZone('Asia/Singapore').hour;
-    if (hour == 14)
-        bot.api.sendMessage(611527651, `Hour: ${hour} Minute: ${minute}`);
+    // const minute = DateTime.local().setZone('Asia/Singapore').minute;
+    // const hour = DateTime.local().setZone('Asia/Singapore').hour;
+    // if (hour == 14)
+    //   bot.api.sendMessage(611527651, `Hour: ${hour} Minute: ${minute}`);
+    // const scheduler = Database.getMongoRepository(Settings).findOne({
+    //   where: { option: 'Scheduler' },
+    // });
+    // const schedulerChatID = scheduler.coj;
 };
 exports.automated = automated;
 const sfAutoReminder = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

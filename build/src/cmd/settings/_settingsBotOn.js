@@ -52,7 +52,6 @@ const addUser = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const chatid = (_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.user_shared.user_id;
     if (chatid) {
-        yield ctx.reply('Processing... Please wait...');
         yield ctx.reply(`User ID: ${chatid}, Please write down the full name of user:`, { reply_markup: { force_reply: true } });
     }
     else {
@@ -69,7 +68,6 @@ exports.addUser = addUser;
 const addUser_FullName = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const fullName = ctx.message.text;
     const chatId = ctx.session.chatId;
-    yield ctx.reply('Processing... Please wait...');
     if (fullName && chatId) {
         const currentNames = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
         let nameExist = false;
@@ -124,7 +122,6 @@ exports.addUser_FullName = addUser_FullName;
 const changeLGChat = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const chatid = (_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.chat_shared.chat_id;
-    yield ctx.reply('Processing... Please wait...');
     if (chatid) {
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).updateOne({ option: 'LG' }, { $set: { config: [chatid.toString()] } });
         yield ctx.reply(`LG Chat changed to ${chatid} Remember to add bot to the chat!`);

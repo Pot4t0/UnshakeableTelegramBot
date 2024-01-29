@@ -1,4 +1,5 @@
 import { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import { Settings } from 'luxon';
 import { ObjectId } from 'typeorm';
 
 export interface SessionData {
@@ -16,6 +17,7 @@ export interface SessionData {
   text?: string;
   eventMeal?: string;
   gSheet?: GoogleSpreadsheetWorksheet;
+  scheduler?: Settings;
 }
 export function initial(): SessionData {
   return {
@@ -31,5 +33,6 @@ export function initial(): SessionData {
     text: undefined,
     eventMeal: undefined,
     gSheet: undefined,
+    scheduler: undefined,
   };
 }

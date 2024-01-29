@@ -11,7 +11,6 @@ export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
   const sfmsg = await ctx.message.text;
   const teleUserName = await ctx.update.message.from.username;
   const sheet = ctx.session.gSheet;
-  await ctx.reply('Processing... Please wait...');
   try {
     if (sfmsg == null) {
       sendToSheet_SF(ctx);
@@ -75,7 +74,6 @@ export const sendToSheet_Reason = async (
   const teleUserName = await ctx.update.message.from.username;
   const reason = await ctx.message.text;
   const sheet = ctx.session.gSheet;
-  await ctx.reply('Processing... Please wait...');
   try {
     if (reason == null) {
       sendToSheet_Reason(ctx);

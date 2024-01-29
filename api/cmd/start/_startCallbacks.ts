@@ -2,14 +2,14 @@ import { Bot, CallbackQueryContext, InlineKeyboard, Keyboard } from 'grammy';
 import { BotContext } from '../../app/_index';
 import { Database } from '../../database_mongoDB/_db-init';
 import { Names } from '../../database_mongoDB/Entity/_tableEntity';
-import { removeInLineButton } from '../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 export const start = (bot: Bot<BotContext>) => {
-  bot.callbackQuery(/^nameStart-/g, startReply);
-  bot.callbackQuery('confirm_YES', confirmReply_Yes);
-  bot.callbackQuery('select_YES', confirmReply_Yes);
-  bot.callbackQuery('confirm_NO', confirmReply_No);
-  bot.callbackQuery('select_NO', selectreply_No);
+  bot.callbackQuery(/^nameStart-/g, loadFunction, startReply);
+  bot.callbackQuery('confirm_YES', loadFunction, confirmReply_Yes);
+  bot.callbackQuery('select_YES', loadFunction, confirmReply_Yes);
+  bot.callbackQuery('confirm_NO', loadFunction, confirmReply_No);
+  bot.callbackQuery('select_NO', loadFunction, selectreply_No);
 };
 
 const startReply = async (ctx: CallbackQueryContext<BotContext>) => {

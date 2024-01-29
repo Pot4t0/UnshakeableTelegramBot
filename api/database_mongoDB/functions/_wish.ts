@@ -2,6 +2,7 @@ import { Bot, CallbackQueryContext, InlineKeyboard } from 'grammy';
 import { Events, Names, Wishes } from '../Entity/_tableEntity';
 import { Database } from '../_db-init';
 import { BotContext } from '../../app/_context';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 // Wish View System
 // Wish Database - Contains all wishes
@@ -15,17 +16,17 @@ export const wishView = async (
   team: 'Welfare' | 'Birthday'
 ) => {
   let eventName: string;
-  bot.callbackQuery(`${team}WishView`, (ctx) => {
+  bot.callbackQuery(`${team}WishView`, loadFunction, (ctx) => {
     wishView_EventMenu(ctx, team);
   });
-  bot.callbackQuery(/^seeWish-/g, async (ctx) => {
+  bot.callbackQuery(/^seeWish-/g, loadFunction, async (ctx) => {
     eventName = ctx.update.callback_query.data.substring('seeWish-'.length);
     await wishView_SendWishes(ctx, eventName);
   });
 };
 
 const wishView_EventMenu = async (
-  ctx: BotContext,
+  ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
 ) => {
   let eventTeam: 'Welfare' | 'Bday';
@@ -34,7 +35,7 @@ const wishView_EventMenu = async (
   } else {
     eventTeam = 'Bday';
   }
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
 
   const eventObject = await Database.getMongoRepository(Events).find({
     eventTeam: `${eventTeam}`,
@@ -67,7 +68,7 @@ const wishView_SendWishes = async (
   ctx: CallbackQueryContext<BotContext>,
   eventName: string
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const wishArray = await Database.getMongoRepository(Wishes).find({
     eventName: eventName,
   });

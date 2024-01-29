@@ -1,9 +1,9 @@
 import { Bot, CallbackQueryContext } from 'grammy';
 import { BotContext } from '../../../app/_context';
-import { removeInLineButton } from '../../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 
 export const sendWish = (bot: Bot<BotContext>) => {
-  bot.callbackQuery(/^sendWishEvent-/g, sendWish_WishMessage);
+  bot.callbackQuery(/^sendWishEvent-/g, loadFunction, sendWish_WishMessage);
 };
 
 const sendWish_WishMessage = async (ctx: CallbackQueryContext<BotContext>) => {

@@ -14,8 +14,8 @@ const _index_1 = require("../../../gsheets/_index");
 const _telefunctions_1 = require("../../../app/_telefunctions");
 //Send SF Callbacks
 const sendsf = (bot) => __awaiter(void 0, void 0, void 0, function* () {
-    bot.callbackQuery('AttendanceSF-yes', sendSF);
-    bot.callbackQuery('AttendanceSF-no', sendReason);
+    bot.callbackQuery('AttendanceSF-yes', _telefunctions_1.loadFunction, sendSF);
+    bot.callbackQuery('AttendanceSF-no', _telefunctions_1.loadFunction, sendReason);
 });
 exports.sendsf = sendsf;
 // Send SF Callback

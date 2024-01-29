@@ -19,12 +19,11 @@ const _sendAttendanceInternal_1 = require("./_sendAttendanceInternal");
 // Used in _botOn_functions.ts in botOntype = 19
 // Logs Reason Message to Google Sheets
 const WeAttendanceLogReason = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.session.botOnType = yield undefined;
-    const reason = yield ctx.message.text;
+    ctx.session.botOnType = undefined;
+    const reason = ctx.message.text;
     if (reason == null) {
         (0, exports.WeAttendanceLogReason)(ctx);
     }
-    yield ctx.reply('Processing... Please wait...');
     try {
         const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
             teleUser: ctx.update.message.from.username,
@@ -82,7 +81,6 @@ const lgAttendanceLogReason = (ctx) => __awaiter(void 0, void 0, void 0, functio
     if (reason == null) {
         (0, exports.lgAttendanceLogReason)(ctx);
     }
-    yield ctx.reply('Processing... Please wait...');
     try {
         const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
             teleUser: ctx.update.message.from.username,
@@ -116,7 +114,6 @@ exports.lgAttendanceLogReason = lgAttendanceLogReason;
 const SpecialAttendanceLogReason = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text;
-    yield ctx.reply('Processing... Please wait...');
     try {
         if (reason == null) {
             (0, exports.SpecialAttendanceLogReason)(ctx);
@@ -179,7 +176,6 @@ const dinnerAttendanceReason = (ctx) => __awaiter(void 0, void 0, void 0, functi
         (0, exports.dinnerAttendanceReason)(ctx);
     }
     else {
-        yield ctx.reply('Processing... Please wait...');
         try {
             const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
                 teleUser: ctx.update.message.from.username,
@@ -187,13 +183,11 @@ const dinnerAttendanceReason = (ctx) => __awaiter(void 0, void 0, void 0, functi
             switch (ctx.session.eventName) {
                 case 'Special Event':
                     yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'N', reason);
-                    yield ctx.reply('Attendance logged! Thanks for submitting!');
                     ctx.session = (0, _SessionData_1.initial)();
                     _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                     break;
                 case 'No LG':
                     yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'N', reason);
-                    yield ctx.reply('Attendance logged! Thanks for submitting!');
                     ctx.session = (0, _SessionData_1.initial)();
                     _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                     break;

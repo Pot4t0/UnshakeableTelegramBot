@@ -14,6 +14,7 @@ const grammy_1 = require("grammy");
 const _db_init_1 = require("../_db-init");
 const _tableEntity_1 = require("../Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
+const _telefunctions_1 = require("../../app/_telefunctions");
 //Events Database - Contains all events
 //Functions to manage events limited to each team (Birthday / Welfare)
 //Add, Delete, Edit, View
@@ -22,15 +23,15 @@ const _SessionData_1 = require("../../models/_SessionData");
 //Edit CallbackQuery: edit{team}Events
 //View CallbackQuery: see{team}Events
 const eventManagement = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
-    bot.callbackQuery(`manage${team}Event`, (ctx) => eventManageMenu(ctx, team));
-    bot.callbackQuery(`see${team}Events`, (ctx) => eventView(ctx, team));
+    bot.callbackQuery(`manage${team}Event`, _telefunctions_1.loadFunction, (ctx) => eventManageMenu(ctx, team));
+    bot.callbackQuery(`see${team}Events`, _telefunctions_1.loadFunction, (ctx) => eventView(ctx, team));
     addEvent(bot, team);
     delEvent(bot, team);
     editEvent(bot, team);
 });
 exports.eventManagement = eventManagement;
 const eventManageMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -63,7 +64,7 @@ const eventManageMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, functio
     });
 });
 const eventView = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
     if (team == 'Welfare') {
         eventTeam = 'Welfare';
@@ -82,7 +83,7 @@ const addEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
     bot.callbackQuery(/^createEvent-/g, (ctx) => addEvent_CreateEvent(ctx, ctx.update.callback_query.data.substring(`createEvent-`.length)));
 });
 const addEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.name = team;
     ctx.reply(`Input ${team} event Name\ne.g. Minh's ORD`, {
         reply_markup: {
@@ -131,7 +132,7 @@ const addEvent_ReceiveEventDate = (ctx) => __awaiter(void 0, void 0, void 0, fun
 });
 exports.addEvent_ReceiveEventDate = addEvent_ReceiveEventDate;
 const addEvent_CreateEvent = (ctx, notAllowedUser) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const team = ctx.session.name;
     const eventName = ctx.session.eventName;
     const eventDate = ctx.session.eventDate;
@@ -165,7 +166,7 @@ const delEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
     bot.callbackQuery(/^cfmDelEvent-/g, (ctx) => delEvent_PerformDeletion(ctx, ctx.update.callback_query.data.substring('cfmDelEvent-'.length), eventName));
 });
 const delEvent_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
     if (team == 'Birthday') {
         eventTeam = 'Bday';
@@ -187,7 +188,7 @@ const delEvent_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, func
     });
 });
 const delEvent_CfmMsg = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -208,7 +209,7 @@ const delEvent_CfmMsg = (ctx, eventName) => __awaiter(void 0, void 0, void 0, fu
     return eventName;
 });
 const delEvent_PerformDeletion = (ctx, choice, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     if (eventName) {
         if (choice == 'Y') {
             const event = new _tableEntity_1.Events();
@@ -245,7 +246,7 @@ const editEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () 
     bot.callbackQuery(/^editNotAllowedUserSelect-/g, (ctx) => editNotAllowedUser_Execution(ctx, eventName));
 });
 const editEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
     if (team == 'Birthday') {
         eventTeam = 'Bday';
@@ -267,7 +268,7 @@ const editEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function
     });
 });
 const editEvent_EditMenu = (ctx, eventName, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const getEvents = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventName: eventName,
     });
@@ -303,7 +304,7 @@ const editEvent_EditMenu = (ctx, eventName, team) => __awaiter(void 0, void 0, v
     });
 });
 const editEventName = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield ctx.reply(`The current event name is <b>${eventName}</b>\n What would like to change it to?`, {
         parse_mode: 'HTML',
         reply_markup: { force_reply: true },
@@ -322,7 +323,7 @@ const editEventName_Execution = (ctx) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.editEventName_Execution = editEventName_Execution;
 const editEventDate = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     yield ctx.reply('Change event date to: (dd/mm/yyyy) :', {
         reply_markup: { force_reply: true },
     });
@@ -340,7 +341,7 @@ const editEventDate_Execution = (ctx) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.editEventDate_Execution = editEventDate_Execution;
 const editNotAllowedUser = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(name
         .map((n) => [
@@ -362,7 +363,7 @@ const editNotAllowedUser = (ctx, eventName) => __awaiter(void 0, void 0, void 0,
     });
 });
 const editNotAllowedUser_Execution = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     let selectedName = ctx.update.callback_query.data.substring('editNotAllowedUserSelect-'.length);
     if (selectedName == 'ALL') {
         selectedName = '';

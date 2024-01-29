@@ -1,6 +1,6 @@
 import { Bot, CallbackQueryContext, InlineKeyboard, Keyboard } from 'grammy';
 import { BotContext } from '../../app/_index';
-import { removeInLineButton } from '../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 import { Database } from '../../database_mongoDB/_db-init';
 import { Names } from '../../database_mongoDB/Entity/_tableEntity';
 import { gsheet } from '../../gsheets/_index';
@@ -10,13 +10,17 @@ import { initial } from '../../models/_SessionData';
 // Settings Callbacks
 // Any overall bot admin settings
 export const settings = (bot: Bot<BotContext>) => {
-  bot.callbackQuery('settingsAnnouncements', settingsAnnouncements_Write); //Settings Announcements Input
-  bot.callbackQuery('settingsNewUser', newUserManagement); //Settings New User Management
+  bot.callbackQuery(
+    'settingsAnnouncements',
+    loadFunction,
+    settingsAnnouncements_Write
+  ); //Settings Announcements Input
+  bot.callbackQuery('settingsNewUser', loadFunction, newUserManagement); //Settings New User Management
   //Settings Remove User Management
-  bot.callbackQuery('settingsDeleteUser', rmUserManagement);
-  bot.callbackQuery(/^rmUser-/g, rmUser);
-  bot.callbackQuery(/^cfmRmUser-/g, cfmRmUser);
-  bot.callbackQuery('settingsLGGroup', lgGroupManagement); //Settings Bot On
+  bot.callbackQuery('settingsDeleteUser', loadFunction, rmUserManagement);
+  bot.callbackQuery(/^rmUser-/g, loadFunction, rmUser);
+  bot.callbackQuery(/^cfmRmUser-/g, loadFunction, cfmRmUser);
+  bot.callbackQuery('settingsLGGroup', loadFunction, lgGroupManagement); //Settings Bot On
   //Settings Announcements Output is located in BotOnFunctions
 };
 
@@ -91,7 +95,6 @@ const cfmRmUser = async (ctx: CallbackQueryContext<BotContext>) => {
     'cfmRmUser-'.length
   );
   const user = ctx.session.name;
-  await ctx.reply('Processing... Please wait...');
   if (user) {
     if (cfm == 'Yes') {
       await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();

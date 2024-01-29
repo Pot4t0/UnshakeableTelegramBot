@@ -20,7 +20,6 @@ const sendToSheet_SF = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const sfmsg = yield ctx.message.text;
     const teleUserName = yield ctx.update.message.from.username;
     const sheet = ctx.session.gSheet;
-    yield ctx.reply('Processing... Please wait...');
     try {
         if (sfmsg == null) {
             (0, exports.sendToSheet_SF)(ctx);
@@ -81,7 +80,6 @@ const sendToSheet_Reason = (ctx) => __awaiter(void 0, void 0, void 0, function* 
     const teleUserName = yield ctx.update.message.from.username;
     const reason = yield ctx.message.text;
     const sheet = ctx.session.gSheet;
-    yield ctx.reply('Processing... Please wait...');
     try {
         if (reason == null) {
             (0, exports.sendToSheet_Reason)(ctx);

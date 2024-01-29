@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendWish = void 0;
 const _telefunctions_1 = require("../../../app/_telefunctions");
 const sendWish = (bot) => {
-    bot.callbackQuery(/^sendWishEvent-/g, sendWish_WishMessage);
+    bot.callbackQuery(/^sendWishEvent-/g, _telefunctions_1.loadFunction, sendWish_WishMessage);
 };
 exports.sendWish = sendWish;
 const sendWish_WishMessage = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

@@ -16,6 +16,7 @@ const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _gsheet_init_1 = require("../../../gsheets/_gsheet_init");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _sendAttendanceInternal_1 = require("./_sendAttendanceInternal");
+const _sendAttendanceInternal_2 = require("./_sendAttendanceInternal");
 const _telefunctions_1 = require("../../../app/_telefunctions");
 //Send Attendance Callbacks
 // For Special Event
@@ -25,13 +26,13 @@ const _telefunctions_1 = require("../../../app/_telefunctions");
 // For LG Event
 // Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Take LG Attendance (Yes/No) -> Take Reason (if no) -> Log Attendance
 const sendAttendance = (bot) => {
-    bot.callbackQuery(/^svcLGAttendance/g, attendanceEventDecision);
-    bot.callbackQuery(/^WeAttendance/g, WeAttendance);
-    bot.callbackQuery(/^lgAttendance/g, lgAttendance);
+    bot.callbackQuery(/^svcLGAttendance/g, _telefunctions_1.loadFunction, attendanceEventDecision);
+    bot.callbackQuery(/^WeAttendance/g, _telefunctions_1.loadFunction, WeAttendance);
+    bot.callbackQuery(/^lgAttendance/g, _telefunctions_1.loadFunction, lgAttendance);
     // Special Event
-    bot.callbackQuery(/^SpecialAttendance-/g, SpecialAttendance);
+    bot.callbackQuery(/^SpecialAttendance-/g, _telefunctions_1.loadFunction, SpecialAttendance);
     // Dinner/Meal Function
-    bot.callbackQuery(/^dinnerAttendance-/g, dinnerAttendance);
+    bot.callbackQuery(/^dinnerAttendance-/g, _telefunctions_1.loadFunction, dinnerAttendance);
 };
 exports.sendAttendance = sendAttendance;
 // Attendance Event Decision Function
@@ -129,7 +130,7 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
         }
         else {
             yield ctx.reply('Error! Pls try again');
-            ctx.session = yield (0, _SessionData_1.initial)();
+            ctx.session = (0, _SessionData_1.initial)();
             console.log('Error Event');
         }
     }
@@ -144,10 +145,10 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
-            yield ctx.reply('Processing... Please wait...');
             yield sheet.loadCells();
-            const attendanceCell = yield sheet.getCellByA1(`C${user[0].attendanceRow}`);
-            const reasonCell = yield sheet.getCellByA1(`D${user[0].attendanceRow}`);
+            const sheetName = sheet.getCellByA1('C3').value;
+            const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+            const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
             yield sheet.saveUpdatedCells();
@@ -173,8 +174,8 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
                 });
             }
             else {
-                yield ctx.reply('Attendance logged! Thanks for submitting!');
-                ctx.session = yield (0, _SessionData_1.initial)();
+                yield (0, _sendAttendanceInternal_1.logAttendanceMsg)(ctx, `${sheetName}`);
+                ctx.session = (0, _SessionData_1.initial)();
                 _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
             }
         }
@@ -185,7 +186,7 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
         yield ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
-        ctx.session.botOnType = _sendAttendanceInternal_1.logReasonBotOnSpecial;
+        ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnSpecial;
     }
     else {
         yield ctx.reply('Error! Pls try again');
@@ -203,7 +204,6 @@ const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
-            yield ctx.reply('Processing... Please wait...');
             yield sheet.loadCells();
             const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
             const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
@@ -238,7 +238,7 @@ const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
-        ctx.session.botOnType = _sendAttendanceInternal_1.logReasonBotOnWE;
+        ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnWE;
     }
     else {
         yield ctx.reply('Error! Pls try again');
@@ -256,14 +256,14 @@ const lgAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
-            yield ctx.reply('Processing... Please wait...');
             yield sheet.loadCells();
+            const sheetName = `WE: ${sheet.getCellByA1('C2').value}`;
             const attendanceCell = sheet.getCellByA1(`F${user[0].attendanceRow}`);
             const reasonCell = sheet.getCellByA1(`G${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
             yield sheet.saveUpdatedCells();
-            yield ctx.reply('Attendance logged! Thanks for submitting!');
+            (0, _sendAttendanceInternal_1.logAttendanceMsg)(ctx, sheetName);
             ctx.session = (0, _SessionData_1.initial)();
             _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         }
@@ -274,7 +274,7 @@ const lgAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
-        ctx.session.botOnType = _sendAttendanceInternal_1.logReasonBotOnLG;
+        ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnLG;
     }
     else {
         yield ctx.reply('Error! Pls try again');
@@ -295,19 +295,17 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
         });
         switch (ctx.session.eventName) {
             case 'Special Event':
-                yield dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
-                yield ctx.reply('Attendance logged! Thanks for submitting!');
-                ctx.session = yield (0, _SessionData_1.initial)();
-                yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+                yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                ctx.session = (0, _SessionData_1.initial)();
+                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 break;
             case 'No LG':
-                yield dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
-                yield ctx.reply('Attendance logged! Thanks for submitting!');
-                ctx.session = yield (0, _SessionData_1.initial)();
-                yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+                yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                ctx.session = (0, _SessionData_1.initial)();
+                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 break;
             case 'LG':
-                yield dinnerLogAttendance(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
                 const sheet = ctx.session.gSheet;
                 if (sheet) {
                     const lgDateCell = yield sheet.getCellByA1('F2');
@@ -332,40 +330,17 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
                 break;
             default:
                 yield ctx.reply('Error! Pls try again');
-                ctx.session = yield (0, _SessionData_1.initial)();
-                yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+                ctx.session = (0, _SessionData_1.initial)();
+                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         }
     }
     else if (callback == 'N') {
         yield ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
-        ctx.session.botOnType = _sendAttendanceInternal_1.logReasonBotOnDinner;
+        ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnDinner;
     }
     else {
         yield ctx.reply('Error! Pls try again');
-    }
-});
-//Attendance Dinner Logging Function
-const dinnerLogAttendance = (ctx, rowNo, eventName, dinnerAttendance, dinnerReason) => __awaiter(void 0, void 0, void 0, function* () {
-    const sheet = ctx.session.gSheet;
-    if (sheet) {
-        yield ctx.reply('Processing... Please wait...');
-        yield sheet.loadCells();
-        let dinnerA1 = ``;
-        let dinnerReasonA1 = ``;
-        if (eventName == 'Special Event') {
-            dinnerA1 = `F${rowNo}`;
-            dinnerReasonA1 = `G${rowNo}`;
-        }
-        else if (eventName == 'No LG' || eventName == 'LG') {
-            dinnerA1 = `I${rowNo}`;
-            dinnerReasonA1 = `J${rowNo}`;
-        }
-        const dinnerCell = yield sheet.getCellByA1(dinnerA1);
-        const dinnerReasonCell = yield sheet.getCellByA1(dinnerReasonA1);
-        dinnerCell.value = dinnerAttendance;
-        dinnerReasonCell.value = dinnerReason;
-        yield sheet.saveUpdatedCells();
     }
 });

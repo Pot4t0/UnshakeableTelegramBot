@@ -23,9 +23,9 @@ const adminWelfare = (bot) => {
     //Welfare Team Management
     _index_1.team.teamManagement(bot, 'Welfare');
     //Welfare Reminder Mangement
-    bot.callbackQuery('manageWelfareReminder', reminderSystem);
-    bot.callbackQuery(/^sendWelfareReminder-/g, reminder_Menu);
-    bot.callbackQuery('sendReminder-Welfare', reminder_Msg);
+    bot.callbackQuery('manageWelfareReminder', _telefunctions_1.loadFunction, reminderSystem);
+    bot.callbackQuery(/^sendWelfareReminder-/g, _telefunctions_1.loadFunction, reminder_Menu);
+    bot.callbackQuery('sendReminder-Welfare', _telefunctions_1.loadFunction, reminder_Msg);
 };
 exports.adminWelfare = adminWelfare;
 // Reminder Management
@@ -48,7 +48,8 @@ const reminderSystem = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Choose which reminder to send (Not In / Specific)
 const reminder_Menu = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const title = yield ctx.update.callback_query.data.substring('sendWelfareReminder-'.length);
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+    const title = ctx.update.callback_query.data.substring('sendWelfareReminder-'.length);
     ctx.session.name = yield title;
     yield _index_1.reminder.reminderMenu(ctx, 'Welfare');
 });

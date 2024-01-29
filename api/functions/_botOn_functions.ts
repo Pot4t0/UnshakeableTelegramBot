@@ -9,13 +9,14 @@ import {
 } from '../cmd/send/_index';
 import { adminAttendanceBotOn, adminSFBotOn } from '../cmd/admin/_index';
 import { settingBotOn, settings } from '../cmd/settings/_index';
+import { loadFunction } from '../app/_telefunctions';
 
 // BotOn Functions
 // Case 1: /sendwish BotOn Functions
 export const botOnHandler = (bot: Bot<BotContext>) => {
-  bot.on(':user_shared', userSharedListener);
-  bot.on(':chat_shared', chatSharedListener);
-  bot.on('message', anyMsgListener);
+  bot.on(':user_shared', loadFunction, userSharedListener);
+  bot.on(':chat_shared', loadFunction, chatSharedListener);
+  bot.on('message', loadFunction, anyMsgListener);
 };
 
 const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {

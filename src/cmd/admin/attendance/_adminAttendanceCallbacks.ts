@@ -13,53 +13,97 @@ import {
   adminAttendanceBotOn,
   createEventDBDoc,
 } from './__adminAttendanceInternal';
-import { removeInLineButton } from '../../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 
 // Admin Attendance Callbacks
 export const adminAttendance = (bot: Bot<BotContext>) => {
   // Add Attendance Sheet Menu
-  bot.callbackQuery('addAttendanceSheet', addAttendanceSheet);
+  bot.callbackQuery('addAttendanceSheet', loadFunction, addAttendanceSheet);
   // Add LG Event
   bot.callbackQuery(
     'yesLGAddAttendance',
+    loadFunction,
     addAttendanceSheet_LGEventLGDateMessage
   );
   // Add No LG Event
   bot.callbackQuery(
     'noLGAddAttendance',
+    loadFunction,
     addAttendanceSheet_NoLGEventWEDateMessage
   );
   // Add Special Event
   bot.callbackQuery(
     'specialAddAttendance',
+    loadFunction,
     addAttendanceSheet_SpecialEventMealMessage
   );
   bot.callbackQuery(
     /^addSpecialAttendannce-/g,
+    loadFunction,
     addAttendanceSheet_SpecialEventNameMessage
   );
   // Delete Attendance Sheet
-  bot.callbackQuery('delAttendanceSheet', delAttendanceSheet);
-  bot.callbackQuery(/^delAttendanceeSheet-/g, delAttendanceeSheet_CfmMessage);
-  bot.callbackQuery(/^CfmDelAttendanceSheet-/g, delAttendanceeSheet_Execution);
+  bot.callbackQuery('delAttendanceSheet', loadFunction, delAttendanceSheet);
+  bot.callbackQuery(
+    /^delAttendanceeSheet-/g,
+    loadFunction,
+    delAttendanceeSheet_CfmMessage
+  );
+  bot.callbackQuery(
+    /^CfmDelAttendanceSheet-/g,
+    loadFunction,
+    delAttendanceeSheet_Execution
+  );
   // //Attendance reminders callbacks
-  bot.callbackQuery('manageAttendanceReminder', attendanceReminder);
+  bot.callbackQuery(
+    'manageAttendanceReminder',
+    loadFunction,
+    attendanceReminder
+  );
   // //Send not in reminder (attendance)
-  bot.callbackQuery('sendAttendanceNotInReminder', attendanceReminder);
-  bot.callbackQuery(/^sendAttendanceReminder-/g, attendanceReminder_Menu);
-  bot.callbackQuery('sendReminder-Attendance', attendanceReminder_Msg);
+  bot.callbackQuery(
+    'sendAttendanceNotInReminder',
+    loadFunction,
+    attendanceReminder
+  );
+  bot.callbackQuery(
+    /^sendAttendanceReminder-/g,
+    loadFunction,
+    attendanceReminder_Menu
+  );
+  bot.callbackQuery(
+    'sendReminder-Attendance',
+    loadFunction,
+    attendanceReminder_Msg
+  );
   //Send to Attendance Sheet to LG Chat
-  bot.callbackQuery('chatAttendance', sendAttendanceToLGChat_EventMenu);
+  bot.callbackQuery(
+    'chatAttendance',
+    loadFunction,
+    sendAttendanceToLGChat_EventMenu
+  );
   bot.callbackQuery(
     /^sendAttendanceToLGChat/g,
     sendAttendanceToLGChat_Execution
   );
   // Archive Attendance Sheet
-  bot.callbackQuery('archiveAttendance', archiveAttendance_Menu);
-  bot.callbackQuery(/^archiveSheet/g, archiveAttendance_Execution);
+  bot.callbackQuery('archiveAttendance', loadFunction, archiveAttendance_Menu);
+  bot.callbackQuery(
+    /^archiveSheet/g,
+    loadFunction,
+    archiveAttendance_Execution
+  );
   // Unarchive Attendance Sheet
-  bot.callbackQuery('unarchiveAttendance', unarchiveAttendance_Menu);
-  bot.callbackQuery(/^unarchiveSheet/g, unarchiveAttendance_Execution);
+  bot.callbackQuery(
+    'unarchiveAttendance',
+    loadFunction,
+    unarchiveAttendance_Menu
+  );
+  bot.callbackQuery(
+    /^unarchiveSheet/g,
+    loadFunction,
+    unarchiveAttendance_Execution
+  );
 };
 // Add Attendance Sheet Menu
 // Choose between 3 options

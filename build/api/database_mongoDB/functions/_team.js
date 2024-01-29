@@ -14,6 +14,7 @@ const grammy_1 = require("grammy");
 const _db_init_1 = require("../_db-init");
 const _tableEntity_1 = require("../Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
+const _telefunctions_1 = require("../../app/_telefunctions");
 const teamManagement = (bot, team
 //   |'Attendance'
 ) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,25 +36,25 @@ const teamManagement = (bot, team
         default:
             userRole = 'bday';
     }
-    bot.callbackQuery(`manage${team}Team`, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(`manage${team}Team`, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield teamManagementMenu(ctx, team, userRole);
     }));
-    bot.callbackQuery(`addMember`, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(`addMember`, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield addMember(ctx);
     }));
-    bot.callbackQuery(/^addMemberUser-/g, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(/^addMemberUser-/g, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield addMember_Execution(ctx);
     }));
-    bot.callbackQuery(`delMember`, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(`delMember`, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield delMember(ctx);
     }));
-    bot.callbackQuery(/^delMemberUser-/g, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(/^delMemberUser-/g, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield delMember_Execution(ctx);
     }));
-    bot.callbackQuery(`editMember`, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(`editMember`, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield editMember(ctx);
     }));
-    bot.callbackQuery(/^editMemberUser-/g, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(/^editMemberUser-/g, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield editMember_Execution(ctx);
     }));
 });
@@ -61,7 +62,7 @@ exports.teamManagement = teamManagement;
 const teamManagementMenu = (ctx, team, 
 //| 'Attendance'
 userRole) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -102,7 +103,7 @@ userRole) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 const addMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
@@ -127,7 +128,7 @@ const addMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const addMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const selectedName = yield ctx.update.callback_query.data.substring('addMemberUser-'.length);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
@@ -146,7 +147,7 @@ const addMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function*
     ctx.session = (0, _SessionData_1.initial)();
 });
 const delMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
@@ -172,7 +173,7 @@ const delMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     ctx.session = (0, _SessionData_1.initial)();
 });
 const delMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
@@ -194,7 +195,7 @@ const delMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function*
     ctx.session = (0, _SessionData_1.initial)();
 });
 const editMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
@@ -219,7 +220,7 @@ const editMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const editMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const selectedName = yield ctx.update.callback_query.data.substring('editMemberUser-'.length);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;

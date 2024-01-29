@@ -46,7 +46,6 @@ export const settingsAnnouncements_Send = async (
 export const addUser = async (ctx: Filter<BotContext, ':user_shared'>) => {
   const chatid = ctx.update.message?.user_shared.user_id;
   if (chatid) {
-    await ctx.reply('Processing... Please wait...');
     await ctx.reply(
       `User ID: ${chatid}, Please write down the full name of user:`,
       { reply_markup: { force_reply: true } }
@@ -65,7 +64,6 @@ export const addUser = async (ctx: Filter<BotContext, ':user_shared'>) => {
 export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
   const fullName = ctx.message.text;
   const chatId = ctx.session.chatId;
-  await ctx.reply('Processing... Please wait...');
   if (fullName && chatId) {
     const currentNames = await Database.getMongoRepository(Names).find();
     let nameExist = false;
@@ -131,7 +129,6 @@ export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
 // Refer to user_shared case 2
 export const changeLGChat = async (ctx: Filter<BotContext, ':chat_shared'>) => {
   const chatid = ctx.update.message?.chat_shared.chat_id;
-  await ctx.reply('Processing... Please wait...');
   if (chatid) {
     await Database.getMongoRepository(Settings).updateOne(
       { option: 'LG' },

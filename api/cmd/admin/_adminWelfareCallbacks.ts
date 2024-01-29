@@ -8,7 +8,7 @@ import {
   team,
   wish,
 } from '../../database_mongoDB/functions/_index';
-import { removeInLineButton } from '../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 export const adminWelfare = (bot: Bot<BotContext>) => {
   //Wish View Callbacks
@@ -21,9 +21,9 @@ export const adminWelfare = (bot: Bot<BotContext>) => {
   team.teamManagement(bot, 'Welfare');
 
   //Welfare Reminder Mangement
-  bot.callbackQuery('manageWelfareReminder', reminderSystem);
-  bot.callbackQuery(/^sendWelfareReminder-/g, reminder_Menu);
-  bot.callbackQuery('sendReminder-Welfare', reminder_Msg);
+  bot.callbackQuery('manageWelfareReminder', loadFunction, reminderSystem);
+  bot.callbackQuery(/^sendWelfareReminder-/g, loadFunction, reminder_Menu);
+  bot.callbackQuery('sendReminder-Welfare', loadFunction, reminder_Msg);
 };
 
 // Reminder Management
@@ -51,7 +51,8 @@ const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 //Choose which reminder to send (Not In / Specific)
 const reminder_Menu = async (ctx: CallbackQueryContext<BotContext>) => {
-  const title = await ctx.update.callback_query.data.substring(
+  await removeInLineButton(ctx);
+  const title = ctx.update.callback_query.data.substring(
     'sendWelfareReminder-'.length
   );
   ctx.session.name = await title;

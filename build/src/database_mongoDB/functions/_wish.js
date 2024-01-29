@@ -13,6 +13,7 @@ exports.wishView = void 0;
 const grammy_1 = require("grammy");
 const _tableEntity_1 = require("../Entity/_tableEntity");
 const _db_init_1 = require("../_db-init");
+const _telefunctions_1 = require("../../app/_telefunctions");
 // Wish View System
 // Wish Database - Contains all wishes
 // Filtered through event name
@@ -21,10 +22,10 @@ const _db_init_1 = require("../_db-init");
 // CallbackQuery: see{team}Wish-{eventName}
 const wishView = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
     let eventName;
-    bot.callbackQuery(`${team}WishView`, (ctx) => {
+    bot.callbackQuery(`${team}WishView`, _telefunctions_1.loadFunction, (ctx) => {
         wishView_EventMenu(ctx, team);
     });
-    bot.callbackQuery(/^seeWish-/g, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    bot.callbackQuery(/^seeWish-/g, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         eventName = ctx.update.callback_query.data.substring('seeWish-'.length);
         yield wishView_SendWishes(ctx, eventName);
     }));
@@ -38,7 +39,7 @@ const wishView_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, func
     else {
         eventTeam = 'Bday';
     }
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const eventObject = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: `${eventTeam}`,
     });
@@ -59,7 +60,7 @@ const wishView_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, func
     });
 });
 const wishView_SendWishes = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const wishArray = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).find({
         eventName: eventName,
     });

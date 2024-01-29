@@ -16,6 +16,7 @@ const _tableEntity_1 = require("../Entity/_tableEntity");
 const _index_1 = require("../../gsheets/_index");
 const _SessionData_1 = require("../../models/_SessionData");
 const _index_2 = require("./_index");
+const _telefunctions_1 = require("../../app/_telefunctions");
 // Reminder System
 // Database - contaims all chatid and telegramm username
 // Telegram - send message to respective chatid
@@ -185,13 +186,13 @@ exports.reminderSendAllNotIn_Execution = reminderSendAllNotIn_Execution;
 // Reminder System - Send to specific user
 // Used in bot.ts
 const specificReminder = (bot) => __awaiter(void 0, void 0, void 0, function* () {
-    bot.callbackQuery('sendSpecificReminder', sendSpecificReminder_ChooseMember);
-    bot.callbackQuery(/^reminderSpecificNames-/, sendSpecificReminder_ReminderMsg);
+    bot.callbackQuery('sendSpecificReminder', _telefunctions_1.loadFunction, sendSpecificReminder_ChooseMember);
+    bot.callbackQuery(/^reminderSpecificNames-/, _telefunctions_1.loadFunction, sendSpecificReminder_ReminderMsg);
 });
 exports.specificReminder = specificReminder;
 // Choose specific user to send reminder
 const sendSpecificReminder_ChooseMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(name.map((n) => [
         {
@@ -205,7 +206,7 @@ const sendSpecificReminder_ChooseMember = (ctx) => __awaiter(void 0, void 0, voi
 });
 // Write reminder msg for specific user
 const sendSpecificReminder_ReminderMsg = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+    yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const telegramUser = yield ctx.update.callback_query.data.substring('reminderSpecificNames-'.length);
     ctx.session.reminderUser = telegramUser;
     const cmdString = ctx.session.text;

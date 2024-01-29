@@ -12,12 +12,11 @@ import { dinnerLogAttendance } from './_sendAttendanceInternal';
 export const WeAttendanceLogReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
-  ctx.session.botOnType = await undefined;
-  const reason = await ctx.message.text;
+  ctx.session.botOnType = undefined;
+  const reason = ctx.message.text;
   if (reason == null) {
     WeAttendanceLogReason(ctx);
   }
-  await ctx.reply('Processing... Please wait...');
   try {
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.message.from.username,
@@ -76,7 +75,6 @@ export const lgAttendanceLogReason = async (
   if (reason == null) {
     lgAttendanceLogReason(ctx);
   }
-  await ctx.reply('Processing... Please wait...');
   try {
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.message.from.username,
@@ -112,7 +110,6 @@ export const SpecialAttendanceLogReason = async (
 ) => {
   ctx.session.botOnType = undefined;
   const reason = ctx.message.text;
-  await ctx.reply('Processing... Please wait...');
   try {
     if (reason == null) {
       SpecialAttendanceLogReason(ctx);
@@ -175,7 +172,6 @@ export const dinnerAttendanceReason = async (
   if (reason == null) {
     dinnerAttendanceReason(ctx);
   } else {
-    await ctx.reply('Processing... Please wait...');
     try {
       const user = await Database.getMongoRepository(Names).find({
         teleUser: ctx.update.message.from.username,
@@ -189,7 +185,6 @@ export const dinnerAttendanceReason = async (
             'N',
             reason
           );
-          await ctx.reply('Attendance logged! Thanks for submitting!');
           ctx.session = initial();
           gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
           break;
@@ -201,7 +196,6 @@ export const dinnerAttendanceReason = async (
             'N',
             reason
           );
-          await ctx.reply('Attendance logged! Thanks for submitting!');
           ctx.session = initial();
           gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
           break;

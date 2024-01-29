@@ -15,6 +15,7 @@ function initial() {
         text: undefined,
         eventMeal: undefined,
         gSheet: undefined,
+        scheduler: undefined,
     };
 }
 exports.initial = initial;

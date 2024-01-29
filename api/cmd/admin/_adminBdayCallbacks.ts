@@ -8,7 +8,7 @@ import {
   team,
   wish,
 } from '../../database_mongoDB/functions/_index';
-import { removeInLineButton } from '../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 export const adminBday = (bot: Bot<BotContext>) => {
   //Birthday View Callbacks
@@ -21,9 +21,9 @@ export const adminBday = (bot: Bot<BotContext>) => {
   team.teamManagement(bot, 'Birthday');
 
   //Birthday Reminder Mangement
-  bot.callbackQuery('manageBirthdayReminder', reminderSystem);
-  bot.callbackQuery(/^sendBirthdayReminder-/g, reminder_Menu);
-  bot.callbackQuery('sendReminder-Birthday', reminder_Msg);
+  bot.callbackQuery('manageBirthdayReminder', loadFunction, reminderSystem);
+  bot.callbackQuery(/^sendBirthdayReminder-/g, loadFunction, reminder_Menu);
+  bot.callbackQuery('sendReminder-Birthday', loadFunction, reminder_Msg);
 };
 
 // Reminder Management

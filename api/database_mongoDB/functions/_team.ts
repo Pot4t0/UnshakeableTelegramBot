@@ -3,6 +3,7 @@ import { BotContext } from '../../app/_context';
 import { Database } from '../_db-init';
 import { Names } from '../Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
+import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 export const teamManagement = async (
   bot: Bot<BotContext>,
@@ -27,25 +28,25 @@ export const teamManagement = async (
     default:
       userRole = 'bday';
   }
-  bot.callbackQuery(`manage${team}Team`, async (ctx) => {
+  bot.callbackQuery(`manage${team}Team`, loadFunction, async (ctx) => {
     await teamManagementMenu(ctx, team, userRole);
   });
-  bot.callbackQuery(`addMember`, async (ctx) => {
+  bot.callbackQuery(`addMember`, loadFunction, async (ctx) => {
     await addMember(ctx);
   });
-  bot.callbackQuery(/^addMemberUser-/g, async (ctx) => {
+  bot.callbackQuery(/^addMemberUser-/g, loadFunction, async (ctx) => {
     await addMember_Execution(ctx);
   });
-  bot.callbackQuery(`delMember`, async (ctx) => {
+  bot.callbackQuery(`delMember`, loadFunction, async (ctx) => {
     await delMember(ctx);
   });
-  bot.callbackQuery(/^delMemberUser-/g, async (ctx) => {
+  bot.callbackQuery(/^delMemberUser-/g, loadFunction, async (ctx) => {
     await delMember_Execution(ctx);
   });
-  bot.callbackQuery(`editMember`, async (ctx) => {
+  bot.callbackQuery(`editMember`, loadFunction, async (ctx) => {
     await editMember(ctx);
   });
-  bot.callbackQuery(/^editMemberUser-/g, async (ctx) => {
+  bot.callbackQuery(/^editMemberUser-/g, loadFunction, async (ctx) => {
     await editMember_Execution(ctx);
   });
 };
@@ -55,7 +56,7 @@ const teamManagementMenu = async (
   //| 'Attendance'
   userRole: 'welfare' | 'admin' | 'bday'
 ) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const inlineKeyboard = new InlineKeyboard([
     [
       {
@@ -100,7 +101,7 @@ const teamManagementMenu = async (
 };
 
 const addMember = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;
   const team = ctx.session.team;
   if (userRole && team) {
@@ -126,7 +127,7 @@ const addMember = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 const addMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const selectedName = await ctx.update.callback_query.data.substring(
     'addMemberUser-'.length
   );
@@ -152,7 +153,7 @@ const addMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 
 const delMember = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;
   const team = ctx.session.team;
   if (userRole && team) {
@@ -179,7 +180,7 @@ const delMember = async (ctx: CallbackQueryContext<BotContext>) => {
   ctx.session = initial();
 };
 const delMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;
   const team = ctx.session.team;
   if (userRole && team) {
@@ -207,7 +208,7 @@ const delMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 
 const editMember = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;
   const team = ctx.session.team;
   if (userRole && team) {
@@ -234,7 +235,7 @@ const editMember = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 
 const editMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
-  await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
+  await removeInLineButton(ctx);
   const selectedName = await ctx.update.callback_query.data.substring(
     'editMemberUser-'.length
   );

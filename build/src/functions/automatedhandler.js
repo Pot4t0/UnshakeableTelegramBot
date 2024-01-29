@@ -11,13 +11,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.automated = void 0;
 const luxon_1 = require("luxon");
+const _db_init_1 = require("../database_mongoDB/_db-init");
+const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
 const automated = (bot) => {
-    const minute = luxon_1.DateTime.local().setZone('Asia/Singapore').minute;
-    const hour = luxon_1.DateTime.local().setZone('Asia/Singapore').hour;
-    if (hour == 14)
-        bot.api.sendMessage(611527651, `Hour: ${hour} Minute: ${minute}`);
+    bot.use(schedulerChat, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+        var _a, _b;
+        const scheduler = ctx.session.scheduler;
+        const schedulerChatID = ctx.session.chatId;
+        if (scheduler && schedulerChatID) {
+            const isBot = (_b = (_a = ctx.msg) === null || _a === void 0 ? void 0 : _a.from) === null || _b === void 0 ? void 0 : _b.is_bot;
+            if (isBot) {
+            }
+            else {
+                yield ctx.reply('You are not a bot. Please do not spam me.');
+            }
+        }
+        else {
+            console.log('Scheduler not found');
+        }
+    }));
 };
 exports.automated = automated;
+const schedulerChat = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const scheduler = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).findOne({
+        where: { option: 'Scheduler' },
+    });
+    if (scheduler) {
+        ctx.session.scheduler = scheduler;
+        ctx.session.chatId = parseInt(scheduler.config[0]);
+        yield next();
+    }
+    else {
+        console.log('Scheduler not found');
+    }
+});
 const sfAutoReminder = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const weekend = luxon_1.DateTime.local().setZone('Asia/Singapore').isWeekend;
     if (weekend) {

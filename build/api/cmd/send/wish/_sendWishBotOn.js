@@ -17,7 +17,6 @@ const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const sendWish_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const wish = ctx.message.text;
     ctx.session.wish = wish;
-    yield ctx.reply('Processing... Please wait...');
     try {
         if (wish == null) {
             (0, exports.sendWish_Execution)(ctx);

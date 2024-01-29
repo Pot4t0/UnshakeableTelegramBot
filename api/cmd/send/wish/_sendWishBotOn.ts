@@ -10,7 +10,6 @@ export const sendWish_Execution = async (
 ) => {
   const wish = ctx.message.text;
   ctx.session.wish = wish;
-  await ctx.reply('Processing... Please wait...');
   try {
     if (wish == null) {
       sendWish_Execution(ctx);

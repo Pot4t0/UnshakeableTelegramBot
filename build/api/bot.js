@@ -5,14 +5,11 @@ const _initialise_1 = require("./functions/_initialise");
 const _botOn_functions_1 = require("./functions/_botOn_functions");
 const _commands_1 = require("./cmd/_commands");
 const _index_1 = require("./functions/_index");
-const automatedhandler_1 = require("./functions/automatedhandler");
 //Initialise Bot as bot
 const bot = (0, _initialise_1.init_bot)();
 if (!bot) {
     throw new Error('Bot not initialised');
 }
-//Automated Handler
-(0, automatedhandler_1.automated)(bot);
 // Command Functions
 //Initialise Bot Commands
 (0, _commands_1.commands)(bot);

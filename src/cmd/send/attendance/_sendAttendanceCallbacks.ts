@@ -6,12 +6,16 @@ import { Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { unshakeableAttendanceSpreadsheet } from '../../../gsheets/_gsheet_init';
 import { initial } from '../../../models/_SessionData';
 import {
+  dinnerLogAttendance,
+  logAttendanceMsg,
+} from './_sendAttendanceInternal';
+import {
   logReasonBotOnDinner,
   logReasonBotOnLG,
   logReasonBotOnSpecial,
   logReasonBotOnWE,
 } from './_sendAttendanceInternal';
-import { removeInLineButton } from '../../../app/_telefunctions';
+import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 
 //Send Attendance Callbacks
 // For Special Event
@@ -21,13 +25,13 @@ import { removeInLineButton } from '../../../app/_telefunctions';
 // For LG Event
 // Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Take LG Attendance (Yes/No) -> Take Reason (if no) -> Log Attendance
 export const sendAttendance = (bot: Bot<BotContext>) => {
-  bot.callbackQuery(/^svcLGAttendance/g, attendanceEventDecision);
-  bot.callbackQuery(/^WeAttendance/g, WeAttendance);
-  bot.callbackQuery(/^lgAttendance/g, lgAttendance);
+  bot.callbackQuery(/^svcLGAttendance/g, loadFunction, attendanceEventDecision);
+  bot.callbackQuery(/^WeAttendance/g, loadFunction, WeAttendance);
+  bot.callbackQuery(/^lgAttendance/g, loadFunction, lgAttendance);
   // Special Event
-  bot.callbackQuery(/^SpecialAttendance-/g, SpecialAttendance);
+  bot.callbackQuery(/^SpecialAttendance-/g, loadFunction, SpecialAttendance);
   // Dinner/Meal Function
-  bot.callbackQuery(/^dinnerAttendance-/g, dinnerAttendance);
+  bot.callbackQuery(/^dinnerAttendance-/g, loadFunction, dinnerAttendance);
 };
 
 // Attendance Event Decision Function
@@ -141,7 +145,7 @@ const attendanceEventDecision = async (
       // If Sheet contains anything else at cell C3 then, it will send error message
     } else {
       await ctx.reply('Error! Pls try again');
-      ctx.session = await initial();
+      ctx.session = initial();
       console.log('Error Event');
     }
   }
@@ -159,12 +163,10 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   if (callback == 'Y') {
     const sheet = ctx.session.gSheet;
     if (sheet) {
-      await ctx.reply('Processing... Please wait...');
       await sheet.loadCells();
-      const attendanceCell = await sheet.getCellByA1(
-        `C${user[0].attendanceRow}`
-      );
-      const reasonCell = await sheet.getCellByA1(`D${user[0].attendanceRow}`);
+      const sheetName = sheet.getCellByA1('C3').value;
+      const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
+      const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
       reasonCell.value = '';
       attendanceCell.value = 'Y';
       await sheet.saveUpdatedCells();
@@ -189,8 +191,8 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
           reply_markup: { inline_keyboard: inlineKeyboard },
         });
       } else {
-        await ctx.reply('Attendance logged! Thanks for submitting!');
-        ctx.session = await initial();
+        await logAttendanceMsg(ctx, `${sheetName}`);
+        ctx.session = initial();
         gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
       }
     }
@@ -220,7 +222,6 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   if (callback == 'Y') {
     const sheet = ctx.session.gSheet;
     if (sheet) {
-      await ctx.reply('Processing... Please wait...');
       await sheet.loadCells();
       const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
       const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
@@ -274,14 +275,15 @@ const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   if (callback == 'Y') {
     const sheet = ctx.session.gSheet;
     if (sheet) {
-      await ctx.reply('Processing... Please wait...');
       await sheet.loadCells();
+
+      const sheetName = `WE: ${sheet.getCellByA1('C2').value}`;
       const attendanceCell = sheet.getCellByA1(`F${user[0].attendanceRow}`);
       const reasonCell = sheet.getCellByA1(`G${user[0].attendanceRow}`);
       reasonCell.value = '';
       attendanceCell.value = 'Y';
       await sheet.saveUpdatedCells();
-      await ctx.reply('Attendance logged! Thanks for submitting!');
+      logAttendanceMsg(ctx, sheetName);
       ctx.session = initial();
       gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
@@ -321,9 +323,8 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
           'Y',
           ''
         );
-        await ctx.reply('Attendance logged! Thanks for submitting!');
-        ctx.session = await initial();
-        await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        ctx.session = initial();
+        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         break;
       case 'No LG':
         await dinnerLogAttendance(
@@ -333,9 +334,8 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
           'Y',
           ''
         );
-        await ctx.reply('Attendance logged! Thanks for submitting!');
-        ctx.session = await initial();
-        await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        ctx.session = initial();
+        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         break;
       case 'LG':
         await dinnerLogAttendance(
@@ -369,8 +369,8 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
         break;
       default:
         await ctx.reply('Error! Pls try again');
-        ctx.session = await initial();
-        await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        ctx.session = initial();
+        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
   } else if (callback == 'N') {
     await ctx.reply('AW 😭.\nWhats the reason?', {
@@ -379,34 +379,5 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
     ctx.session.botOnType = logReasonBotOnDinner;
   } else {
     await ctx.reply('Error! Pls try again');
-  }
-};
-
-//Attendance Dinner Logging Function
-const dinnerLogAttendance = async (
-  ctx: CallbackQueryContext<BotContext> | Filter<BotContext, 'message'>,
-  rowNo: number,
-  eventName: string,
-  dinnerAttendance: string,
-  dinnerReason: string
-) => {
-  const sheet = ctx.session.gSheet;
-  if (sheet) {
-    await ctx.reply('Processing... Please wait...');
-    await sheet.loadCells();
-    let dinnerA1 = ``;
-    let dinnerReasonA1 = ``;
-    if (eventName == 'Special Event') {
-      dinnerA1 = `F${rowNo}`;
-      dinnerReasonA1 = `G${rowNo}`;
-    } else if (eventName == 'No LG' || eventName == 'LG') {
-      dinnerA1 = `I${rowNo}`;
-      dinnerReasonA1 = `J${rowNo}`;
-    }
-    const dinnerCell = await sheet.getCellByA1(dinnerA1);
-    const dinnerReasonCell = await sheet.getCellByA1(dinnerReasonA1);
-    dinnerCell.value = dinnerAttendance;
-    dinnerReasonCell.value = dinnerReason;
-    await sheet.saveUpdatedCells();
   }
 };

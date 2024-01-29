@@ -14,12 +14,13 @@ const _index_1 = require("../database_mongoDB/functions/_index");
 const _index_2 = require("../cmd/send/_index");
 const _index_3 = require("../cmd/admin/_index");
 const _index_4 = require("../cmd/settings/_index");
+const _telefunctions_1 = require("../app/_telefunctions");
 // BotOn Functions
 // Case 1: /sendwish BotOn Functions
 const botOnHandler = (bot) => {
-    bot.on(':user_shared', userSharedListener);
-    bot.on(':chat_shared', chatSharedListener);
-    bot.on('message', anyMsgListener);
+    bot.on(':user_shared', _telefunctions_1.loadFunction, userSharedListener);
+    bot.on(':chat_shared', _telefunctions_1.loadFunction, chatSharedListener);
+    bot.on('message', _telefunctions_1.loadFunction, anyMsgListener);
 };
 exports.botOnHandler = botOnHandler;
 const anyMsgListener = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

@@ -3,17 +3,12 @@ import { init_bot } from './functions/_initialise';
 import { botOnHandler } from './functions/_botOn_functions';
 import { commands } from './cmd/_commands';
 import { callbackQueryHandler } from './functions/_index';
-import { automated } from './functions/automatedhandler';
 
 //Initialise Bot as bot
 const bot = init_bot();
 if (!bot) {
   throw new Error('Bot not initialised');
 }
-
-//Automated Handler
-automated(bot);
-
 // Command Functions
 //Initialise Bot Commands
 commands(bot);

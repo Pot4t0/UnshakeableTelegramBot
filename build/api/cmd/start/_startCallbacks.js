@@ -15,11 +15,11 @@ const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _telefunctions_1 = require("../../app/_telefunctions");
 const start = (bot) => {
-    bot.callbackQuery(/^nameStart-/g, startReply);
-    bot.callbackQuery('confirm_YES', confirmReply_Yes);
-    bot.callbackQuery('select_YES', confirmReply_Yes);
-    bot.callbackQuery('confirm_NO', confirmReply_No);
-    bot.callbackQuery('select_NO', selectreply_No);
+    bot.callbackQuery(/^nameStart-/g, _telefunctions_1.loadFunction, startReply);
+    bot.callbackQuery('confirm_YES', _telefunctions_1.loadFunction, confirmReply_Yes);
+    bot.callbackQuery('select_YES', _telefunctions_1.loadFunction, confirmReply_Yes);
+    bot.callbackQuery('confirm_NO', _telefunctions_1.loadFunction, confirmReply_No);
+    bot.callbackQuery('select_NO', _telefunctions_1.loadFunction, selectreply_No);
 };
 exports.start = start;
 const startReply = (ctx) => __awaiter(void 0, void 0, void 0, function* () {

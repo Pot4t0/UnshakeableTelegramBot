@@ -20,13 +20,13 @@ const _SessionData_1 = require("../../models/_SessionData");
 // Settings Callbacks
 // Any overall bot admin settings
 const settings = (bot) => {
-    bot.callbackQuery('settingsAnnouncements', settingsAnnouncements_Write); //Settings Announcements Input
-    bot.callbackQuery('settingsNewUser', newUserManagement); //Settings New User Management
+    bot.callbackQuery('settingsAnnouncements', _telefunctions_1.loadFunction, settingsAnnouncements_Write); //Settings Announcements Input
+    bot.callbackQuery('settingsNewUser', _telefunctions_1.loadFunction, newUserManagement); //Settings New User Management
     //Settings Remove User Management
-    bot.callbackQuery('settingsDeleteUser', rmUserManagement);
-    bot.callbackQuery(/^rmUser-/g, rmUser);
-    bot.callbackQuery(/^cfmRmUser-/g, cfmRmUser);
-    bot.callbackQuery('settingsLGGroup', lgGroupManagement); //Settings Bot On
+    bot.callbackQuery('settingsDeleteUser', _telefunctions_1.loadFunction, rmUserManagement);
+    bot.callbackQuery(/^rmUser-/g, _telefunctions_1.loadFunction, rmUser);
+    bot.callbackQuery(/^cfmRmUser-/g, _telefunctions_1.loadFunction, cfmRmUser);
+    bot.callbackQuery('settingsLGGroup', _telefunctions_1.loadFunction, lgGroupManagement); //Settings Bot On
     //Settings Announcements Output is located in BotOnFunctions
 };
 exports.settings = settings;
@@ -87,7 +87,6 @@ const cfmRmUser = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const cfm = yield ctx.update.callback_query.data.substring('cfmRmUser-'.length);
     const user = ctx.session.name;
-    yield ctx.reply('Processing... Please wait...');
     if (user) {
         if (cfm == 'Yes') {
             yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
