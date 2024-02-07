@@ -27,7 +27,6 @@ export const checkUserInDatabaseMiddleware = async (
   const userExists = await Database.getMongoRepository(Names).find({
     teleUser: currentUser,
   });
-
   if (userExists) {
     await next(); // User is in the database, proceed to the next middleware or command function
   } else {

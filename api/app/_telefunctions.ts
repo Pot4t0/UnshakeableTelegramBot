@@ -13,7 +13,7 @@ export const removeInLineButton = async (
   }
 };
 
-//Adds Loading Message to indicate bot is processing (for long running functions)
+// Adds Loading Message to indicate bot is processing (for long running functions)
 export const loadFunction = async (ctx: BotContext, next: NextFunction) => {
   const chatid = ctx.chat?.id;
   if (chatid) {
@@ -24,3 +24,11 @@ export const loadFunction = async (ctx: BotContext, next: NextFunction) => {
     await ctx.reply('Error! Please try again!');
   }
 };
+
+// Telegram Logging
+// Logs all console messages to a chat
+export const teleLog = async (
+  message: string,
+  teleUser: string,
+  type: 'error' | 'runtime' | 'info' | 'warn'
+) => {};

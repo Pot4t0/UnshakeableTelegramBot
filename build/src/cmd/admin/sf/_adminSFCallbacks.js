@@ -24,6 +24,7 @@ const adminSF = (bot) => {
     bot.callbackQuery('manualSF', manualSF);
     bot.callbackQuery(/^manualSFName-/g, sendsf);
     bot.callbackQuery(/^manualSendSF-/g, manualSFYesNo);
+    _index_2.team.teamManagement(bot, 'Admin');
 };
 exports.adminSF = adminSF;
 // Reminder Management

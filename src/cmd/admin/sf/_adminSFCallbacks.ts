@@ -4,7 +4,7 @@ import { Database } from '../../../database_mongoDB/_db-init';
 import { Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
 import { gsheet } from '../../../gsheets/_index';
-import { reminder } from '../../../database_mongoDB/functions/_index';
+import { reminder, team } from '../../../database_mongoDB/functions/_index';
 import { adminSFBotOn } from './_adminSFInternal';
 
 export const adminSF = (bot: Bot<BotContext>) => {
@@ -15,6 +15,8 @@ export const adminSF = (bot: Bot<BotContext>) => {
   bot.callbackQuery('manualSF', manualSF);
   bot.callbackQuery(/^manualSFName-/g, sendsf);
   bot.callbackQuery(/^manualSendSF-/g, manualSFYesNo);
+
+  team.teamManagement(bot, 'Admin');
 };
 
 // Reminder Management

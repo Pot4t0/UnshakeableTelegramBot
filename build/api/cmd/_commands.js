@@ -203,6 +203,8 @@ const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     });
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
+//Make Finanace Claim
+const sendClaim = (ctx) => __awaiter(void 0, void 0, void 0, function* () { });
 //Admin Welfare command
 const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _h;
@@ -256,47 +258,51 @@ const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (((_j = ctx.update.message) === null || _j === void 0 ? void 0 : _j.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['bday', 'bdayIC', 'LGL', 'it'], ctx);
-    if (access) {
-        const inlineKeyboard = new grammy_1.InlineKeyboard([
-            [
-                {
-                    text: 'Manage Birthday Events',
-                    callback_data: 'manageBirthdayEvent',
-                },
-            ],
-            [
-                {
-                    text: 'Manage Birthday Team',
-                    callback_data: 'manageBirthdayTeam',
-                },
-            ],
-            [
-                {
-                    text: 'See Wishes',
-                    callback_data: 'BirthdayWishView',
-                },
-            ],
-            [
-                {
-                    text: 'Send Reminder',
-                    callback_data: 'manageBirthdayReminder',
-                },
-            ],
-        ]);
-        yield ctx.reply(`
+    // const access = await dbSecurity.roleAccess(
+    //   ['bday', 'bdayIC', 'LGL', 'it'],
+    //   ctx
+    // );
+    // if (access) {
+    const inlineKeyboard = new grammy_1.InlineKeyboard([
+        [
+            {
+                text: 'Manage Birthday Events',
+                callback_data: 'manageBirthdayEvent',
+            },
+        ],
+        [
+            {
+                text: 'Manage Birthday Team',
+                callback_data: 'manageBirthdayTeam',
+            },
+        ],
+        [
+            {
+                text: 'See Wishes',
+                callback_data: 'BirthdayWishView',
+            },
+        ],
+        [
+            {
+                text: 'Send Reminder',
+                callback_data: 'manageBirthdayReminder',
+            },
+        ],
+    ]);
+    yield ctx.reply(`
 	Birthday Team Admin Matters
 
 	\nYou can view all wishes and send reminders for all birthday events
 	\nDo exercise data confidentiality.
 	\nDo also use the reminder system with proper responsibility.
 	`, {
-            reply_markup: inlineKeyboard,
-        });
-    }
-    else {
-        yield ctx.reply('AIYO! You are not serving in Birthday. Hence, you cant access this :(');
-    }
+        reply_markup: inlineKeyboard,
+    });
+    // } else {
+    //   await ctx.reply(
+    //     'AIYO! You are not serving in Birthday. Hence, you cant access this :('
+    //   );
+    // }
 });
 //Admin Sermon Feedback command
 const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -317,6 +323,12 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                 {
                     text: 'Manual Send SF',
                     callback_data: 'manualSF',
+                },
+            ],
+            [
+                {
+                    text: 'Manage Admin Team',
+                    callback_data: 'manageAdminTeam',
                 },
             ],
         ]);
@@ -397,5 +409,26 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
     }
     else {
         yield ctx.reply('AIYO! You are our LGL/SGL. Hence, you cant access this :(');
+    }
+});
+//Admin Finance command
+const adminfinance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _m;
+    if (((_m = ctx.update.message) === null || _m === void 0 ? void 0 : _m.chat.type) !== 'private') {
+        return false;
+    }
+    const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'finance', 'LGL', 'it'], ctx);
+    if (access) {
+        const inlineKeyboard = new grammy_1.InlineKeyboard([
+            [
+                {
+                    text: 'Manage Finance',
+                    callback_data: 'manageFinance',
+                },
+            ],
+        ]);
+        yield ctx.reply(`<b>Unshakeable Finance Management</b>`, {
+            reply_markup: inlineKeyboard,
+        });
     }
 });

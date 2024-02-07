@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadFunction = exports.removeInLineButton = void 0;
+exports.teleLog = exports.loadFunction = exports.removeInLineButton = void 0;
 const removeInLineButton = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -21,7 +21,7 @@ const removeInLineButton = (ctx) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.removeInLineButton = removeInLineButton;
-//Adds Loading Message to indicate bot is processing (for long running functions)
+// Adds Loading Message to indicate bot is processing (for long running functions)
 const loadFunction = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const chatid = (_a = ctx.chat) === null || _a === void 0 ? void 0 : _a.id;
@@ -35,3 +35,7 @@ const loadFunction = (ctx, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.loadFunction = loadFunction;
+// Telegram Logging
+// Logs all console messages to a chat
+const teleLog = (message, teleUser, type) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.teleLog = teleLog;

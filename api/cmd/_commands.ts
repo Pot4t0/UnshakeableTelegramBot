@@ -226,6 +226,9 @@ const sendattendance = async (ctx: CommandContext<BotContext>) => {
   await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
+//Make Finanace Claim
+const sendClaim = async (ctx: CommandContext<BotContext>) => {};
+
 //Admin Welfare command
 const adminWelfare = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
@@ -287,56 +290,56 @@ const adminbday = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
   }
-  const access = await dbSecurity.roleAccess(
-    ['bday', 'bdayIC', 'LGL', 'it'],
-    ctx
-  );
+  // const access = await dbSecurity.roleAccess(
+  //   ['bday', 'bdayIC', 'LGL', 'it'],
+  //   ctx
+  // );
 
-  if (access) {
-    const inlineKeyboard = new InlineKeyboard([
-      [
-        {
-          text: 'Manage Birthday Events',
-          callback_data: 'manageBirthdayEvent',
-        },
-      ],
-      [
-        {
-          text: 'Manage Birthday Team',
-          callback_data: 'manageBirthdayTeam',
-        },
-      ],
-      [
-        {
-          text: 'See Wishes',
-          callback_data: 'BirthdayWishView',
-        },
-      ],
-      [
-        {
-          text: 'Send Reminder',
-          callback_data: 'manageBirthdayReminder',
-        },
-      ],
-    ]);
+  // if (access) {
+  const inlineKeyboard = new InlineKeyboard([
+    [
+      {
+        text: 'Manage Birthday Events',
+        callback_data: 'manageBirthdayEvent',
+      },
+    ],
+    [
+      {
+        text: 'Manage Birthday Team',
+        callback_data: 'manageBirthdayTeam',
+      },
+    ],
+    [
+      {
+        text: 'See Wishes',
+        callback_data: 'BirthdayWishView',
+      },
+    ],
+    [
+      {
+        text: 'Send Reminder',
+        callback_data: 'manageBirthdayReminder',
+      },
+    ],
+  ]);
 
-    await ctx.reply(
-      `
+  await ctx.reply(
+    `
 	Birthday Team Admin Matters
 
 	\nYou can view all wishes and send reminders for all birthday events
 	\nDo exercise data confidentiality.
 	\nDo also use the reminder system with proper responsibility.
 	`,
-      {
-        reply_markup: inlineKeyboard,
-      }
-    );
-  } else {
-    await ctx.reply(
-      'AIYO! You are not serving in Birthday. Hence, you cant access this :('
-    );
-  }
+    {
+      reply_markup: inlineKeyboard,
+    }
+  );
+  // } else {
+  //   await ctx.reply(
+  //     'AIYO! You are not serving in Birthday. Hence, you cant access this :('
+  //   );
+  // }
 };
 
 //Admin Sermon Feedback command
@@ -361,6 +364,12 @@ const adminsf = async (ctx: CommandContext<BotContext>) => {
         {
           text: 'Manual Send SF',
           callback_data: 'manualSF',
+        },
+      ],
+      [
+        {
+          text: 'Manage Admin Team',
+          callback_data: 'manageAdminTeam',
         },
       ],
     ]);
@@ -455,5 +464,30 @@ const adminattendance = async (ctx: CommandContext<BotContext>) => {
     await ctx.reply(
       'AIYO! You are our LGL/SGL. Hence, you cant access this :('
     );
+  }
+};
+
+//Admin Finance command
+const adminfinance = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
+  const access = await dbSecurity.roleAccess(
+    ['SGL', 'finance', 'LGL', 'it'],
+    ctx
+  );
+  if (access) {
+    const inlineKeyboard = new InlineKeyboard([
+      [
+        {
+          text: 'Manage Finance',
+          callback_data: 'manageFinance',
+        },
+      ],
+    ]);
+
+    await ctx.reply(`<b>Unshakeable Finance Management</b>`, {
+      reply_markup: inlineKeyboard,
+    });
   }
 };
