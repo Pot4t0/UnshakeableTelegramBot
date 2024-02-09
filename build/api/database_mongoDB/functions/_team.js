@@ -33,8 +33,11 @@ const teamManagement = (bot, team
         case 'Birthday':
             userRole = 'bday';
             break;
+        case 'Leaders':
+            userRole = 'leaders';
+            break;
         default:
-            userRole = 'bday';
+            throw new Error('Invalid Team');
     }
     bot.callbackQuery(`manage${team}Team`, _telefunctions_1.loadFunction, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         yield teamManagementMenu(ctx, team, userRole);
@@ -59,10 +62,12 @@ const teamManagement = (bot, team
     }));
 });
 exports.teamManagement = teamManagement;
-const teamManagementMenu = (ctx, team, 
-//| 'Attendance'
-userRole) => __awaiter(void 0, void 0, void 0, function* () {
+const teamManagementMenu = (ctx, team, userRole) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
+    let icText = 'Make User be IC/Member';
+    if (userRole === 'leaders') {
+        icText = 'Make User be SGL/LGL';
+    }
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -78,40 +83,72 @@ userRole) => __awaiter(void 0, void 0, void 0, function* () {
         ],
         [
             {
-                text: 'Make User be IC/Member',
+                text: icText,
                 callback_data: `editMember`,
             },
         ],
     ]);
     ctx.session.team = team;
     ctx.session.userRole = userRole;
-    const userList = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        where: {
-            role: { $in: [userRole] },
-        },
-    });
-    const icList = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        where: {
-            role: { $in: [userRole + 'IC'] },
-        },
-    });
-    yield ctx.reply(`<b>${team} Team</b>\n\nIC:\n${icList
-        .map((n) => n.nameText)
-        .join('\n')}\n\nMembers:\n${userList.map((n) => n.nameText).join('\n')}`, {
-        parse_mode: 'HTML',
-        reply_markup: inlineKeyboard,
-    });
+    if (team != 'Leaders') {
+        const userList = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+            where: {
+                role: { $in: [userRole] },
+            },
+        });
+        const icList = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+            where: {
+                role: { $in: [userRole + 'IC'] },
+            },
+        });
+        yield ctx.reply(`<b>${team} Team</b>\n\nIC:\n${icList
+            .map((n) => n.nameText)
+            .join('\n')}\n\nMembers:\n${userList
+            .map((n) => n.nameText)
+            .join('\n')}`, {
+            parse_mode: 'HTML',
+            reply_markup: inlineKeyboard,
+        });
+    }
+    else {
+        const userList = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+            where: {
+                role: { $in: ['SGL'] },
+            },
+        });
+        const icList = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+            where: {
+                role: { $in: ['LGL'] },
+            },
+        });
+        yield ctx.reply(`<b>${team} Team</b>\n\nLGL:\n${icList
+            .map((n) => n.nameText)
+            .join('\n')}\n\nSGL:\n${userList.map((n) => n.nameText).join('\n')}`, {
+            parse_mode: 'HTML',
+            reply_markup: inlineKeyboard,
+        });
+    }
 });
 const addMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
-        const namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-            where: {
-                role: { $not: { $in: [userRole, userRole + 'IC'] } },
-            },
-        });
+        let namelist;
+        if (team != 'Leaders') {
+            namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                where: {
+                    role: { $not: { $in: [userRole, userRole + 'IC'] } },
+                },
+            });
+        }
+        else {
+            namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                where: {
+                    role: { $not: { $in: ['SGL', 'LGL'] } },
+                },
+            });
+        }
         const inlineKeyboard = new grammy_1.InlineKeyboard(namelist.map((w) => [
             {
                 text: w.nameText,
@@ -132,17 +169,37 @@ const addMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const selectedName = yield ctx.update.callback_query.data.substring('addMemberUser-'.length);
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
-    if (userRole && team) {
-        const userRoleList = yield (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({ nameText: selectedName }))
-            .flatMap((n) => n.role)
-            .flat()
-            .concat([userRole]);
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: selectedName }, { $set: { role: userRoleList } });
-        yield ctx.reply(`${selectedName} added into ${team} Team`);
+    if (team != 'Leaders') {
+        if (userRole && team) {
+            const userRoleList = yield (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                nameText: selectedName,
+            }))
+                .flatMap((n) => n.role)
+                .flat()
+                .concat([userRole]);
+            yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: selectedName }, { $set: { role: userRoleList } });
+            yield ctx.reply(`${selectedName} added into ${team} Team`);
+        }
+        else {
+            ctx.reply('Error: Please try again');
+            console.log('Sessions Failed (userRole/team)');
+        }
     }
     else {
-        ctx.reply('Error: Please try again');
-        console.log('Sessions Failed (userRole/team)');
+        if (userRole && team) {
+            const userRoleList = yield (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                nameText: selectedName,
+            }))
+                .flatMap((n) => n.role)
+                .flat()
+                .concat(['SGL']);
+            yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: selectedName }, { $set: { role: userRoleList } });
+            yield ctx.reply(`${selectedName} added into ${team} Team`);
+        }
+        else {
+            ctx.reply('Error: Please try again');
+            console.log('Sessions Failed (userRole/team)');
+        }
     }
     ctx.session = (0, _SessionData_1.initial)();
 });
@@ -151,11 +208,21 @@ const delMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
-        const namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-            where: {
-                role: { $in: [userRole, userRole + 'IC'] },
-            },
-        });
+        let namelist;
+        if (team !== 'Leaders') {
+            namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                where: {
+                    role: { $in: [userRole, userRole + 'IC'] },
+                },
+            });
+        }
+        else {
+            namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                where: {
+                    role: { $in: ['SGL', 'LGL'] },
+                },
+            });
+        }
         const inlineKeyboard = new grammy_1.InlineKeyboard(namelist.map((w) => [
             {
                 text: w.nameText,
@@ -169,8 +236,8 @@ const delMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     else {
         ctx.reply('Error: Please try again');
         console.log('Sessions Failed (userRole/team)');
+        ctx.session = (0, _SessionData_1.initial)();
     }
-    ctx.session = (0, _SessionData_1.initial)();
 });
 const delMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, _telefunctions_1.removeInLineButton)(ctx);
@@ -178,12 +245,28 @@ const delMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function*
     const team = ctx.session.team;
     if (userRole && team) {
         const selectedName = yield ctx.update.callback_query.data.substring('delMemberUser-'.length);
-        let userRoleList = yield (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({ nameText: selectedName })).flatMap((n) => n.role);
-        if (userRoleList.includes(userRole)) {
-            yield userRoleList.splice(userRoleList.indexOf(userRole, 1));
+        let userRoleList = (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({ nameText: selectedName })).flatMap((n) => n.role);
+        if (team != 'Leaders') {
+            if (userRoleList.includes(userRole)) {
+                userRoleList.splice(userRoleList.indexOf(userRole, 1));
+            }
+            else if (userRoleList.includes(userRole + 'IC')) {
+                userRoleList.splice(userRoleList.indexOf(userRole + 'IC', 1));
+            }
+            else {
+                throw new Error('Invalid Role');
+            }
         }
-        else if (userRoleList.includes(userRole + 'IC')) {
-            yield userRoleList.splice(userRoleList.indexOf(userRole + 'IC', 1));
+        else {
+            if (userRoleList.includes('SGL')) {
+                userRoleList.splice(userRoleList.indexOf('SGL', 1));
+            }
+            else if (userRoleList.includes('LGL')) {
+                userRoleList.splice(userRoleList.indexOf('LGL', 1));
+            }
+            else {
+                throw new Error('Invalid Role');
+            }
         }
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: selectedName }, { $set: { role: userRoleList } });
         yield ctx.reply(`${selectedName} removed from ${team} Team`);
@@ -199,11 +282,21 @@ const editMember = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
-        const namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-            where: {
-                role: { $in: [userRole, userRole + 'IC'] },
-            },
-        });
+        let namelist;
+        if (team != 'Leaders') {
+            namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                where: {
+                    role: { $in: [userRole, userRole + 'IC'] },
+                },
+            });
+        }
+        else {
+            namelist = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                where: {
+                    role: { $in: ['SGL', 'LGL'] },
+                },
+            });
+        }
         const inlineKeyboard = new grammy_1.InlineKeyboard(namelist.map((w) => [
             {
                 text: w.nameText,
@@ -225,17 +318,37 @@ const editMember_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function
     const userRole = ctx.session.userRole;
     const team = ctx.session.team;
     if (userRole && team) {
-        let editRole = yield (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({ nameText: selectedName })).flatMap((n) => n.role);
+        let editRole = (yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({ nameText: selectedName })).flatMap((n) => n.role);
         let changeRole = '';
-        if (editRole.includes(userRole)) {
-            yield editRole.splice(editRole.indexOf(userRole, 1));
-            changeRole = team + ' IC';
-            yield editRole.push(userRole + 'IC');
+        if (team != 'Leaders') {
+            if (editRole.includes(userRole)) {
+                editRole.splice(editRole.indexOf(userRole, 1));
+                changeRole = team + ' IC';
+                editRole.push(userRole + 'IC');
+            }
+            else if (editRole.includes(userRole + 'IC')) {
+                editRole.splice(editRole.indexOf(userRole + 'IC', 1));
+                changeRole = team + ' Member';
+                editRole.push(userRole);
+            }
+            else {
+                throw new Error('Invalid Role');
+            }
         }
-        else if (editRole.includes(userRole + 'IC')) {
-            yield editRole.splice(editRole.indexOf(userRole + 'IC', 1));
-            changeRole = team + ' Member';
-            yield editRole.push(userRole);
+        else {
+            if (editRole.includes('SGL')) {
+                editRole.splice(editRole.indexOf('SGL', 1));
+                changeRole = 'LGL';
+                editRole.push('LGL');
+            }
+            else if (editRole.includes('LGL')) {
+                editRole.splice(editRole.indexOf('LGL', 1));
+                changeRole = 'SGL';
+                editRole.push('SGL');
+            }
+            else {
+                throw new Error('Invalid Role');
+            }
         }
         yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).updateOne({ nameText: selectedName }, { $set: { role: editRole } });
         yield ctx.reply(`${selectedName} changed to ${changeRole}`);

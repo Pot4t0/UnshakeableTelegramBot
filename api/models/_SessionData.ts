@@ -5,8 +5,8 @@ import { ObjectId } from 'typeorm';
 export interface SessionData {
   id?: ObjectId;
   chatId?: number;
-  team?: 'Attendance' | 'Welfare' | 'Admin' | 'Birthday';
-  userRole?: 'attendance' | 'welfare' | 'admin' | 'bday';
+  team?: 'Attendance' | 'Welfare' | 'Admin' | 'Birthday' | 'Leaders';
+  userRole?: 'attendance' | 'welfare' | 'admin' | 'bday' | 'leaders';
   attendance?: string;
   eventName?: string;
   eventDate?: string;

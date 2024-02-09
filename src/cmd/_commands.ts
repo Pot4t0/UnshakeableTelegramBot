@@ -124,6 +124,12 @@ const settings = async (ctx: CommandContext<BotContext>) => {
           callback_data: 'settingsLGGroup',
         },
       ],
+      [
+        {
+          text: 'LG Leaders Management',
+          callback_data: 'manageLeadersTeam',
+        },
+      ],
     ]);
     await ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
       reply_markup: inlineKeyboard,

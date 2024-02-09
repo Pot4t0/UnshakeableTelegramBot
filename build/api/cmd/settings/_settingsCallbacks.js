@@ -17,6 +17,7 @@ const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _index_1 = require("../../gsheets/_index");
 const _gsheet_init_1 = require("../../gsheets/_gsheet_init");
 const _SessionData_1 = require("../../models/_SessionData");
+const _index_2 = require("../../database_mongoDB/functions/_index");
 // Settings Callbacks
 // Any overall bot admin settings
 const settings = (bot) => {
@@ -28,6 +29,8 @@ const settings = (bot) => {
     bot.callbackQuery(/^cfmRmUser-/g, _telefunctions_1.loadFunction, cfmRmUser);
     bot.callbackQuery('settingsLGGroup', _telefunctions_1.loadFunction, lgGroupManagement); //Settings Bot On
     //Settings Announcements Output is located in BotOnFunctions
+    //Settings Leaders Team Management
+    _index_2.team.teamManagement(bot, 'Leaders');
 };
 exports.settings = settings;
 // Settings Announcements Input

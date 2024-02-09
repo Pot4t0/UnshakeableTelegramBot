@@ -6,6 +6,7 @@ import { Names } from '../../database_mongoDB/Entity/_tableEntity';
 import { gsheet } from '../../gsheets/_index';
 import { unshakeableAttendanceSpreadsheet } from '../../gsheets/_gsheet_init';
 import { initial } from '../../models/_SessionData';
+import { team } from '../../database_mongoDB/functions/_index';
 
 // Settings Callbacks
 // Any overall bot admin settings
@@ -22,6 +23,9 @@ export const settings = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^cfmRmUser-/g, loadFunction, cfmRmUser);
   bot.callbackQuery('settingsLGGroup', loadFunction, lgGroupManagement); //Settings Bot On
   //Settings Announcements Output is located in BotOnFunctions
+
+  //Settings Leaders Team Management
+  team.teamManagement(bot, 'Leaders');
 };
 
 // Settings Announcements Input

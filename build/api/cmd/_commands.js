@@ -113,6 +113,12 @@ const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                     callback_data: 'settingsLGGroup',
                 },
             ],
+            [
+                {
+                    text: 'LG Leaders Management',
+                    callback_data: 'manageLeadersTeam',
+                },
+            ],
         ]);
         yield ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
             reply_markup: inlineKeyboard,
