@@ -2,7 +2,13 @@ import { Bot, CallbackQueryContext, Filter, InlineKeyboard } from 'grammy';
 import { BotContext } from '../../app/_context';
 import { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import { Database } from '../_db-init';
-import { Events, Names, SF_mongo, Wishes } from '../Entity/_tableEntity';
+import {
+  Events,
+  Names,
+  SF_mongo,
+  Settings,
+  Wishes,
+} from '../Entity/_tableEntity';
 import { gsheet } from '../../gsheets/_index';
 import { initial } from '../../models/_SessionData';
 import { dbMessaging } from './_index';
@@ -184,29 +190,43 @@ export const reminderSendAllNotIn_Execution = async (
           timestamp: { $gte: offSetDate },
         },
       });
-      const notInNamesAdmin = await Database.getMongoRepository(Names).find({
-        where: {
-          teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
-        },
-      });
-      const notInUsersAdmin = notInNamesAdmin
-        .map((n) => `${n.teleUser}`)
-        .filter((n) => n != '');
+      const excludeNamesArr = await Database.getMongoRepository(
+        Settings
+      ).findOneBy({ option: 'SF Exclude' });
+      if (excludeNamesArr) {
+        const excludeNames = excludeNamesArr.config;
+        const sendUserArr = InSF.map((n) => `${n.teleUser}`).concat(
+          excludeNames
+        );
+        const notInNamesAdmin = await Database.getMongoRepository(Names).find({
+          where: {
+            teleUser: {
+              $not: { $in: sendUserArr },
+            },
+          },
+        });
+        const notInUsersAdmin = notInNamesAdmin
+          .map((n) => `${n.teleUser}`)
+          .filter((n) => n != '');
 
-      await Promise.all(
-        notInUsersAdmin.map(async (n) => {
-          await dbMessaging.sendMessageUser(n, prefix + reminderMsg, ctx);
-          console.log(prefix + reminderMsg + `(${n})`);
-        })
-      );
-      await ctx.reply(`Reminder sent!`);
+        await Promise.all(
+          notInUsersAdmin.map(async (n) => {
+            await dbMessaging.sendMessageUser(n, prefix + reminderMsg, ctx);
+            console.log(prefix + reminderMsg + `(${n})`);
+          })
+        );
+        await ctx.reply(`Reminder sent!`);
+      } else {
+        await ctx.reply(`Error in sending reminder!`);
+        console.log('Error in sending reminder!');
+      }
       break;
     default:
       await ctx.reply('Error in Reminder System!');
       console.log('Error in Reminder System! Check sessions got put properly!');
       break;
   }
-  ctx.session = await initial();
+  ctx.session = initial();
 };
 
 // Reminder System - Send to specific user

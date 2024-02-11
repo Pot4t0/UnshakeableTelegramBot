@@ -161,26 +161,37 @@ const reminderSendAllNotIn_Execution = (ctx) => __awaiter(void 0, void 0, void 0
                     timestamp: { $gte: offSetDate },
                 },
             });
-            const notInNamesAdmin = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-                where: {
-                    teleUser: { $not: { $in: InSF.map((n) => `${n.teleUser}`) } },
-                },
-            });
-            const notInUsersAdmin = notInNamesAdmin
-                .map((n) => `${n.teleUser}`)
-                .filter((n) => n != '');
-            yield Promise.all(notInUsersAdmin.map((n) => __awaiter(void 0, void 0, void 0, function* () {
-                yield _index_2.dbMessaging.sendMessageUser(n, prefix + reminderMsg, ctx);
-                console.log(prefix + reminderMsg + `(${n})`);
-            })));
-            yield ctx.reply(`Reminder sent!`);
+            const excludeNamesArr = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).findOneBy({ option: 'SF Exclude' });
+            if (excludeNamesArr) {
+                const excludeNames = excludeNamesArr.config;
+                const sendUserArr = InSF.map((n) => `${n.teleUser}`).concat(excludeNames);
+                const notInNamesAdmin = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+                    where: {
+                        teleUser: {
+                            $not: { $in: sendUserArr },
+                        },
+                    },
+                });
+                const notInUsersAdmin = notInNamesAdmin
+                    .map((n) => `${n.teleUser}`)
+                    .filter((n) => n != '');
+                yield Promise.all(notInUsersAdmin.map((n) => __awaiter(void 0, void 0, void 0, function* () {
+                    yield _index_2.dbMessaging.sendMessageUser(n, prefix + reminderMsg, ctx);
+                    console.log(prefix + reminderMsg + `(${n})`);
+                })));
+                yield ctx.reply(`Reminder sent!`);
+            }
+            else {
+                yield ctx.reply(`Error in sending reminder!`);
+                console.log('Error in sending reminder!');
+            }
             break;
         default:
             yield ctx.reply('Error in Reminder System!');
             console.log('Error in Reminder System! Check sessions got put properly!');
             break;
     }
-    ctx.session = yield (0, _SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 });
 exports.reminderSendAllNotIn_Execution = reminderSendAllNotIn_Execution;
 // Reminder System - Send to specific user

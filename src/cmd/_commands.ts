@@ -26,7 +26,9 @@ export const commands = (bot: Bot<BotContext>) => {
   bot.command('sendsf', dbSecurity.checkUserInDatabaseMiddleware, sendsf);
   //Call /sendwish command
   bot.command('sendwish', dbSecurity.checkUserInDatabaseMiddleware, sendWish);
-  //Call /attendance
+  //Call /sendclaim command
+  bot.command('sendclaim', dbSecurity.checkUserInDatabaseMiddleware, sendClaim);
+  //Call /sendattendance
   bot.command(
     'sendattendance',
     dbSecurity.checkUserInDatabaseMiddleware,
@@ -47,6 +49,12 @@ export const commands = (bot: Bot<BotContext>) => {
     'adminattendance',
     dbSecurity.checkUserInDatabaseMiddleware,
     adminattendance
+  );
+  //Call /adminfinance
+  bot.command(
+    'adminfinance',
+    dbSecurity.checkUserInDatabaseMiddleware,
+    adminfinance
   );
 };
 
@@ -233,7 +241,32 @@ const sendattendance = async (ctx: CommandContext<BotContext>) => {
 };
 
 //Make Finanace Claim
-const sendClaim = async (ctx: CommandContext<BotContext>) => {};
+const sendClaim = async (ctx: CommandContext<BotContext>) => {
+  if (ctx.update.message?.chat.type !== 'private') {
+    return false;
+  }
+  const inlineKeyboard = new InlineKeyboard([
+    [
+      {
+        text: 'Make a claim',
+        callback_data: 'makeClaim',
+      },
+    ],
+    [
+      {
+        text: 'View Your Claims',
+        callback_data: 'viewClaim',
+      },
+    ],
+  ]);
+  await ctx.reply(
+    `<b>Unshakeable Finance Claims</b>\n\n<b>REMINDER</b>\nMake sure you inform the finance person before making any claims.`,
+    {
+      reply_markup: inlineKeyboard,
+      parse_mode: 'HTML',
+    }
+  );
+};
 
 //Admin Welfare command
 const adminWelfare = async (ctx: CommandContext<BotContext>) => {
@@ -378,6 +411,12 @@ const adminsf = async (ctx: CommandContext<BotContext>) => {
           callback_data: 'manageAdminTeam',
         },
       ],
+      [
+        {
+          text: 'Exclude From Reminder',
+          callback_data: 'excludeFromReminder',
+        },
+      ],
     ]);
 
     await ctx.reply(
@@ -482,18 +521,46 @@ const adminfinance = async (ctx: CommandContext<BotContext>) => {
     ['SGL', 'finance', 'LGL', 'it'],
     ctx
   );
+  const funds = 3000;
+  const reimburse = 1000;
+  const awaitingApprovedClaims = 10;
+  const awaitingReimbursementClaims = 5;
+  const totalClaims = 20;
+  const completedClaims = 5;
   if (access) {
     const inlineKeyboard = new InlineKeyboard([
       [
         {
-          text: 'Manage Finance',
-          callback_data: 'manageFinance',
+          text: 'Manage Finance Team',
+          callback_data: 'manageFinanceTeam',
+        },
+      ],
+      [
+        {
+          text: 'Fund Management',
+          callback_data: 'fundManagement',
+        },
+      ],
+      [
+        {
+          text: 'Reimbursement',
+          callback_data: 'reimbursement',
+        },
+      ],
+      [
+        {
+          text: 'Change Finance Chat',
+          callback_data: 'financeChat',
         },
       ],
     ]);
 
-    await ctx.reply(`<b>Unshakeable Finance Management</b>`, {
-      reply_markup: inlineKeyboard,
-    });
+    await ctx.reply(
+      `<b>Unshakeable Finance Management</b>\n\nCurrent Funds: $${funds}\nTo Be Reimbursed Amount: $${reimburse}\n\nTotal Claims: ${totalClaims}\nAwaiting Approval: ${awaitingApprovedClaims}\nAwaiitng Reimbursement: ${awaitingReimbursementClaims}\nCompleted: ${completedClaims}`,
+      {
+        reply_markup: inlineKeyboard,
+        parse_mode: 'HTML',
+      }
+    );
   }
 };

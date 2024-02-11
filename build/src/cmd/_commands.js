@@ -31,7 +31,9 @@ const commands = (bot) => {
     bot.command('sendsf', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendsf);
     //Call /sendwish command
     bot.command('sendwish', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendWish);
-    //Call /attendance
+    //Call /sendclaim command
+    bot.command('sendclaim', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendClaim);
+    //Call /sendattendance
     bot.command('sendattendance', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendattendance);
     //Call /adminWelfare command
     bot.command('adminwelfare', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminWelfare);
@@ -41,6 +43,8 @@ const commands = (bot) => {
     bot.command('adminsf', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminsf);
     //Call /adminattendance
     bot.command('adminattendance', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminattendance);
+    //Call /adminfinance
+    bot.command('adminfinance', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminfinance);
 };
 exports.commands = commands;
 //Start command
@@ -210,11 +214,34 @@ const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 });
 //Make Finanace Claim
-const sendClaim = (ctx) => __awaiter(void 0, void 0, void 0, function* () { });
-//Admin Welfare command
-const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+const sendClaim = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _h;
     if (((_h = ctx.update.message) === null || _h === void 0 ? void 0 : _h.chat.type) !== 'private') {
+        return false;
+    }
+    const inlineKeyboard = new grammy_1.InlineKeyboard([
+        [
+            {
+                text: 'Make a claim',
+                callback_data: 'makeClaim',
+            },
+        ],
+        [
+            {
+                text: 'View Your Claims',
+                callback_data: 'viewClaim',
+            },
+        ],
+    ]);
+    yield ctx.reply(`<b>Unshakeable Finance Claims</b>\n\n<b>REMINDER</b>\nMake sure you inform the finance person before making any claims.`, {
+        reply_markup: inlineKeyboard,
+        parse_mode: 'HTML',
+    });
+});
+//Admin Welfare command
+const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    var _j;
+    if (((_j = ctx.update.message) === null || _j === void 0 ? void 0 : _j.chat.type) !== 'private') {
         return false;
     }
     const access = yield _index_2.dbSecurity.roleAccess(['welfare', 'welfareIC', 'LGL', 'it', 'SGL'], ctx);
@@ -260,8 +287,8 @@ const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Admin Birthday command
 const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _j;
-    if (((_j = ctx.update.message) === null || _j === void 0 ? void 0 : _j.chat.type) !== 'private') {
+    var _k;
+    if (((_k = ctx.update.message) === null || _k === void 0 ? void 0 : _k.chat.type) !== 'private') {
         return false;
     }
     // const access = await dbSecurity.roleAccess(
@@ -312,8 +339,8 @@ const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Admin Sermon Feedback command
 const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _k;
-    if (((_k = ctx.update.message) === null || _k === void 0 ? void 0 : _k.chat.type) !== 'private') {
+    var _l;
+    if (((_l = ctx.update.message) === null || _l === void 0 ? void 0 : _l.chat.type) !== 'private') {
         return false;
     }
     const access = yield _index_2.dbSecurity.roleAccess(['admin', 'adminIC', 'LGL', 'it', 'SGL'], ctx);
@@ -337,6 +364,12 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                     callback_data: 'manageAdminTeam',
                 },
             ],
+            [
+                {
+                    text: 'Exclude From Reminder',
+                    callback_data: 'excludeFromReminder',
+                },
+            ],
         ]);
         yield ctx.reply(`
 	Admin Team Admin Matters
@@ -354,8 +387,8 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
 });
 //Admin Attendance command
 const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _l;
-    if (((_l = ctx.update.message) === null || _l === void 0 ? void 0 : _l.chat.type) !== 'private') {
+    var _m;
+    if (((_m = ctx.update.message) === null || _m === void 0 ? void 0 : _m.chat.type) !== 'private') {
         return false;
     }
     const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'LGL', 'it', 'admin', 'adminIC'], ctx);
@@ -419,22 +452,47 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
 });
 //Admin Finance command
 const adminfinance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _m;
-    if (((_m = ctx.update.message) === null || _m === void 0 ? void 0 : _m.chat.type) !== 'private') {
+    var _o;
+    if (((_o = ctx.update.message) === null || _o === void 0 ? void 0 : _o.chat.type) !== 'private') {
         return false;
     }
     const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'finance', 'LGL', 'it'], ctx);
+    const funds = 3000;
+    const reimburse = 1000;
+    const awaitingApprovedClaims = 10;
+    const awaitingReimbursementClaims = 5;
+    const totalClaims = 20;
+    const completedClaims = 5;
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
             [
                 {
-                    text: 'Manage Finance',
-                    callback_data: 'manageFinance',
+                    text: 'Manage Finance Team',
+                    callback_data: 'manageFinanceTeam',
+                },
+            ],
+            [
+                {
+                    text: 'Fund Management',
+                    callback_data: 'fundManagement',
+                },
+            ],
+            [
+                {
+                    text: 'Reimbursement',
+                    callback_data: 'reimbursement',
+                },
+            ],
+            [
+                {
+                    text: 'Change Finance Chat',
+                    callback_data: 'financeChat',
                 },
             ],
         ]);
-        yield ctx.reply(`<b>Unshakeable Finance Management</b>`, {
+        yield ctx.reply(`<b>Unshakeable Finance Management</b>\n\nCurrent Funds: $${funds}\nTo Be Reimbursed Amount: $${reimburse}\n\nTotal Claims: ${totalClaims}\nAwaiting Approval: ${awaitingApprovedClaims}\nAwaiitng Reimbursement: ${awaitingReimbursementClaims}\nCompleted: ${completedClaims}`, {
             reply_markup: inlineKeyboard,
+            parse_mode: 'HTML',
         });
     }
 });
