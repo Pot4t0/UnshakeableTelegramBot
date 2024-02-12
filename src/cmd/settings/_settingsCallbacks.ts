@@ -3,10 +3,9 @@ import { BotContext } from '../../app/_index';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 import { Database } from '../../database_mongoDB/_db-init';
 import { Names } from '../../database_mongoDB/Entity/_tableEntity';
-import { gsheet } from '../../gsheets/_index';
-import { unshakeableAttendanceSpreadsheet } from '../../gsheets/_gsheet_init';
 import { initial } from '../../models/_SessionData';
-import { team } from '../../database_mongoDB/functions/_index';
+import { chat, gSheetDB, team } from '../../database_mongoDB/functions/_index';
+import { gsheet } from '../../functions/_initialise';
 
 // Settings Callbacks
 // Any overall bot admin settings
@@ -21,11 +20,16 @@ export const settings = (bot: Bot<BotContext>) => {
   bot.callbackQuery('settingsDeleteUser', loadFunction, rmUserManagement);
   bot.callbackQuery(/^rmUser-/g, loadFunction, rmUser);
   bot.callbackQuery(/^cfmRmUser-/g, loadFunction, cfmRmUser);
-  bot.callbackQuery('settingsLGGroup', loadFunction, lgGroupManagement); //Settings Bot On
+
+  // bot.callbackQuery('settingsLGGroup', loadFunction, lgGroupManagement); //Settings Bot On
   //Settings Announcements Output is located in BotOnFunctions
+  chat.chooseChat(bot, 'LG');
 
   //Settings Leaders Team Management
   team.teamManagement(bot, 'Leaders');
+
+  //Settings Chanage Google Sheet
+  gSheetDB.chooseSheet(bot);
 };
 
 // Settings Announcements Input
@@ -101,7 +105,7 @@ const cfmRmUser = async (ctx: CallbackQueryContext<BotContext>) => {
   const user = ctx.session.name;
   if (user) {
     if (cfm == 'Yes') {
-      await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+      const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
       const template =
         unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
       const special_template =
@@ -164,7 +168,7 @@ const cfmRmUser = async (ctx: CallbackQueryContext<BotContext>) => {
         await ctx.reply(
           "All user's attendance row has been updated. Please check the Google Sheet!"
         );
-        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        unshakeableAttendanceSpreadsheet.resetLocalCache();
         ctx.session = initial();
       } else {
         await ctx.reply(`Deletion failed! Could not get ${user}`);
@@ -173,17 +177,4 @@ const cfmRmUser = async (ctx: CallbackQueryContext<BotContext>) => {
       await ctx.reply(`Deletion Cancelled`);
     }
   }
-};
-
-// Settings LG Group Change Management
-const lgGroupManagement = async (ctx: CallbackQueryContext<BotContext>) => {
-  await removeInLineButton(ctx);
-  const button = new Keyboard().requestChat('Choose LG Chat', 1).oneTime(true);
-  await ctx.reply(
-    `Choose the updated LG Chat. It will let the Bot enter the chat and send messages.
-    `,
-    {
-      reply_markup: button,
-    }
-  );
 };

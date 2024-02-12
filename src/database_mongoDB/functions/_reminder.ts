@@ -9,10 +9,10 @@ import {
   Settings,
   Wishes,
 } from '../Entity/_tableEntity';
-import { gsheet } from '../../gsheets/_index';
 import { initial } from '../../models/_SessionData';
 import { dbMessaging } from './_index';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
+import { gsheet } from '../../gsheets/_index';
 
 // Reminder System
 // Database - contaims all chatid and telegramm username
@@ -122,7 +122,7 @@ export const reminderSendAllNotIn_Execution = async (
         await sheet.loadCells();
         await Promise.all(
           totalNames.map(async (i) => {
-            const checkCell = await sheet.getCellByA1(`C${i.attendanceRow}`);
+            const checkCell = sheet.getCellByA1(`C${i.attendanceRow}`);
             if (checkCell.value == null) {
               await dbMessaging.sendMessageUser(
                 i.teleUser,
@@ -133,7 +133,8 @@ export const reminderSendAllNotIn_Execution = async (
             }
           })
         );
-        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+
+        sheet.resetLocalCache();
         await ctx.reply(`Reminder sent!`);
       } else {
         await ctx.reply(`Error in sending reminder!`);

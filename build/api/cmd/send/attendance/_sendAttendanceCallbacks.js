@@ -1,23 +1,13 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendAttendance = void 0;
-const _index_1 = require("../../../gsheets/_index");
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
-const _gsheet_init_1 = require("../../../gsheets/_gsheet_init");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _sendAttendanceInternal_1 = require("./_sendAttendanceInternal");
 const _sendAttendanceInternal_2 = require("./_sendAttendanceInternal");
 const _telefunctions_1 = require("../../../app/_telefunctions");
+const _initialise_1 = require("../../../functions/_initialise");
 //Send Attendance Callbacks
 // For Special Event
 // Take Event Attendance (Yes/No) -> Take Reason (If no) -> Take Meal Attendance (if Have) -> Take Reason (if no) -> Log Attendance
@@ -37,12 +27,12 @@ const sendAttendance = (bot) => {
 exports.sendAttendance = sendAttendance;
 // Attendance Event Decision Function
 // Choose which attendance event message to send based on sheet data
-const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+const attendanceEventDecision = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const unshakeableAttendanceSpreadsheet = (0, _initialise_1.gsheet)('attendance');
     const callback = ctx.update.callback_query.data.substring('svcLGAttendance-'.length);
-    const sheet = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
-    yield sheet.loadCells();
+    const sheet = (await unshakeableAttendanceSpreadsheet).sheetsByTitle[callback];
+    await sheet.loadCells();
     // Sesssion Data for Special Attendance
     // Google Sheet Event Object (ctx.session.gsheet)
     // Google Sheet Event Name (ctx.session.eventName)
@@ -72,7 +62,7 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
                 },
             ],
         ];
-        yield ctx.reply(`Hi we will be having ${eventCell.value} on ${eventDateCell.value}. Will you be attending?`, {
+        await ctx.reply(`Hi we will be having ${eventCell.value} on ${eventDateCell.value}. Will you be attending?`, {
             reply_markup: { inline_keyboard: inlineKeyboard },
         });
         console.log('Special Event');
@@ -82,7 +72,7 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
         // If Sheet contains "No LG" at cell C3 then, it will send no LG attendance message
         if (lgCell.value == 'No LG') {
             ctx.session.eventName = 'No LG';
-            ctx.session.eventMeal = yield sheet.getCellByA1('I3').stringValue;
+            ctx.session.eventMeal = await sheet.getCellByA1('I3').stringValue;
             const inlineKeyboard = [
                 [
                     {
@@ -97,7 +87,7 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
                     },
                 ],
             ];
-            yield ctx.reply(`There is no LG this week\nAre you coming for Worship Experience on ${eventDateCell.value}?`, {
+            await ctx.reply(`There is no LG this week\nAre you coming for Worship Experience on ${eventDateCell.value}?`, {
                 reply_markup: { inline_keyboard: inlineKeyboard },
             });
             console.log('No LG');
@@ -121,7 +111,7 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
                     },
                 ],
             ];
-            yield ctx.reply(`Are you coming for Worship Experience on ${eventDateCell.value}?`, {
+            await ctx.reply(`Are you coming for Worship Experience on ${eventDateCell.value}?`, {
                 reply_markup: { inline_keyboard: inlineKeyboard },
             });
             console.log('LG');
@@ -129,29 +119,29 @@ const attendanceEventDecision = (ctx) => __awaiter(void 0, void 0, void 0, funct
             // If Sheet contains anything else at cell C3 then, it will send error message
         }
         else {
-            yield ctx.reply('Error! Pls try again');
+            await ctx.reply('Error! Pls try again');
             ctx.session = (0, _SessionData_1.initial)();
             console.log('Error Event');
         }
     }
-});
+};
 // Special Event Attendance Logging Function
-const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+const SpecialAttendance = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('SpecialAttendance-'.length);
-    const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+    const user = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
     });
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
-            yield sheet.loadCells();
+            await sheet.loadCells();
             const sheetName = sheet.getCellByA1('C3').value;
             const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
             const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
-            yield sheet.saveUpdatedCells();
+            await sheet.saveUpdatedCells();
             const meal = ctx.session.eventMeal;
             if (meal) {
                 console.log('Special Event Meal');
@@ -169,47 +159,45 @@ const SpecialAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* (
                         },
                     ],
                 ];
-                yield ctx.reply(`Are you coming for ${meal.toLowerCase()}?`, {
+                await ctx.reply(`Are you coming for ${meal.toLowerCase()}?`, {
                     reply_markup: { inline_keyboard: inlineKeyboard },
                 });
             }
             else {
-                yield (0, _sendAttendanceInternal_1.logAttendanceMsg)(ctx, `${sheetName}`);
+                await (0, _sendAttendanceInternal_1.logAttendanceMsg)(ctx, `${sheetName}`);
+                sheet.resetLocalCache();
                 ctx.session = (0, _SessionData_1.initial)();
-                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
             }
         }
     }
     else if (callback == 'N') {
-        ctx.session.attendance;
         // Not Coming for Special Event
-        yield ctx.reply('AW 😭.\nWhats the reason?', {
+        await ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
         ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnSpecial;
     }
     else {
-        yield ctx.reply('Error! Pls try again');
-        ctx.session = yield (0, _SessionData_1.initial)();
-        _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        await ctx.reply('Error! Pls try again');
+        ctx.session = (0, _SessionData_1.initial)();
     }
-});
+};
 // WE Attendance Logging Function
-const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    const callback = yield ctx.update.callback_query.data.substring('WeAttendance-'.length);
-    const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+const WeAttendance = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const callback = await ctx.update.callback_query.data.substring('WeAttendance-'.length);
+    const user = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
     });
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
-            yield sheet.loadCells();
+            await sheet.loadCells();
             const attendanceCell = sheet.getCellByA1(`C${user[0].attendanceRow}`);
             const reasonCell = sheet.getCellByA1(`D${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
-            yield sheet.saveUpdatedCells();
+            await sheet.saveUpdatedCells();
             const meal = ctx.session.eventMeal;
             if (meal) {
                 const inlineKeyboard = [
@@ -226,82 +214,77 @@ const WeAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                         },
                     ],
                 ];
-                yield ctx.reply(`Nice! Are you coming for ${meal}?`, {
+                await ctx.reply(`Nice! Are you coming for ${meal}?`, {
                     reply_markup: { inline_keyboard: inlineKeyboard },
                 });
             }
         }
     }
     else if (callback == 'N') {
-        ctx.session.attendance;
         // Not Coming for WE
-        yield ctx.reply('AW 😭.\nWhats the reason?', {
+        await ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
         ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnWE;
     }
     else {
-        yield ctx.reply('Error! Pls try again');
+        await ctx.reply('Error! Pls try again');
         ctx.session = (0, _SessionData_1.initial)();
-        _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
-});
+};
 // LG Attendance Logging Function
-const lgAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    const callback = yield ctx.update.callback_query.data.substring('lgAttendance-'.length);
-    const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+const lgAttendance = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const callback = await ctx.update.callback_query.data.substring('lgAttendance-'.length);
+    const user = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
         teleUser: ctx.update.callback_query.from.username,
     });
     if (callback == 'Y') {
         const sheet = ctx.session.gSheet;
         if (sheet) {
-            yield sheet.loadCells();
+            await sheet.loadCells();
             const sheetName = `WE: ${sheet.getCellByA1('C2').value}`;
             const attendanceCell = sheet.getCellByA1(`F${user[0].attendanceRow}`);
             const reasonCell = sheet.getCellByA1(`G${user[0].attendanceRow}`);
             reasonCell.value = '';
             attendanceCell.value = 'Y';
-            yield sheet.saveUpdatedCells();
-            (0, _sendAttendanceInternal_1.logAttendanceMsg)(ctx, sheetName);
+            await sheet.saveUpdatedCells();
+            await (0, _sendAttendanceInternal_1.logAttendanceMsg)(ctx, sheetName);
+            sheet.resetLocalCache();
             ctx.session = (0, _SessionData_1.initial)();
-            _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         }
     }
     else if (callback == 'N') {
-        ctx.session.attendance;
         // Not Coming for LG
-        yield ctx.reply('AW 😭.\nWhats the reason?', {
+        await ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
         ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnLG;
     }
     else {
-        yield ctx.reply('Error! Pls try again');
+        await ctx.reply('Error! Pls try again');
         ctx.session = (0, _SessionData_1.initial)();
-        _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
-});
+};
 // Dinner Attendance Function
 // Logs Dinner Attendance to Google Sheets (Special/ No LG Event)
 // Proceeds to move to LG Attendance Function (LG Event)
 // If Attendance is No, it will proceed to Dinner Attendance Reason Function at botOnType = 29
-const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    const callback = yield ctx.update.callback_query.data.substring('dinnerAttendance-'.length);
+const dinnerAttendance = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const callback = await ctx.update.callback_query.data.substring('dinnerAttendance-'.length);
     if (callback == 'Y') {
-        const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+        const user = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
             teleUser: ctx.update.callback_query.from.username,
         });
         switch (ctx.session.eventName) {
             case 'Special Event':
             case 'No LG':
-                yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                await (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
                 ctx.session = (0, _SessionData_1.initial)();
-                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 break;
             case 'LG':
-                yield (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
+                await (0, _sendAttendanceInternal_1.dinnerLogAttendance)(ctx, user[0].attendanceRow, ctx.session.eventName, 'Y', '');
                 const sheet = ctx.session.gSheet;
                 if (sheet) {
                     const lgDateCell = sheet.getCellByA1('F2');
@@ -319,29 +302,27 @@ const dinnerAttendance = (ctx) => __awaiter(void 0, void 0, void 0, function* ()
                             },
                         ],
                     ];
-                    yield ctx.reply(`Are you coming for LG? on the ${lgDateCell.value}`, {
+                    await ctx.reply(`Are you coming for LG? on the ${lgDateCell.value}`, {
                         reply_markup: { inline_keyboard: inlineKeyboard },
                     });
                 }
                 else {
-                    yield ctx.reply('Error! Pls try again');
+                    await ctx.reply('Error! Pls try again');
                     ctx.session = (0, _SessionData_1.initial)();
-                    _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
                 }
                 break;
             default:
-                yield ctx.reply('Error! Pls try again');
+                await ctx.reply('Error! Pls try again');
                 ctx.session = (0, _SessionData_1.initial)();
-                _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         }
     }
     else if (callback == 'N') {
-        yield ctx.reply('AW 😭.\nWhats the reason?', {
+        await ctx.reply('AW 😭.\nWhats the reason?', {
             reply_markup: { force_reply: true },
         });
         ctx.session.botOnType = _sendAttendanceInternal_2.logReasonBotOnDinner;
     }
     else {
-        yield ctx.reply('Error! Pls try again');
+        await ctx.reply('Error! Pls try again');
     }
-});
+};

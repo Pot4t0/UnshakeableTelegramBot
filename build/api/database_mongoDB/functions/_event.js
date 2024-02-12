@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.editEventDate_Execution = exports.editEventName_Execution = exports.addEvent_ReceiveEventDate = exports.addEvent_ReceiveEventName = exports.eventManagement = void 0;
 const grammy_1 = require("grammy");
@@ -22,16 +13,16 @@ const _telefunctions_1 = require("../../app/_telefunctions");
 //Delete CallbackQuery: del{team}Events
 //Edit CallbackQuery: edit{team}Events
 //View CallbackQuery: see{team}Events
-const eventManagement = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
+const eventManagement = async (bot, team) => {
     bot.callbackQuery(`manage${team}Event`, _telefunctions_1.loadFunction, (ctx) => eventManageMenu(ctx, team));
     bot.callbackQuery(`see${team}Events`, _telefunctions_1.loadFunction, (ctx) => eventView(ctx, team));
     addEvent(bot, team);
     delEvent(bot, team);
     editEvent(bot, team);
-});
+};
 exports.eventManagement = eventManagement;
-const eventManageMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+const eventManageMenu = async (ctx, team) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -58,13 +49,13 @@ const eventManageMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, functio
             },
         ],
     ]);
-    yield ctx.reply(`<b>${team} Event Management</b>\n\nSelect an option below:`, {
+    await ctx.reply(`<b>${team} Event Management</b>\n\nSelect an option below:`, {
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard,
     });
-});
-const eventView = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const eventView = async (ctx, team) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
     if (team == 'Welfare') {
         eventTeam = 'Welfare';
@@ -72,18 +63,18 @@ const eventView = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () 
     else {
         eventTeam = 'Bday';
     }
-    const allEvents = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
+    const allEvents = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: eventTeam,
     });
     const eventListed = allEvents.map((n) => `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`);
-    yield ctx.reply(eventListed.join('\n\n'));
-});
-const addEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
+    await ctx.reply(eventListed.join('\n\n'));
+};
+const addEvent = async (bot, team) => {
     bot.callbackQuery(`add${team}Events`, (ctx) => addEvent_Init(ctx, team));
     bot.callbackQuery(/^createEvent-/g, (ctx) => addEvent_CreateEvent(ctx, ctx.update.callback_query.data.substring(`createEvent-`.length)));
-});
-const addEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const addEvent_Init = async (ctx, team) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.name = team;
     ctx.reply(`Input ${team} event Name\ne.g. Minh's ORD`, {
         reply_markup: {
@@ -91,9 +82,9 @@ const addEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function*
         },
     });
     ctx.session.botOnType = 4;
-});
+};
 //Used in _botOn_functions.ts in botOntype = 4
-const addEvent_ReceiveEventName = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+const addEvent_ReceiveEventName = async (ctx) => {
     ctx.session.eventName = ctx.message.text;
     if (ctx.session.eventName == null) {
         (0, exports.addEvent_ReceiveEventName)(ctx);
@@ -102,15 +93,15 @@ const addEvent_ReceiveEventName = (ctx) => __awaiter(void 0, void 0, void 0, fun
         reply_markup: { force_reply: true },
     });
     ctx.session.botOnType = 5;
-});
+};
 exports.addEvent_ReceiveEventName = addEvent_ReceiveEventName;
 //Used in _botOn_functions.ts in botOntype = 5
-const addEvent_ReceiveEventDate = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    ctx.session.eventDate = yield ctx.message.text;
+const addEvent_ReceiveEventDate = async (ctx) => {
+    ctx.session.eventDate = await ctx.message.text;
     if (ctx.session.eventDate == null) {
         (0, exports.addEvent_ReceiveEventDate)(ctx);
     }
-    const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
+    const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(name
         .map((n) => [
         {
@@ -126,13 +117,13 @@ const addEvent_ReceiveEventDate = (ctx) => __awaiter(void 0, void 0, void 0, fun
             },
         ],
     ]));
-    yield ctx.reply('Select the person to exclude in seeing this event', {
+    await ctx.reply('Select the person to exclude in seeing this event', {
         reply_markup: inlineKeyboard,
     });
-});
+};
 exports.addEvent_ReceiveEventDate = addEvent_ReceiveEventDate;
-const addEvent_CreateEvent = (ctx, notAllowedUser) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+const addEvent_CreateEvent = async (ctx, notAllowedUser) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     const team = ctx.session.name;
     const eventName = ctx.session.eventName;
     const eventDate = ctx.session.eventDate;
@@ -151,12 +142,12 @@ const addEvent_CreateEvent = (ctx, notAllowedUser) => __awaiter(void 0, void 0, 
         if (notAllowedUser != 'ALL') {
             event.notAllowedUser = notAllowedUser;
         }
-        yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).save(event);
-        yield ctx.reply(`${eventName} (${team} Event) added!`);
+        await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).save(event);
+        await ctx.reply(`${eventName} (${team} Event) added!`);
     }
     ctx.session = (0, _SessionData_1.initial)();
-});
-const delEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
+};
+const delEvent = async (bot, team) => {
     let eventName;
     bot.callbackQuery(`del${team}Events`, (ctx) => delEvent_EventMenu(ctx, team));
     bot.callbackQuery(/^delEventName/g, (ctx) => {
@@ -164,9 +155,9 @@ const delEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
         delEvent_CfmMsg(ctx, eventName);
     });
     bot.callbackQuery(/^cfmDelEvent-/g, (ctx) => delEvent_PerformDeletion(ctx, ctx.update.callback_query.data.substring('cfmDelEvent-'.length), eventName));
-});
-const delEvent_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const delEvent_EventMenu = async (ctx, team) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
     if (team == 'Birthday') {
         eventTeam = 'Bday';
@@ -174,7 +165,7 @@ const delEvent_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, func
     else {
         eventTeam = 'Welfare';
     }
-    const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
+    const event = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: eventTeam,
     });
     const inlineKeyboard = new grammy_1.InlineKeyboard(event.map((n) => [
@@ -183,12 +174,12 @@ const delEvent_EventMenu = (ctx, team) => __awaiter(void 0, void 0, void 0, func
             callback_data: `delEventName-${n.eventName}`,
         },
     ]));
-    yield ctx.reply(`Choose ${team} Event to delete`, {
+    await ctx.reply(`Choose ${team} Event to delete`, {
         reply_markup: inlineKeyboard,
     });
-});
-const delEvent_CfmMsg = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const delEvent_CfmMsg = async (ctx, eventName) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
@@ -203,37 +194,37 @@ const delEvent_CfmMsg = (ctx, eventName) => __awaiter(void 0, void 0, void 0, fu
             },
         ],
     ]);
-    yield ctx.reply(`Are you sure you want to delete ${eventName}`, {
+    await ctx.reply(`Are you sure you want to delete ${eventName}`, {
         reply_markup: inlineKeyboard,
     });
     return eventName;
-});
-const delEvent_PerformDeletion = (ctx, choice, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const delEvent_PerformDeletion = async (ctx, choice, eventName) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     if (eventName) {
         if (choice == 'Y') {
             const event = new _tableEntity_1.Events();
             event.eventName = eventName;
             const wishEvent = new _tableEntity_1.Wishes();
             wishEvent.eventName = eventName;
-            yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).delete(event);
-            yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).delete(wishEvent);
-            yield ctx.reply(`${eventName} deleted!`);
+            await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).delete(event);
+            await _db_init_1.Database.getMongoRepository(_tableEntity_1.Wishes).delete(wishEvent);
+            await ctx.reply(`${eventName} deleted!`);
         }
         else if (choice == 'N') {
-            yield ctx.reply(`Deletion cancelled`);
+            await ctx.reply(`Deletion cancelled`);
         }
         else {
-            yield ctx.reply(`Error in deletion! Please try again`);
+            await ctx.reply(`Error in deletion! Please try again`);
         }
     }
     else {
-        yield ctx.reply(`Error in deletion! Please try again`);
+        await ctx.reply(`Error in deletion! Please try again`);
         console.log('Session data not found! (eventName)');
     }
     ctx.session = (0, _SessionData_1.initial)();
-});
-const editEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () {
+};
+const editEvent = async (bot, team) => {
     let eventName;
     bot.callbackQuery(`edit${team}Events`, (ctx) => editEvent_Init(ctx, team));
     bot.callbackQuery(/^editEventMenu-/g, (ctx) => {
@@ -244,9 +235,9 @@ const editEvent = (bot, team) => __awaiter(void 0, void 0, void 0, function* () 
     bot.callbackQuery('editEventDate', (ctx) => editEventDate(ctx));
     bot.callbackQuery('editNotAllowedUser', (ctx) => editNotAllowedUser(ctx, eventName));
     bot.callbackQuery(/^editNotAllowedUserSelect-/g, (ctx) => editNotAllowedUser_Execution(ctx, eventName));
-});
-const editEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const editEvent_Init = async (ctx, team) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
     if (team == 'Birthday') {
         eventTeam = 'Bday';
@@ -254,7 +245,7 @@ const editEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function
     else {
         eventTeam = 'Welfare';
     }
-    const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
+    const event = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventTeam: eventTeam,
     });
     const inlineKeyboard = new grammy_1.InlineKeyboard(event.map((w) => [
@@ -263,13 +254,13 @@ const editEvent_Init = (ctx, team) => __awaiter(void 0, void 0, void 0, function
             callback_data: `editEventMenu-${w.eventName}`,
         },
     ]));
-    yield ctx.reply(`Choose ${team} Event to edit`, {
+    await ctx.reply(`Choose ${team} Event to edit`, {
         reply_markup: inlineKeyboard,
     });
-});
-const editEvent_EditMenu = (ctx, eventName, team) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    const getEvents = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
+};
+const editEvent_EditMenu = async (ctx, eventName, team) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const getEvents = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         eventName: eventName,
     });
     ctx.session.id = getEvents.map((n) => n.id)[0];
@@ -299,50 +290,50 @@ const editEvent_EditMenu = (ctx, eventName, team) => __awaiter(void 0, void 0, v
             },
         ],
     ]);
-    yield ctx.reply('Choose option to edit', {
+    await ctx.reply('Choose option to edit', {
         reply_markup: inlineKeyboard,
     });
-});
-const editEventName = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    yield ctx.reply(`The current event name is <b>${eventName}</b>\n What would like to change it to?`, {
+};
+const editEventName = async (ctx, eventName) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    await ctx.reply(`The current event name is <b>${eventName}</b>\n What would like to change it to?`, {
         parse_mode: 'HTML',
         reply_markup: { force_reply: true },
     });
     ctx.session.botOnType = 6;
-});
+};
 //Used in _botOn_functions.ts in botOntype = 6
-const editEventName_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const newEventName = yield ctx.message.text;
+const editEventName_Execution = async (ctx) => {
+    const newEventName = await ctx.message.text;
     if (newEventName == null) {
         (0, exports.editEventName_Execution)(ctx);
     }
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventName: newEventName } });
-    yield ctx.reply(`Event Name changed to ${newEventName}`);
+    await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventName: newEventName } });
+    await ctx.reply(`Event Name changed to ${newEventName}`);
     ctx.session = (0, _SessionData_1.initial)();
-});
+};
 exports.editEventName_Execution = editEventName_Execution;
-const editEventDate = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    yield ctx.reply('Change event date to: (dd/mm/yyyy) :', {
+const editEventDate = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    await ctx.reply('Change event date to: (dd/mm/yyyy) :', {
         reply_markup: { force_reply: true },
     });
     ctx.session.botOnType = 7;
-});
+};
 //Used in _botOn_functions.ts in botOntype = 7
-const editEventDate_Execution = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const newEventDate = yield ctx.message.text;
+const editEventDate_Execution = async (ctx) => {
+    const newEventDate = await ctx.message.text;
     if (newEventDate == null) {
         (0, exports.editEventDate_Execution)(ctx);
     }
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventDate: newEventDate } });
-    yield ctx.reply(`Event Date changed to ${newEventDate}`);
+    await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { eventDate: newEventDate } });
+    await ctx.reply(`Event Date changed to ${newEventDate}`);
     ctx.session = (0, _SessionData_1.initial)();
-});
+};
 exports.editEventDate_Execution = editEventDate_Execution;
-const editNotAllowedUser = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
-    const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
+const editNotAllowedUser = async (ctx, eventName) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(name
         .map((n) => [
         {
@@ -358,22 +349,22 @@ const editNotAllowedUser = (ctx, eventName) => __awaiter(void 0, void 0, void 0,
             },
         ],
     ]));
-    yield ctx.reply(`Choose new user to exclude from ${eventName}`, {
+    await ctx.reply(`Choose new user to exclude from ${eventName}`, {
         reply_markup: inlineKeyboard,
     });
-});
-const editNotAllowedUser_Execution = (ctx, eventName) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, _telefunctions_1.removeInLineButton)(ctx);
+};
+const editNotAllowedUser_Execution = async (ctx, eventName) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
     let selectedName = ctx.update.callback_query.data.substring('editNotAllowedUserSelect-'.length);
     if (selectedName == 'ALL') {
         selectedName = '';
     }
-    yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { notAllowedUser: selectedName } });
+    await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).updateOne({ _id: ctx.session.id }, { $set: { notAllowedUser: selectedName } });
     if (selectedName == '') {
-        yield ctx.reply(`Everyone is allowed to see ${eventName}`);
+        await ctx.reply(`Everyone is allowed to see ${eventName}`);
     }
     else {
-        yield ctx.reply(`User ${selectedName} is excluded from ${eventName}`);
+        await ctx.reply(`User ${selectedName} is excluded from ${eventName}`);
     }
     ctx.session = (0, _SessionData_1.initial)();
-});
+};

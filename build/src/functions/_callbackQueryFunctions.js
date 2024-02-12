@@ -18,6 +18,8 @@ const callbackQueryHandler = (bot) => {
     _index_5.send.wish(bot);
     // /sendattendance Callbacks
     _index_5.send.attendance(bot);
+    // /sendclaim Callbacks
+    _index_5.send.claim(bot);
     // /adminWelfare Callbacks
     _index_3.admin.welfare(bot);
     // /adminbday Callbacks
@@ -26,6 +28,8 @@ const callbackQueryHandler = (bot) => {
     _index_3.admin.sf(bot);
     // /adminattendance Callbacks
     _index_3.admin.attendance(bot);
+    // /adminfinance Callbacks
+    _index_3.admin.finance(bot);
     // DB Callbacks
     //Specific Person Reminder
     _index_4.reminder.specificReminder(bot);

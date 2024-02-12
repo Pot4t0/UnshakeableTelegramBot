@@ -6,9 +6,9 @@ import {
   Events,
   Names,
 } from '../database_mongoDB/Entity/_tableEntity';
-import { unshakeableAttendanceSpreadsheet } from '../gsheets/_gsheet_init';
-import { gsheet } from '../gsheets/_index';
+
 import { dbSecurity } from '../database_mongoDB/functions/_index';
+import { gsheet } from '../functions/_initialise';
 
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
@@ -129,13 +129,19 @@ const settings = async (ctx: CommandContext<BotContext>) => {
       [
         {
           text: 'Change LG Telegram Group',
-          callback_data: 'settingsLGGroup',
+          callback_data: 'changeChatLG',
         },
       ],
       [
         {
           text: 'LG Leaders Management',
           callback_data: 'manageLeadersTeam',
+        },
+      ],
+      [
+        {
+          text: 'Change Google Sheet',
+          callback_data: 'manageGSheet',
         },
       ],
     ]);
@@ -213,11 +219,11 @@ const sendattendance = async (ctx: CommandContext<BotContext>) => {
   const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
     name: 'Archive',
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
-  const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const ghseetArray = unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const archivedSheetsArray = (await archivedSheets)
     .map((n) => n.archive)
     .flat();
@@ -237,7 +243,7 @@ const sendattendance = async (ctx: CommandContext<BotContext>) => {
       reply_markup: inlineKeyboard,
     }
   );
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  await unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 //Make Finanace Claim
@@ -521,46 +527,10 @@ const adminfinance = async (ctx: CommandContext<BotContext>) => {
     ['SGL', 'finance', 'LGL', 'it'],
     ctx
   );
-  const funds = 3000;
-  const reimburse = 1000;
-  const awaitingApprovedClaims = 10;
-  const awaitingReimbursementClaims = 5;
-  const totalClaims = 20;
-  const completedClaims = 5;
   if (access) {
-    const inlineKeyboard = new InlineKeyboard([
-      [
-        {
-          text: 'Manage Finance Team',
-          callback_data: 'manageFinanceTeam',
-        },
-      ],
-      [
-        {
-          text: 'Fund Management',
-          callback_data: 'fundManagement',
-        },
-      ],
-      [
-        {
-          text: 'Reimbursement',
-          callback_data: 'reimbursement',
-        },
-      ],
-      [
-        {
-          text: 'Change Finance Chat',
-          callback_data: 'financeChat',
-        },
-      ],
-    ]);
-
-    await ctx.reply(
-      `<b>Unshakeable Finance Management</b>\n\nCurrent Funds: $${funds}\nTo Be Reimbursed Amount: $${reimburse}\n\nTotal Claims: ${totalClaims}\nAwaiting Approval: ${awaitingApprovedClaims}\nAwaiitng Reimbursement: ${awaitingReimbursementClaims}\nCompleted: ${completedClaims}`,
-      {
-        reply_markup: inlineKeyboard,
-        parse_mode: 'HTML',
-      }
-    );
+    await ctx.reply('Please enter password:');
+    ctx.session.botOnType = 12;
+  } else {
+    await ctx.reply('No Access to Finance');
   }
 };

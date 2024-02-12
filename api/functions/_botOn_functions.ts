@@ -1,19 +1,30 @@
 import { Bot, Filter, Keyboard } from 'grammy';
 import { BotContext } from '../app/_index';
-import { eventDB, reminder } from '../database_mongoDB/functions/_index';
+import {
+  chat,
+  eventDB,
+  gSheetDB,
+  reminder,
+} from '../database_mongoDB/functions/_index';
 
 import {
   sendAttendanceBotOn,
+  sendClaimBotOn,
   sendWishBotOn,
   sendsfBotOn,
 } from '../cmd/send/_index';
-import { adminAttendanceBotOn, adminSFBotOn } from '../cmd/admin/_index';
+import {
+  adminAttendanceBotOn,
+  adminSFBotOn,
+  adminFinanceBotOn,
+} from '../cmd/admin/_index';
 import { settingBotOn, settings } from '../cmd/settings/_index';
 import { loadFunction } from '../app/_telefunctions';
 
 // BotOn Functions
 // Case 1: /sendwish BotOn Functions
 export const botOnHandler = (bot: Bot<BotContext>) => {
+  bot.on('message:photo', loadFunction, phtotListener);
   bot.on(':user_shared', loadFunction, userSharedListener);
   bot.on(':chat_shared', loadFunction, chatSharedListener);
   bot.on('message', loadFunction, anyMsgListener);
@@ -74,9 +85,43 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       break;
     }
 
-    // /adminsf BotOn Functions
-    case 30: {
-      await adminSFBotOn.manualSFNo(ctx);
+    // sendClaim BotOn Functions
+    case 10: {
+      await sendClaimBotOn.logClaimAmount(ctx);
+      break;
+    }
+    case 11: {
+      await sendClaimBotOn.logClaimReason(ctx);
+      break;
+    }
+    // Adminfinance BotOn Functions
+    // Password
+    case 12: {
+      await adminFinanceBotOn.adminFinanceMenu(ctx);
+      break;
+    }
+    case 13: {
+      await adminFinanceBotOn.addOfferingLGDate(ctx);
+      break;
+    }
+    case 14: {
+      await adminFinanceBotOn.addOfferingExecution(ctx);
+      break;
+    }
+    case 15: {
+      await adminFinanceBotOn.deleteOfferingRecord(ctx);
+      break;
+    }
+    case 16: {
+      await adminFinanceBotOn.completedClaimAmountNo(ctx);
+      break;
+    }
+    case 17: {
+      await adminFinanceBotOn.passwordCheck(ctx);
+      break;
+    }
+    case 18: {
+      await adminFinanceBotOn.cfmChangePassword(ctx);
       break;
     }
 
@@ -126,6 +171,11 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       await sendAttendanceBotOn.dinnerAttendanceReason(ctx);
       break;
     }
+    // /adminsf BotOn Functions
+    case 30: {
+      await adminSFBotOn.manualSFNo(ctx);
+      break;
+    }
     // /settings announcements
     // Used for sending out announcement msg
     case 31: {
@@ -137,6 +187,11 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
     // User Full Name
     case 32: {
       await settingBotOn.addUser_FullName(ctx);
+      break;
+    }
+    // Change Sheet
+    case 33: {
+      await gSheetDB.changeSheetExecution(ctx);
       break;
     }
     default: {
@@ -166,7 +221,19 @@ const chatSharedListener = async (ctx: Filter<BotContext, ':chat_shared'>) => {
   const request_id = ctx.update.message?.chat_shared.request_id;
   switch (request_id) {
     case 1:
-      settingBotOn.changeLGChat(ctx);
+      chat.changeChatExecution(ctx);
+      break;
+    default:
+      const chatid = ctx.chat.id.toString();
+      if (chatid != process.env.LG_CHATID)
+        await ctx.reply('Sorry I do not understand. Please try again!');
+  }
+};
+
+const phtotListener = async (ctx: Filter<BotContext, 'message:photo'>) => {
+  switch (ctx.session.botOnPhoto) {
+    case 1:
+      await sendClaimBotOn.submitClaim(ctx);
       break;
     default:
       const chatid = ctx.chat.id.toString();

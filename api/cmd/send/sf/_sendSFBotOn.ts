@@ -51,18 +51,17 @@ export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
           await ctx.reply('ERROR! Failed to log SF. Pls try again!');
           console.log('SendSF Failed');
         }
+        sheet.resetLocalCache();
       } else {
         await ctx.reply('ERROR! Pls try again!');
         console.log('SendSF Failed');
       }
-      await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-      ctx.session = await initial();
+      ctx.session = initial();
     }
   } catch (err) {
     await ctx.reply('ERROR! Please try again!');
     console.log(err);
   }
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   ctx.session = initial();
 };
 
@@ -120,17 +119,16 @@ export const sendToSheet_Reason = async (
           await ctx.reply('ERROR! Failed to log reason. Pls try again!');
           console.log('SendSF Reason Failed');
         }
+        sheet.resetLocalCache();
       } else {
         await ctx.reply('ERROR! Please try again!');
         console.log('SendSF Reason Failed');
       }
-      await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-      ctx.session = await initial();
+      ctx.session = initial();
     }
   } catch (err) {
     await ctx.reply('ERROR! Please try again!');
     console.log(err);
   }
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-  ctx.session = await initial();
+  ctx.session = initial();
 };

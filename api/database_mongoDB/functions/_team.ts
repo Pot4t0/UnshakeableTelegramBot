@@ -7,15 +7,11 @@ import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
 export const teamManagement = async (
   bot: Bot<BotContext>,
-  team: 'Welfare' | 'Admin' | 'Birthday' | 'Leaders'
+  team: 'Welfare' | 'Admin' | 'Birthday' | 'Leaders' | 'Finance'
   //   |'Attendance'
 ) => {
-  let userRole: 'welfare' | 'admin' | 'bday' | 'leaders';
+  let userRole: 'welfare' | 'admin' | 'bday' | 'leaders' | 'finance';
   switch (team) {
-    // currently nonexistent
-    // case 'Attendance':
-    //   userRole = 'attendance';
-    //   break;
     case 'Welfare':
       userRole = 'welfare';
       break;
@@ -27,6 +23,9 @@ export const teamManagement = async (
       break;
     case 'Leaders':
       userRole = 'leaders';
+      break;
+    case 'Finance':
+      userRole = 'finance';
       break;
     default:
       throw new Error('Invalid Team');
@@ -55,15 +54,15 @@ export const teamManagement = async (
 };
 const teamManagementMenu = async (
   ctx: CallbackQueryContext<BotContext>,
-  team: 'Welfare' | 'Admin' | 'Birthday' | 'Leaders',
-  userRole: 'welfare' | 'admin' | 'bday' | 'leaders'
+  team: 'Welfare' | 'Admin' | 'Birthday' | 'Leaders' | 'Finance',
+  userRole: 'welfare' | 'admin' | 'bday' | 'leaders' | 'finance'
 ) => {
   await removeInLineButton(ctx);
   let icText = 'Make User be IC/Member';
   if (userRole === 'leaders') {
     icText = 'Make User be SGL/LGL';
   }
-  const inlineKeyboard = new InlineKeyboard([
+  let inLineButtons = [
     [
       {
         text: 'Add Member',
@@ -82,7 +81,24 @@ const teamManagementMenu = async (
         callback_data: `editMember`,
       },
     ],
-  ]);
+  ];
+  if (userRole === 'finance') {
+    inLineButtons = [
+      [
+        {
+          text: 'Add Member',
+          callback_data: `addMember`,
+        },
+      ],
+      [
+        {
+          text: 'Delete Members',
+          callback_data: `delMember`,
+        },
+      ],
+    ];
+  }
+  const inlineKeyboard = new InlineKeyboard(inLineButtons);
   ctx.session.team = team;
   ctx.session.userRole = userRole;
   if (team != 'Leaders') {
@@ -96,17 +112,20 @@ const teamManagementMenu = async (
         role: { $in: [userRole + 'IC'] },
       },
     });
-    await ctx.reply(
-      `<b>${team} Team</b>\n\nIC:\n${icList
+    let msg = `<b>${team} Team</b>\n\nIC:\n${icList
+      .map((n) => n.nameText)
+      .join('\n')}\n\nMembers:\n${userList.map((n) => n.nameText).join('\n')}`;
+
+    if (icList.length === 0) {
+      msg = `<b>${team} Team</b>\n\nMembers:\n${userList
         .map((n) => n.nameText)
-        .join('\n')}\n\nMembers:\n${userList
-        .map((n) => n.nameText)
-        .join('\n')}`,
-      {
-        parse_mode: 'HTML',
-        reply_markup: inlineKeyboard,
-      }
-    );
+        .join('\n')}`;
+    }
+
+    await ctx.reply(msg, {
+      parse_mode: 'HTML',
+      reply_markup: inlineKeyboard,
+    });
   } else {
     const userList = await Database.getMongoRepository(Names).find({
       where: {

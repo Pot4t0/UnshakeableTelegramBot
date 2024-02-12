@@ -1,9 +1,7 @@
 import { Bot, CallbackQueryContext, Filter } from 'grammy';
 import { BotContext } from '../../../app/_index';
-import { gsheet } from '../../../gsheets/_index';
 import { Database } from '../../../database_mongoDB/_db-init';
 import { Names } from '../../../database_mongoDB/Entity/_tableEntity';
-import { unshakeableAttendanceSpreadsheet } from '../../../gsheets/_gsheet_init';
 import { initial } from '../../../models/_SessionData';
 import {
   dinnerLogAttendance,
@@ -17,6 +15,7 @@ import {
 } from './_sendAttendanceInternal';
 import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
+import { gsheet } from '../../../functions/_initialise';
 
 //Send Attendance Callbacks
 // For Special Event
@@ -41,11 +40,13 @@ const attendanceEventDecision = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const unshakeableAttendanceSpreadsheet = gsheet('attendance');
   const callback = ctx.update.callback_query.data.substring(
     'svcLGAttendance-'.length
   );
-  const sheet = unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  const sheet = (await unshakeableAttendanceSpreadsheet).sheetsByTitle[
+    callback
+  ];
   await sheet.loadCells();
 
   // Sesssion Data for Special Attendance
@@ -193,12 +194,11 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
         });
       } else {
         await logAttendanceMsg(ctx, `${sheetName}`);
+        sheet.resetLocalCache();
         ctx.session = initial();
-        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
       }
     }
   } else if (callback == 'N') {
-    ctx.session.attendance;
     // Not Coming for Special Event
     await ctx.reply('AW 😭.\nWhats the reason?', {
       reply_markup: { force_reply: true },
@@ -206,8 +206,7 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
     ctx.session.botOnType = logReasonBotOnSpecial;
   } else {
     await ctx.reply('Error! Pls try again');
-    ctx.session = await initial();
-    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    ctx.session = initial();
   }
 };
 
@@ -251,7 +250,6 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
       }
     }
   } else if (callback == 'N') {
-    ctx.session.attendance;
     // Not Coming for WE
     await ctx.reply('AW 😭.\nWhats the reason?', {
       reply_markup: { force_reply: true },
@@ -260,7 +258,6 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   } else {
     await ctx.reply('Error! Pls try again');
     ctx.session = initial();
-    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 
@@ -284,12 +281,11 @@ const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
       reasonCell.value = '';
       attendanceCell.value = 'Y';
       await sheet.saveUpdatedCells();
-      logAttendanceMsg(ctx, sheetName);
+      await logAttendanceMsg(ctx, sheetName);
+      sheet.resetLocalCache();
       ctx.session = initial();
-      gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
   } else if (callback == 'N') {
-    ctx.session.attendance;
     // Not Coming for LG
     await ctx.reply('AW 😭.\nWhats the reason?', {
       reply_markup: { force_reply: true },
@@ -298,7 +294,6 @@ const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   } else {
     await ctx.reply('Error! Pls try again');
     ctx.session = initial();
-    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 
@@ -326,7 +321,6 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
           ''
         );
         ctx.session = initial();
-        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         break;
       case 'LG':
         await dinnerLogAttendance(
@@ -359,13 +353,11 @@ const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
         } else {
           await ctx.reply('Error! Pls try again');
           ctx.session = initial();
-          gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
         }
         break;
       default:
         await ctx.reply('Error! Pls try again');
         ctx.session = initial();
-        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
   } else if (callback == 'N') {
     await ctx.reply('AW 😭.\nWhats the reason?', {

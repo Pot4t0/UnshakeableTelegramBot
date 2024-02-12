@@ -1,8 +1,6 @@
 // Send Attendance Global Variables
 import { CallbackQueryContext, Filter } from 'grammy';
 import { BotContext } from '../../../app/_context';
-import { loadFunction } from '../../../app/_telefunctions';
-
 //Session BotOnType Values
 export const logReasonBotOnWE = 19;
 export const logReasonBotOnLG = 20;

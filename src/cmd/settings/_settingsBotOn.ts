@@ -4,8 +4,7 @@ import { Database } from '../../database_mongoDB/_db-init';
 import { Names, Settings } from '../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
 import { dbMessaging } from '../../database_mongoDB/functions/_index';
-import { gsheet } from '../../gsheets/_index';
-import { unshakeableAttendanceSpreadsheet } from '../../gsheets/_gsheet_init';
+import { gsheet } from '../../functions/_initialise';
 
 // Settings Announcements Output
 // Used in _botOn_functions.ts
@@ -84,8 +83,7 @@ export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
         teleUser: '',
         attendanceRow: highestAttendnaceRow,
       });
-
-      await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+      const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
       const template =
         unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
       const special_template =
@@ -109,35 +107,16 @@ export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
       special_numberCell.value = highestAttendnaceRow - 3;
       special_nameCell.value = fullName;
       await special_template.saveUpdatedCells();
-
       await ctx.reply(
         `${fullName} added! Please change sermon feedback Google sheet accoridngly!\n\nName: ${fullName}\nChat ID: ${chatId}\nAttendance Row: ${highestAttendnaceRow}\n`
       );
+      unshakeableAttendanceSpreadsheet.resetLocalCache();
     } else {
       await ctx.reply('User already exists!');
     }
-    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     ctx.session = initial();
   } else {
     await ctx.reply('Error! Please try again!');
     ctx.session = initial();
-  }
-};
-
-// Settings Change LG Chat
-// Used in _botOn_functions.ts
-// Refer to user_shared case 2
-export const changeLGChat = async (ctx: Filter<BotContext, ':chat_shared'>) => {
-  const chatid = ctx.update.message?.chat_shared.chat_id;
-  if (chatid) {
-    await Database.getMongoRepository(Settings).updateOne(
-      { option: 'LG' },
-      { $set: { config: [chatid.toString()] } }
-    );
-    await ctx.reply(
-      `LG Chat changed to ${chatid} Remember to add bot to the chat!`
-    );
-  } else {
-    await ctx.reply('Error! Please try again!');
   }
 };

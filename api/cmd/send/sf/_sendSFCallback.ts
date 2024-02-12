@@ -1,7 +1,7 @@
 import { Bot, CallbackQueryContext } from 'grammy';
 import { BotContext } from '../../../app/_index';
-import { gsheet } from '../../../gsheets/_index';
 import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
+import { gsheet } from '../../../functions/_initialise';
 
 //Send SF Callbacks
 export const sendsf = async (bot: Bot<BotContext>) => {
@@ -25,9 +25,8 @@ const sendSF = async (ctx: CallbackQueryContext<BotContext>) => {
       reply_markup: { force_reply: true },
     }
   );
-  await gsheet.unshakeableSFSpreadsheet.loadInfo();
-  const sheet =
-    gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+  const unshakeableSFSpreadsheet = await gsheet('sf');
+  const sheet = unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
   ctx.session.gSheet = sheet;
   ctx.session.botOnType = 8;
 };
@@ -47,9 +46,8 @@ const sendReason = async (ctx: CallbackQueryContext<BotContext>) => {
       reply_markup: { force_reply: true },
     }
   );
-  await gsheet.unshakeableSFSpreadsheet.loadInfo();
-  const sheet =
-    gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+  const unshakeableSFSpreadsheet = await gsheet('sf');
+  const sheet = unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
   ctx.session.gSheet = sheet;
   ctx.session.botOnType = 9;
 };

@@ -5,6 +5,7 @@ function initial() {
     return {
         id: undefined,
         chatId: undefined,
+        amount: undefined,
         attendance: undefined,
         eventName: undefined,
         eventDate: undefined,
@@ -16,6 +17,7 @@ function initial() {
         eventMeal: undefined,
         gSheet: undefined,
         scheduler: undefined,
+        botOnPhoto: undefined,
     };
 }
 exports.initial = initial;

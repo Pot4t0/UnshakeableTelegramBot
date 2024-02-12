@@ -1,12 +1,11 @@
 import { Filter } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { initial } from '../../../models/_SessionData';
-import { gsheet } from '../../../gsheets/_index';
-import { unshakeableAttendanceSpreadsheet } from '../../../gsheets/_gsheet_init';
 import {
   adminAttendanceBotOn,
   createEventDBDoc,
 } from './__adminAttendanceInternal';
+import { gsheet } from '../../../functions/_initialise';
 
 // LG Event Worship Experience Date
 // Used in _botOn_functions.ts in botOntype = 21
@@ -37,10 +36,10 @@ export const addAttendanceSheet_CreateLGEventSheet = async (
     ctx.session.botOnType = await undefined;
     const lgDateArray = lgDate.split('/');
     const weDateArray = (await ctx.session.eventDate?.split('/')) || '';
-    await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
     const templateSheet = unshakeableAttendanceSpreadsheet.sheetsById[0];
     const sheetExist =
-      await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+      unshakeableAttendanceSpreadsheet.sheetsByTitle[
         `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`
       ];
 
@@ -49,12 +48,12 @@ export const addAttendanceSheet_CreateLGEventSheet = async (
         title: `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`,
       });
       const newSheet =
-        await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+        unshakeableAttendanceSpreadsheet.sheetsByTitle[
           `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`
         ];
       await newSheet.loadCells();
-      const lgDateCell = await newSheet.getCellByA1(`F2`);
-      const weDateCell = await newSheet.getCellByA1(`C2`);
+      const lgDateCell = newSheet.getCellByA1(`F2`);
+      const weDateCell = newSheet.getCellByA1(`C2`);
       weDateCell.value = `${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`;
       lgDateCell.value = `${lgDateArray[0]}/${lgDateArray[1]}/${lgDateArray[2]}`;
       await newSheet.saveUpdatedCells();
@@ -65,7 +64,7 @@ export const addAttendanceSheet_CreateLGEventSheet = async (
       await ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
     }
     ctx.session = initial();
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 // Create No LG Event Sheet
@@ -73,18 +72,18 @@ export const addAttendanceSheet_CreateLGEventSheet = async (
 export const addAttendanceSheet_CreateNoLGEventSheet = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
-  const weDate = await ctx.message.text;
+  const weDate = ctx.message.text;
   if (weDate == null) {
     addAttendanceSheet_CreateNoLGEventSheet(ctx);
   }
   if (weDate) {
-    ctx.session.botOnType = await undefined;
+    ctx.session.botOnType = undefined;
     const weDateArray = weDate.split('/');
     ctx.session = initial();
-    await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+    const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
     const templateSheet = unshakeableAttendanceSpreadsheet.sheetsById[0];
     const sheetExist =
-      await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+      unshakeableAttendanceSpreadsheet.sheetsByTitle[
         `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`
       ];
 
@@ -93,14 +92,13 @@ export const addAttendanceSheet_CreateNoLGEventSheet = async (
         title: `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`,
       });
       const newSheet =
-        await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+        unshakeableAttendanceSpreadsheet.sheetsByTitle[
           `WE: ${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`
         ];
       await newSheet.loadCells();
-      2;
-      const lgCell = await newSheet.getCellByA1(`F3`);
-      const lgReasonCell = await newSheet.getCellByA1(`G3`);
-      const weDateCell = await newSheet.getCellByA1(`C2`);
+      const lgCell = newSheet.getCellByA1(`F3`);
+      const lgReasonCell = newSheet.getCellByA1(`G3`);
+      const weDateCell = newSheet.getCellByA1(`C2`);
       weDateCell.value = `${weDateArray[0]}/${weDateArray[1]}/${weDateArray[2]}`;
       lgCell.value = 'No LG';
       lgReasonCell.value = '';
@@ -111,7 +109,7 @@ export const addAttendanceSheet_CreateNoLGEventSheet = async (
     } else {
       await ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
     }
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 // Special Event Date
@@ -139,12 +137,13 @@ export const addAttendanceSheet_CreateSpecialEventSheet = async (
     addAttendanceSheet_CreateSpecialEventSheet(ctx);
   }
   const event_name = ctx.session.eventName;
-  ctx.session.botOnType = await undefined;
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  ctx.session.botOnType = undefined;
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+  unshakeableAttendanceSpreadsheet.loadInfo();
   const templateSheet =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
   const sheetExist =
-    await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+    unshakeableAttendanceSpreadsheet.sheetsByTitle[
       `${event_name} (${event_date}) created`
     ];
 
@@ -153,7 +152,7 @@ export const addAttendanceSheet_CreateSpecialEventSheet = async (
       title: `${event_name} (${event_date})`,
     });
     const newSheet =
-      await unshakeableAttendanceSpreadsheet.sheetsByTitle[
+      unshakeableAttendanceSpreadsheet.sheetsByTitle[
         `${event_name} (${event_date})`
       ];
     await newSheet.loadCells();
@@ -180,6 +179,6 @@ export const addAttendanceSheet_CreateSpecialEventSheet = async (
   } else {
     await ctx.reply(`Sheet Already Exists!\nPlease delete if needed`);
   }
-  ctx.session = await initial();
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  ctx.session = initial();
+  unshakeableAttendanceSpreadsheet.resetLocalCache();
 };

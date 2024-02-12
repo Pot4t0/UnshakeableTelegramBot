@@ -91,6 +91,24 @@ export class Settings {
   config: string[];
 }
 
+@Entity('claims')
+export class Claims {
+  @ObjectIdColumn()
+  id: ObjectId;
+  @Column()
+  name: string;
+  @Column()
+  claimid: number;
+  @Column()
+  date: string;
+  @Column()
+  status: string;
+  @Column()
+  amount: number;
+  @Column()
+  description: string;
+}
+
 // attendance collection
 // @Entity('attendance')
 // export class Attendance {

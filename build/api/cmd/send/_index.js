@@ -23,17 +23,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.send = exports.sendWishBotOn = exports.sendsfBotOn = exports.sendAttendanceBotOn = void 0;
+exports.send = exports.sendClaimBotOn = exports.sendWishBotOn = exports.sendsfBotOn = exports.sendAttendanceBotOn = void 0;
 const _sendAttendanceCallbacks_1 = require("./attendance/_sendAttendanceCallbacks");
 const _sendSFCallback_1 = require("./sf/_sendSFCallback");
 const _sendWishCallback_1 = require("./wish/_sendWishCallback");
+const _claimCallbacks_1 = require("./claim/_claimCallbacks");
 //Send Bot On Functions
 exports.sendAttendanceBotOn = __importStar(require("./attendance/_sendAttendanceBotOn"));
 exports.sendsfBotOn = __importStar(require("./sf/_sendSFBotOn"));
 exports.sendWishBotOn = __importStar(require("./wish/_sendWishBotOn"));
-//Send Callbacks Functions
+exports.sendClaimBotOn = __importStar(require("./claim/_claimBotOn"));
 class send {
-    //   static callback = class {
     static attendance(bot) {
         (0, _sendAttendanceCallbacks_1.sendAttendance)(bot);
     }
@@ -42,6 +42,9 @@ class send {
     }
     static sf(bot) {
         (0, _sendSFCallback_1.sendsf)(bot);
+    }
+    static claim(bot) {
+        (0, _claimCallbacks_1.sendClaim)(bot);
     }
 }
 exports.send = send;

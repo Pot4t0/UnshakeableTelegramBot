@@ -6,6 +6,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.5.0",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
     "@vercel/node": "^3.0.1",
@@ -22,7 +23,8 @@
     "@grammyjs/conversations": "^1.1.2",
     "@types/luxon": "^3.4.2",
     "@vercel/analytics": "^1.0.2",
-    "dotenv": "^16.3.1",
+    "config": "^3.3.11",
+    "dotenv": "^16.4.2",
     "es6-shim": "^0.35.8",
     "eslint-config-google": "^0.14.0",
     "google-spreadsheet": "^4.0.2",
@@ -36,6 +38,7 @@
     "tslib": "^2.6.0",
     "typeorm": "^0.3.17",
     "typescipt": "^1.0.0",
+    "uuid": "^9.0.1",
     "vercel": "^33.2.0"
   }
 }

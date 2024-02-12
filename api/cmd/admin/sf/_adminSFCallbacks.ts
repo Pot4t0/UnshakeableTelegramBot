@@ -3,10 +3,10 @@ import { BotContext } from '../../../app/_index';
 import { Database } from '../../../database_mongoDB/_db-init';
 import { Names, Settings } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
-import { gsheet } from '../../../gsheets/_index';
 import { reminder, team } from '../../../database_mongoDB/functions/_index';
 import { adminSFBotOn } from './_adminSFInternal';
 import { removeInLineButton } from '../../../app/_telefunctions';
+import { gsheet } from '../../../functions/_initialise';
 
 export const adminSF = (bot: Bot<BotContext>) => {
   // SF Reminder
@@ -86,9 +86,8 @@ const manualSFYesNo = async (ctx: CallbackQueryContext<BotContext>) => {
   );
   if (callback == 'yes') {
     const sfmsg = '';
-    await gsheet.unshakeableSFSpreadsheet.loadInfo();
-    const sheet =
-      gsheet.unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
+    const unshakeableSFSpreadsheet = await gsheet('sf');
+    const sheet = unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
     const teleUserName = (await ctx.session.name) || '';
     const user = await Database.getMongoRepository(Names).find({
       teleUser: teleUserName,
@@ -101,8 +100,8 @@ const manualSFYesNo = async (ctx: CallbackQueryContext<BotContext>) => {
       reason: '',
     });
     await ctx.reply('Sent!');
-    ctx.session = await initial();
-    await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+    unshakeableSFSpreadsheet.resetLocalCache();
+    ctx.session = initial();
   } else if (callback == 'no') {
     await ctx.reply(
       `

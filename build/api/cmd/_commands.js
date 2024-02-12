@@ -1,76 +1,66 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.commands = void 0;
 const grammy_1 = require("grammy");
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
-const _gsheet_init_1 = require("../gsheets/_gsheet_init");
-const _index_1 = require("../gsheets/_index");
-const _index_2 = require("../database_mongoDB/functions/_index");
+const _index_1 = require("../database_mongoDB/functions/_index");
+const _initialise_1 = require("../functions/_initialise");
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
 // Refer to each respective callback function for more details on the command
 //All the commands that the bot can call
 const commands = (bot) => {
     //Call /start command
-    bot.command('start', _index_2.dbSecurity.checkUserInDatabaseMiddleware, start);
+    bot.command('start', _index_1.dbSecurity.checkUserInDatabaseMiddleware, start);
     //Call /help command
-    bot.command('help', _index_2.dbSecurity.checkUserInDatabaseMiddleware, help);
+    bot.command('help', _index_1.dbSecurity.checkUserInDatabaseMiddleware, help);
     //Call /settings command
-    bot.command('settings', _index_2.dbSecurity.checkUserInDatabaseMiddleware, settings);
+    bot.command('settings', _index_1.dbSecurity.checkUserInDatabaseMiddleware, settings);
     //Call /sendsf command
-    bot.command('sendsf', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendsf);
+    bot.command('sendsf', _index_1.dbSecurity.checkUserInDatabaseMiddleware, sendsf);
     //Call /sendwish command
-    bot.command('sendwish', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendWish);
+    bot.command('sendwish', _index_1.dbSecurity.checkUserInDatabaseMiddleware, sendWish);
     //Call /sendclaim command
-    bot.command('sendclaim', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendClaim);
+    bot.command('sendclaim', _index_1.dbSecurity.checkUserInDatabaseMiddleware, sendClaim);
     //Call /sendattendance
-    bot.command('sendattendance', _index_2.dbSecurity.checkUserInDatabaseMiddleware, sendattendance);
+    bot.command('sendattendance', _index_1.dbSecurity.checkUserInDatabaseMiddleware, sendattendance);
     //Call /adminWelfare command
-    bot.command('adminwelfare', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminWelfare);
+    bot.command('adminwelfare', _index_1.dbSecurity.checkUserInDatabaseMiddleware, adminWelfare);
     //Call /adminbday
-    bot.command('adminbday', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminbday);
+    bot.command('adminbday', _index_1.dbSecurity.checkUserInDatabaseMiddleware, adminbday);
     //Call /adminsf
-    bot.command('adminsf', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminsf);
+    bot.command('adminsf', _index_1.dbSecurity.checkUserInDatabaseMiddleware, adminsf);
     //Call /adminattendance
-    bot.command('adminattendance', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminattendance);
+    bot.command('adminattendance', _index_1.dbSecurity.checkUserInDatabaseMiddleware, adminattendance);
     //Call /adminfinance
-    bot.command('adminfinance', _index_2.dbSecurity.checkUserInDatabaseMiddleware, adminfinance);
+    bot.command('adminfinance', _index_1.dbSecurity.checkUserInDatabaseMiddleware, adminfinance);
 };
 exports.commands = commands;
 //Start command
-const start = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+const start = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const name = yield _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
+    const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(name.map((n) => [
         {
             text: n.nameText,
             callback_data: `nameStart-${n.nameText}`,
         },
     ]));
-    yield ctx.reply('Welcome to Unshakeable Telegram Bot 🤖\nPlease select your name:', {
+    await ctx.reply('Welcome to Unshakeable Telegram Bot 🤖\nPlease select your name:', {
         reply_markup: inlineKeyboard,
     });
-});
+};
 //Help command
-const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    if (((_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.chat.type) !== 'private') {
+const help = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    yield ctx.reply(`
+    await ctx.reply(`
 	Help List
   \nIf there is any issue within the Bot or any feedback pls pm @whysominh for technical help ☺️
   \n/help --> Help List
@@ -83,14 +73,14 @@ const help = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
   \n/adminsf --> Management of sermon feedback for Admin Team (only accessible to serving members)
   \n/adminattendance --> Management of attendance (only accessible to Admin Team)
 	`);
-});
+};
 //Settings command
-const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    if (((_c = ctx.update.message) === null || _c === void 0 ? void 0 : _c.chat.type) !== 'private') {
+const settings = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'LGL', 'it'], ctx);
+    const access = await _index_1.dbSecurity.roleAccess(['SGL', 'LGL', 'it'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
             [
@@ -114,7 +104,7 @@ const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             [
                 {
                     text: 'Change LG Telegram Group',
-                    callback_data: 'settingsLGGroup',
+                    callback_data: 'changeChatLG',
                 },
             ],
             [
@@ -123,19 +113,25 @@ const settings = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                     callback_data: 'manageLeadersTeam',
                 },
             ],
+            [
+                {
+                    text: 'Change Google Sheet',
+                    callback_data: 'manageGSheet',
+                },
+            ],
         ]);
-        yield ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
+        await ctx.reply('Settings \n Only LGL,SGL & IT personnel can access this', {
             reply_markup: inlineKeyboard,
         });
     }
     else {
-        yield ctx.reply('No Access to Bot Settings');
+        await ctx.reply('No Access to Bot Settings');
     }
-});
+};
 //Send SF command
-const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    if (((_d = ctx.update.message) === null || _d === void 0 ? void 0 : _d.chat.type) !== 'private') {
+const sendsf = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -152,24 +148,24 @@ const sendsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             },
         ],
     ]);
-    yield ctx.reply(`Hi there! We will be collecting sermon feedback every week!
+    await ctx.reply(`Hi there! We will be collecting sermon feedback every week!
   \nFor those who have no clue on what to write for sermon feedback, you can share about what you learnt from the sermon or comment on the entire service in general. Feel free to express your thoughts on the service! You are strongly encouraged to write sermon feedback because they benefit both you and the preacher. 😎
   \nPlease fill up this by SUNDAY, 7 PM! 🤗
   \n\nDid you attend service/watched online?
   `, {
         reply_markup: inlineKeyboard,
     });
-});
+};
 //Send Wish command
-const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e, _f;
-    if (((_e = ctx.update.message) === null || _e === void 0 ? void 0 : _e.chat.type) !== 'private') {
+const sendWish = async (ctx) => {
+    var _a, _b;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const user = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
-        teleUser: (_f = ctx.update.message) === null || _f === void 0 ? void 0 : _f.from.username,
+    const user = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+        teleUser: (_b = ctx.update.message) === null || _b === void 0 ? void 0 : _b.from.username,
     });
-    const event = yield _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
+    const event = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
         where: {
             notAllowedUser: { $not: { $in: user.map((n) => n.nameText) } },
         },
@@ -180,24 +176,24 @@ const sendWish = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             callback_data: `sendWishEvent-${e.eventName}`,
         },
     ]));
-    yield ctx.reply('Choose upcoming Birthday / Welfare Event ', {
+    await ctx.reply('Choose upcoming Birthday / Welfare Event ', {
         reply_markup: inlineKeyboard,
     });
-});
+};
 //Send Attendance command
-const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _g;
-    if (((_g = ctx.update.message) === null || _g === void 0 ? void 0 : _g.chat.type) !== 'private') {
+const sendattendance = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
     const archivedSheets = _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
         name: 'Archive',
     });
-    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-    const template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
-    const special_template = _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
-    const ghseetArray = yield _gsheet_init_1.unshakeableAttendanceSpreadsheet.sheetsByIndex;
-    const archivedSheetsArray = (yield archivedSheets)
+    const unshakeableAttendanceSpreadsheet = await (0, _initialise_1.gsheet)('attendance');
+    const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
+    const special_template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
+    const ghseetArray = unshakeableAttendanceSpreadsheet.sheetsByIndex;
+    const archivedSheetsArray = (await archivedSheets)
         .map((n) => n.archive)
         .flat();
     const inlineKeyboard = new grammy_1.InlineKeyboard(ghseetArray
@@ -207,16 +203,16 @@ const sendattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         .map((n) => [
         { text: n.title, callback_data: `svcLGAttendance-${n.title}` },
     ]));
-    yield ctx.reply(`Hi there! We will be collecting attendance every week!
+    await ctx.reply(`Hi there! We will be collecting attendance every week!
   \nSelect the respective worship experience.`, {
         reply_markup: inlineKeyboard,
     });
-    yield _index_1.gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
-});
+    await unshakeableAttendanceSpreadsheet.resetLocalCache();
+};
 //Make Finanace Claim
-const sendClaim = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _h;
-    if (((_h = ctx.update.message) === null || _h === void 0 ? void 0 : _h.chat.type) !== 'private') {
+const sendClaim = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -233,18 +229,18 @@ const sendClaim = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             },
         ],
     ]);
-    yield ctx.reply(`<b>Unshakeable Finance Claims</b>\n\n<b>REMINDER</b>\nMake sure you inform the finance person before making any claims.`, {
+    await ctx.reply(`<b>Unshakeable Finance Claims</b>\n\n<b>REMINDER</b>\nMake sure you inform the finance person before making any claims.`, {
         reply_markup: inlineKeyboard,
         parse_mode: 'HTML',
     });
-});
+};
 //Admin Welfare command
-const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _j;
-    if (((_j = ctx.update.message) === null || _j === void 0 ? void 0 : _j.chat.type) !== 'private') {
+const adminWelfare = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['welfare', 'welfareIC', 'LGL', 'it', 'SGL'], ctx);
+    const access = await _index_1.dbSecurity.roleAccess(['welfare', 'welfareIC', 'LGL', 'it', 'SGL'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
             [
@@ -272,7 +268,7 @@ const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             ],
         ]);
-        yield ctx.reply(`
+        await ctx.reply(`
 	Welfare Team Admin Matters
 	\nYou can view all wishes and send reminders for all welfare events
 	\nDo exercise data confidentiality.
@@ -282,13 +278,13 @@ const adminWelfare = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     else {
-        yield ctx.reply('AIYO! You are not serving in Welfare. Hence, you cant access this :(');
+        await ctx.reply('AIYO! You are not serving in Welfare. Hence, you cant access this :(');
     }
-});
+};
 //Admin Birthday command
-const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _k;
-    if (((_k = ctx.update.message) === null || _k === void 0 ? void 0 : _k.chat.type) !== 'private') {
+const adminbday = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
     // const access = await dbSecurity.roleAccess(
@@ -322,7 +318,7 @@ const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
             },
         ],
     ]);
-    yield ctx.reply(`
+    await ctx.reply(`
 	Birthday Team Admin Matters
 
 	\nYou can view all wishes and send reminders for all birthday events
@@ -336,14 +332,14 @@ const adminbday = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     //     'AIYO! You are not serving in Birthday. Hence, you cant access this :('
     //   );
     // }
-});
+};
 //Admin Sermon Feedback command
-const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _l;
-    if (((_l = ctx.update.message) === null || _l === void 0 ? void 0 : _l.chat.type) !== 'private') {
+const adminsf = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['admin', 'adminIC', 'LGL', 'it', 'SGL'], ctx);
+    const access = await _index_1.dbSecurity.roleAccess(['admin', 'adminIC', 'LGL', 'it', 'SGL'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
             [
@@ -371,7 +367,7 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             ],
         ]);
-        yield ctx.reply(`
+        await ctx.reply(`
 	Admin Team Admin Matters
 
 	\nYou can send reminders for sermon feedback
@@ -382,16 +378,16 @@ const adminsf = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     else {
-        yield ctx.reply('AIYO! You are not serving in Admin. Hence, you cant access this :(');
+        await ctx.reply('AIYO! You are not serving in Admin. Hence, you cant access this :(');
     }
-});
+};
 //Admin Attendance command
-const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _m;
-    if (((_m = ctx.update.message) === null || _m === void 0 ? void 0 : _m.chat.type) !== 'private') {
+const adminattendance = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'LGL', 'it', 'admin', 'adminIC'], ctx);
+    const access = await _index_1.dbSecurity.roleAccess(['SGL', 'LGL', 'it', 'admin', 'adminIC'], ctx);
     if (access) {
         const inlineKeyboard = new grammy_1.InlineKeyboard([
             [
@@ -431,7 +427,7 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
                 },
             ],
         ]);
-        yield ctx.reply(`
+        await ctx.reply(`
 	Unshakeable Attendance Matters
 
 	\nOnly accessible to LG/SGL leaders (Exception made for IT)
@@ -447,52 +443,21 @@ const adminattendance = (ctx) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     else {
-        yield ctx.reply('AIYO! You are our LGL/SGL. Hence, you cant access this :(');
+        await ctx.reply('AIYO! You are our LGL/SGL. Hence, you cant access this :(');
     }
-});
+};
 //Admin Finance command
-const adminfinance = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _o;
-    if (((_o = ctx.update.message) === null || _o === void 0 ? void 0 : _o.chat.type) !== 'private') {
+const adminfinance = async (ctx) => {
+    var _a;
+    if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
-    const access = yield _index_2.dbSecurity.roleAccess(['SGL', 'finance', 'LGL', 'it'], ctx);
-    const funds = 3000;
-    const reimburse = 1000;
-    const awaitingApprovedClaims = 10;
-    const awaitingReimbursementClaims = 5;
-    const totalClaims = 20;
-    const completedClaims = 5;
+    const access = await _index_1.dbSecurity.roleAccess(['SGL', 'finance', 'LGL', 'it'], ctx);
     if (access) {
-        const inlineKeyboard = new grammy_1.InlineKeyboard([
-            [
-                {
-                    text: 'Manage Finance Team',
-                    callback_data: 'manageFinanceTeam',
-                },
-            ],
-            [
-                {
-                    text: 'Fund Management',
-                    callback_data: 'fundManagement',
-                },
-            ],
-            [
-                {
-                    text: 'Reimbursement',
-                    callback_data: 'reimbursement',
-                },
-            ],
-            [
-                {
-                    text: 'Change Finance Chat',
-                    callback_data: 'financeChat',
-                },
-            ],
-        ]);
-        yield ctx.reply(`<b>Unshakeable Finance Management</b>\n\nCurrent Funds: $${funds}\nTo Be Reimbursed Amount: $${reimburse}\n\nTotal Claims: ${totalClaims}\nAwaiting Approval: ${awaitingApprovedClaims}\nAwaiitng Reimbursement: ${awaitingReimbursementClaims}\nCompleted: ${completedClaims}`, {
-            reply_markup: inlineKeyboard,
-            parse_mode: 'HTML',
-        });
+        await ctx.reply('Please enter password:');
+        ctx.session.botOnType = 12;
     }
-});
+    else {
+        await ctx.reply('No Access to Finance');
+    }
+};

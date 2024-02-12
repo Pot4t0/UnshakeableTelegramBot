@@ -23,14 +23,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.admin = exports.adminSFBotOn = exports.adminAttendanceBotOn = void 0;
+exports.admin = exports.adminFinanceBotOn = exports.adminSFBotOn = exports.adminAttendanceBotOn = void 0;
 const _adminAttendanceCallbacks_1 = require("./attendance/_adminAttendanceCallbacks");
 const _adminWelfareCallbacks_1 = require("./_adminWelfareCallbacks");
 const _adminBdayCallbacks_1 = require("./_adminBdayCallbacks");
 const _adminSFCallbacks_1 = require("./sf/_adminSFCallbacks");
+const _financeCallbacks_1 = require("./finance/_financeCallbacks");
 //Admin Bot On Functions
 exports.adminAttendanceBotOn = __importStar(require("./attendance/_adminAttendanceBotOn"));
 exports.adminSFBotOn = __importStar(require("./sf/_adminSFBotOn"));
+exports.adminFinanceBotOn = __importStar(require("./finance/_financeBotOn"));
 //Admin Callback Functions
 class admin {
     static attendance(bot) {
@@ -44,6 +46,9 @@ class admin {
     }
     static sf(bot) {
         (0, _adminSFCallbacks_1.adminSF)(bot);
+    }
+    static finance(bot) {
+        (0, _financeCallbacks_1.adminFinance)(bot);
     }
 }
 exports.admin = admin;

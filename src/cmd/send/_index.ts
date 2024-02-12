@@ -3,15 +3,15 @@ import { BotContext } from '../../app/_context';
 import { sendAttendance } from './attendance/_sendAttendanceCallbacks';
 import { sendsf } from './sf/_sendSFCallback';
 import { sendWish } from './wish/_sendWishCallback';
+import { sendClaim } from './claim/_claimCallbacks';
 
 //Send Bot On Functions
 export * as sendAttendanceBotOn from './attendance/_sendAttendanceBotOn';
 export * as sendsfBotOn from './sf/_sendSFBotOn';
 export * as sendWishBotOn from './wish/_sendWishBotOn';
-
-//Send Callbacks Functions
-export class send {
-  //   static callback = class {
+export * as sendClaimBotOn from './claim/_claimBotOn';
+export //Send Callbacks Functions
+class send {
   static attendance(bot: Bot<BotContext>) {
     sendAttendance(bot);
   }
@@ -21,5 +21,7 @@ export class send {
   static sf(bot: Bot<BotContext>) {
     sendsf(bot);
   }
-  //   };
+  static claim(bot: Bot<BotContext>) {
+    sendClaim(bot);
+  }
 }

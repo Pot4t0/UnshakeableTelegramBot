@@ -1,4 +1,4 @@
-import { Bot, CallbackQueryContext, Filter, InlineKeyboard } from 'grammy';
+import { Bot, CallbackQueryContext, InlineKeyboard } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { Database } from '../../../database_mongoDB/_db-init';
 import {
@@ -6,14 +6,13 @@ import {
   Names,
 } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
-import { gsheet } from '../../../gsheets/_index';
-import { unshakeableAttendanceSpreadsheet } from '../../../gsheets/_gsheet_init';
 import { reminder } from '../../../database_mongoDB/functions/_index';
 import {
   adminAttendanceBotOn,
   createEventDBDoc,
 } from './__adminAttendanceInternal';
 import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
+import { gsheet } from '../../../functions/_initialise';
 
 // Admin Attendance Callbacks
 export const adminAttendance = (bot: Bot<BotContext>) => {
@@ -233,7 +232,7 @@ const addAttendanceSheet_SpecialEventNameMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  const meal = await ctx.update.callback_query.data.substring(
+  const meal = ctx.update.callback_query.data.substring(
     'addSpecialAttendannce-'.length
   );
   ctx.session.eventMeal = meal;
@@ -249,7 +248,7 @@ export const delAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
@@ -265,14 +264,14 @@ export const delAttendanceSheet = async (
   await ctx.reply('Which Google Sheet would you like to delete?', {
     reply_markup: inlineKeyboard,
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 // Delete Attendance Sheet Confirmation Message
 export const delAttendanceeSheet_CfmMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  const sheetName = await ctx.update.callback_query.data.substring(
+  const sheetName = ctx.update.callback_query.data.substring(
     'delAttendanceeSheet-'.length
   );
   ctx.session.eventName = sheetName;
@@ -299,18 +298,19 @@ export const delAttendanceeSheet_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  const cfm = await ctx.update.callback_query.data.substring(
+  const cfm = ctx.update.callback_query.data.substring(
     'CfmDelAttendanceSheet-'.length
   );
   if (cfm == 'Y') {
     if (ctx.session.eventName) {
-      await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+      const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+      await unshakeableAttendanceSpreadsheet.loadInfo();
       const sheet =
         unshakeableAttendanceSpreadsheet.sheetsByTitle[ctx.session.eventName];
       await unshakeableAttendanceSpreadsheet.deleteSheet(sheet.sheetId);
       await removeEventDBDoc(ctx.session.eventName);
       await ctx.reply(`${ctx.session.eventName} deleted!`);
-      await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+      await unshakeableAttendanceSpreadsheet.resetLocalCache();
     } else {
       await ctx.reply(`Error during deletion! Please try again!`);
     }
@@ -319,7 +319,7 @@ export const delAttendanceeSheet_Execution = async (
   } else {
     await ctx.reply(`Error during deletion! Please try again!`);
   }
-  ctx.session = await initial();
+  ctx.session = initial();
 };
 
 //Reminder Management
@@ -329,11 +329,12 @@ const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
   const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
     name: 'Archive',
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+  await unshakeableAttendanceSpreadsheet.loadInfo();
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
-  const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const ghseetArray = unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const archivedSheetsArray = (await archivedSheets)
     .map((n) => n.archive)
     .flat();
@@ -374,8 +375,8 @@ const attendanceReminder_Msg = async (
 
   const title = ctx.session.name;
   if (title) {
-    const sheet =
-      await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[title];
+    const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+    const sheet = unshakeableAttendanceSpreadsheet.sheetsByTitle[title];
     await reminder.reminderSendAllNotIn_ReminderMessage(ctx, sheet);
   }
 };
@@ -412,14 +413,14 @@ const sendAttendanceToLGChat_Execution = async (
     'sendAttendanceToLGChat-'.length
   );
   const totalNames = await Database.getMongoRepository(Names).find({});
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-  const sheet =
-    await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+  await unshakeableAttendanceSpreadsheet.loadInfo();
+  const sheet = unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
   await sheet.loadCells();
-  const lgDateCell = await sheet.getCellByA1('F2');
-  const lgCheckCell = await sheet.getCellByA1('F3');
-  const weCheckCell = await sheet.getCellByA1('C3');
-  const weDateCell = await sheet.getCellByA1('C2');
+  const lgDateCell = sheet.getCellByA1('F2');
+  const lgCheckCell = sheet.getCellByA1('F3');
+  const weCheckCell = sheet.getCellByA1('C3');
+  const weDateCell = sheet.getCellByA1('C2');
   const checkSpecialCell = sheet.getCellByA1('B2');
   const mealCheckCell = sheet.getCellByA1('F3');
   let msg = `Unshakeable Attendance`;
@@ -432,12 +433,12 @@ const sendAttendanceToLGChat_Execution = async (
 
     await Promise.all(
       totalNames.map(async (n) => {
-        const i = await n.attendanceRow;
-        const attendName = await sheet.getCellByA1(`B${i}`);
-        const eventCell = await sheet.getCellByA1(`C${i}`);
-        const eventReasonCell = await sheet.getCellByA1(`D${i}`);
-        const mealCell = await sheet.getCellByA1(`F${i}`);
-        const mealReasonCell = await sheet.getCellByA1(`G${i}`);
+        const i = n.attendanceRow;
+        const attendName = sheet.getCellByA1(`B${i}`);
+        const eventCell = sheet.getCellByA1(`C${i}`);
+        const eventReasonCell = sheet.getCellByA1(`D${i}`);
+        const mealCell = sheet.getCellByA1(`F${i}`);
+        const mealReasonCell = sheet.getCellByA1(`G${i}`);
 
         if (eventCell.value == 'Y') {
           cmgMsg += `\n${attendName.value}`;
@@ -518,7 +519,7 @@ const sendAttendanceToLGChat_Execution = async (
   });
   console.log(msg);
   await ctx.reply(`Sent to LG Chat!`);
-  gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 // Archive Attendance Sheet
@@ -529,11 +530,11 @@ const archiveAttendance_Menu = async (
   const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
     name: 'Archive',
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
   const template = unshakeableAttendanceSpreadsheet.sheetsByTitle['Template'];
   const special_template =
     unshakeableAttendanceSpreadsheet.sheetsByTitle['Special Event Template'];
-  const ghseetArray = await unshakeableAttendanceSpreadsheet.sheetsByIndex;
+  const ghseetArray = unshakeableAttendanceSpreadsheet.sheetsByIndex;
   const archivedSheetsArray = (await archivedSheets)
     .map((n) => n.archive)
     .flat();
@@ -547,18 +548,18 @@ const archiveAttendance_Menu = async (
   await ctx.reply('Which sheet would you like to archive?', {
     reply_markup: inlineKeyboard,
   });
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 const archiveAttendance_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  const callback = await ctx.update.callback_query.data.substring(
+  const callback = ctx.update.callback_query.data.substring(
     'archiveSheet-'.length
   );
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-  const sheet =
-    await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+  unshakeableAttendanceSpreadsheet.loadInfo();
+  const sheet = unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
   await sheet.updateProperties({ hidden: true });
   const archiveSheet = await Database.getMongoRepository(
     Attendance_mongo
@@ -573,7 +574,7 @@ const archiveAttendance_Execution = async (
     await removeEventDBDoc(callback);
     await ctx.reply(`${callback} archived!`);
   }
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 // Unarchive Attendance Sheet
@@ -608,9 +609,8 @@ const unarchiveAttendance_Execution = async (
   const callback = await ctx.update.callback_query.data.substring(
     'unarchiveSheet-'.length
   );
-  await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
-  const sheet =
-    await gsheet.unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
+  const unshakeableAttendanceSpreadsheet = await gsheet('attendance');
+  const sheet = unshakeableAttendanceSpreadsheet.sheetsByTitle[callback];
   await sheet.loadCells();
   const date = sheet.getCellByA1('C2').stringValue;
   const archiveSheet = await Database.getMongoRepository(
@@ -621,8 +621,8 @@ const unarchiveAttendance_Execution = async (
   if (archiveSheet) {
     if (date) {
       await sheet.updateProperties({ hidden: false });
-      const index = await archiveSheet.archive.indexOf(callback);
-      await archiveSheet.archive.splice(index, 1);
+      const index = archiveSheet.archive.indexOf(callback);
+      archiveSheet.archive.splice(index, 1);
       await Database.getMongoRepository(Attendance_mongo).updateOne(
         { name: 'Archive' },
         { $set: { archive: archiveSheet.archive } }
@@ -633,5 +633,5 @@ const unarchiveAttendance_Execution = async (
       await ctx.reply('Unarchive failed! Please try again!');
     }
   }
-  await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+  unshakeableAttendanceSpreadsheet.resetLocalCache();
 };

@@ -1,10 +1,10 @@
 import { BotContext } from '../../../app/_index';
-import { gsheet } from '../../../gsheets/_index';
 import { Database } from '../../../database_mongoDB/_db-init';
 import { Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
 import { Filter } from 'grammy';
 import { dinnerLogAttendance } from './_sendAttendanceInternal';
+import { gsheet } from '../../../functions/_initialise';
 
 // WE Attendance Logging Reason Function
 // Used in _botOn_functions.ts in botOntype = 19
@@ -21,7 +21,6 @@ export const WeAttendanceLogReason = async (
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.message.from.username,
     });
-    await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = ctx.session.gSheet;
     if (sheet) {
       await sheet.loadCells();
@@ -52,15 +51,14 @@ export const WeAttendanceLogReason = async (
         });
       } else {
         await ctx.reply('Error! Pls try again');
-        ctx.session = await initial();
-        await gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
+        ctx.session = initial();
+        sheet.resetLocalCache();
       }
     }
   } catch (err) {
     await ctx.reply('Could not log reason! Please try again!');
     console.log(err);
     ctx.session = initial();
-    gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
 
@@ -79,7 +77,6 @@ export const lgAttendanceLogReason = async (
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.message.from.username,
     });
-    await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = ctx.session.gSheet;
     if (sheet) {
       await sheet.loadCells();
@@ -90,6 +87,7 @@ export const lgAttendanceLogReason = async (
       attendanceCell.value = 'N';
       reasonCell.value = reason;
       await sheet.saveUpdatedCells();
+      sheet.resetLocalCache();
       await ctx.reply('Attendance logged! Thanks for submitting!');
     } else {
       await ctx.reply('Error! Pls try again');
@@ -99,7 +97,6 @@ export const lgAttendanceLogReason = async (
     console.log(err);
   }
   ctx.session = initial();
-  gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 // Special Attendance Logging Reason Function
@@ -117,7 +114,6 @@ export const SpecialAttendanceLogReason = async (
     const user = await Database.getMongoRepository(Names).find({
       teleUser: ctx.update.message.from.username,
     });
-    await gsheet.unshakeableAttendanceSpreadsheet.loadInfo();
     const sheet = ctx.session.gSheet;
     if (sheet) {
       await sheet.loadCells();
@@ -149,7 +145,6 @@ export const SpecialAttendanceLogReason = async (
       } else {
         await ctx.reply('Attendance logged! Thanks for submitting!');
         ctx.session = initial();
-        gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
       }
     }
   } catch (err) {
@@ -157,7 +152,6 @@ export const SpecialAttendanceLogReason = async (
     console.log(err);
   }
   ctx.session = initial();
-  gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
 // Dinner Attendance Reason Function
@@ -186,7 +180,6 @@ export const dinnerAttendanceReason = async (
             reason
           );
           ctx.session = initial();
-          gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
           break;
         case 'No LG':
           await dinnerLogAttendance(
@@ -197,7 +190,6 @@ export const dinnerAttendanceReason = async (
             reason
           );
           ctx.session = initial();
-          gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
           break;
         case 'LG':
           await dinnerLogAttendance(
@@ -235,13 +227,11 @@ export const dinnerAttendanceReason = async (
         default:
           await ctx.reply('Error! Pls try again');
           ctx.session = initial();
-          gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
       }
     } catch (err) {
       await ctx.reply('Could not log reason! Please try again!');
       console.log(err);
       ctx.session = initial();
-      gsheet.unshakeableAttendanceSpreadsheet.resetLocalCache();
     }
   }
 };
