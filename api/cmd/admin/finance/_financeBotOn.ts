@@ -71,12 +71,6 @@ export const adminFinanceMenu = async (ctx: BotContext) => {
         callback_data: 'changeChatFinance',
       },
     ],
-    [
-      {
-        text: 'Change Google Sheet',
-        callback_data: 'changeFinanceSheet',
-      },
-    ],
   ]);
   await ctx.reply(
     `<b>Unshakeable Finance Management</b>\n\nCurrent Funds: $${funds}\nTo Be Reimbursed Amount: $${reimburse}\n\nTotal Claims: ${totalClaims}\nAwaiting Approval: ${awaitingApprovedClaims}\nAwaiitng Reimbursement: ${awaitingReimbursementClaims}\nCompleted: ${completedClaims}`,
