@@ -535,7 +535,7 @@ const adminfinance = async (ctx: CommandContext<BotContext>) => {
       await ctx.reply('Please enter password:');
       ctx.session.botOnType = 12;
     } else {
-      adminFinanceBotOn.adminFinanceMenu(ctx as Filter<BotContext, 'message'>);
+      adminFinanceBotOn.adminFinanceMenu(ctx);
     }
   } else {
     await ctx.reply('No Access to Finance');

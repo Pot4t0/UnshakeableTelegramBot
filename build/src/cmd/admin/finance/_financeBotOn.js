@@ -12,8 +12,9 @@ const _gsheet_functions_1 = require("../../../gsheets/_gsheet_functions");
 //Main Finance Menu
 //Used in _botOn_functions.ts in botOntype = 12
 const adminFinanceMenu = async (ctx) => {
+    var _a;
     const password = process.env.FINANCE_PASSWORD;
-    if (ctx.message.text !== password && !ctx.session.financeAccess) {
+    if (((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.text) !== password && !ctx.session.financeAccess) {
         await ctx.reply('Invalid Password');
         return;
     }

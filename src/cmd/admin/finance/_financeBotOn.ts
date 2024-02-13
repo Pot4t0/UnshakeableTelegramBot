@@ -10,9 +10,9 @@ import { searchRowNo } from '../../../gsheets/_gsheet_functions';
 
 //Main Finance Menu
 //Used in _botOn_functions.ts in botOntype = 12
-export const adminFinanceMenu = async (ctx: Filter<BotContext, 'message'>) => {
+export const adminFinanceMenu = async (ctx: BotContext) => {
   const password = process.env.FINANCE_PASSWORD;
-  if (ctx.message.text !== password && !ctx.session.financeAccess) {
+  if (ctx.message?.text !== password && !ctx.session.financeAccess) {
     await ctx.reply('Invalid Password');
     return;
   }
