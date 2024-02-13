@@ -1,4 +1,4 @@
-import { Bot, CommandContext, InlineKeyboard } from 'grammy';
+import { Bot, CommandContext, Filter, InlineKeyboard } from 'grammy';
 import { BotContext } from '../app/_index';
 import { Database } from '../database_mongoDB/_db-init';
 import {
@@ -9,6 +9,8 @@ import {
 
 import { dbSecurity } from '../database_mongoDB/functions/_index';
 import { gsheet } from '../functions/_initialise';
+import { adminFinanceBotOn } from './admin/_index';
+import { Update } from 'grammy/types';
 
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
@@ -527,9 +529,14 @@ const adminfinance = async (ctx: CommandContext<BotContext>) => {
     ['SGL', 'finance', 'LGL', 'it'],
     ctx
   );
+  // ...
   if (access) {
-    await ctx.reply('Please enter password:');
-    ctx.session.botOnType = 12;
+    if (!ctx.session.financeAccess) {
+      await ctx.reply('Please enter password:');
+      ctx.session.botOnType = 12;
+    } else {
+      adminFinanceBotOn.adminFinanceMenu(ctx as Filter<BotContext, 'message'>);
+    }
   } else {
     await ctx.reply('No Access to Finance');
   }

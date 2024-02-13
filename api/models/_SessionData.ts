@@ -4,6 +4,7 @@ import { ObjectId } from 'typeorm';
 
 export interface SessionData {
   id?: ObjectId;
+  financeAccess?: boolean;
   chatId?: number;
   amount?: string;
   team?:

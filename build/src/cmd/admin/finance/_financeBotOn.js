@@ -13,11 +13,14 @@ const _gsheet_functions_1 = require("../../../gsheets/_gsheet_functions");
 //Used in _botOn_functions.ts in botOntype = 12
 const adminFinanceMenu = async (ctx) => {
     const password = process.env.FINANCE_PASSWORD;
-    if (ctx.message.text !== password) {
+    if (ctx.message.text !== password && !ctx.session.financeAccess) {
         await ctx.reply('Invalid Password');
         return;
     }
     ctx.session = (0, _SessionData_1.initial)();
+    if (!ctx.session.financeAccess) {
+        ctx.session.financeAccess = true;
+    }
     const claims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find();
     const pendingApproval = claims.filter((n) => n.status === 'Pending Approval 🟠');
     const pendingReimbursment = claims.filter((n) => n.status === 'Pending Reimbursement 🟠');

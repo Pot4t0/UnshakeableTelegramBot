@@ -6,6 +6,7 @@ const _db_init_1 = require("../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
 const _index_1 = require("../database_mongoDB/functions/_index");
 const _initialise_1 = require("../functions/_initialise");
+const _index_2 = require("./admin/_index");
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
 // Refer to each respective callback function for more details on the command
@@ -453,9 +454,15 @@ const adminfinance = async (ctx) => {
         return false;
     }
     const access = await _index_1.dbSecurity.roleAccess(['SGL', 'finance', 'LGL', 'it'], ctx);
+    // ...
     if (access) {
-        await ctx.reply('Please enter password:');
-        ctx.session.botOnType = 12;
+        if (!ctx.session.financeAccess) {
+            await ctx.reply('Please enter password:');
+            ctx.session.botOnType = 12;
+        }
+        else {
+            _index_2.adminFinanceBotOn.adminFinanceMenu(ctx);
+        }
     }
     else {
         await ctx.reply('No Access to Finance');

@@ -7,17 +7,20 @@ import { gsheet } from '../../../functions/_initialise';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { searchRowNo } from '../../../gsheets/_gsheet_functions';
-import { off } from 'process';
 
 //Main Finance Menu
 //Used in _botOn_functions.ts in botOntype = 12
 export const adminFinanceMenu = async (ctx: Filter<BotContext, 'message'>) => {
   const password = process.env.FINANCE_PASSWORD;
-  if (ctx.message.text !== password) {
+  if (ctx.message.text !== password && !ctx.session.financeAccess) {
     await ctx.reply('Invalid Password');
     return;
   }
   ctx.session = initial();
+
+  if (!ctx.session.financeAccess) {
+    ctx.session.financeAccess = true;
+  }
   const claims = await Database.getMongoRepository(Claims).find();
   const pendingApproval = claims.filter(
     (n) => n.status === 'Pending Approval 🟠'
