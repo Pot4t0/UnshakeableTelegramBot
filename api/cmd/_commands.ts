@@ -541,7 +541,7 @@ const adminfinance = async (ctx: CommandContext<BotContext>) => {
       ctx.session.botOnType = 12;
     } else {
       ctx.update.message.text = process.env.FINANCE_PASSWORD || '';
-      adminFinanceBotOn.adminFinanceMenu(ctx);
+      await adminFinanceBotOn.adminFinanceMenu(ctx);
     }
   } else {
     await ctx.reply('No Access to Finance');

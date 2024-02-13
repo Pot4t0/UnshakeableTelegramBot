@@ -461,7 +461,7 @@ const adminfinance = async (ctx) => {
         }
         else {
             ctx.update.message.text = process.env.FINANCE_PASSWORD || '';
-            _index_2.adminFinanceBotOn.adminFinanceMenu(ctx);
+            await _index_2.adminFinanceBotOn.adminFinanceMenu(ctx);
         }
     }
     else {
