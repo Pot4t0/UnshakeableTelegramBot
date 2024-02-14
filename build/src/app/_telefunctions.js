@@ -14,16 +14,22 @@ const removeInLineButton = async (ctx) => {
 exports.removeInLineButton = removeInLineButton;
 // Adds Loading Message to indicate bot is processing (for long running functions)
 const loadFunction = async (ctx, next) => {
-    var _a, _b, _c;
+    var _a, _b;
     const chatid = (_a = ctx.chat) === null || _a === void 0 ? void 0 : _a.id;
-    const isBot = ((_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.type) === 'group' || ((_c = ctx.chat) === null || _c === void 0 ? void 0 : _c.type) === 'supergroup';
-    if (isBot) {
+    const isGrp = ((_b = ctx.chat) === null || _b === void 0 ? void 0 : _b.type) !== 'private';
+    if (isGrp) {
         return;
     }
     if (chatid) {
-        const loading = await ctx.reply('Processing... Please wait...');
-        await next();
-        await ctx.api.deleteMessage(chatid, loading.message_id);
+        try {
+            const loading = await ctx.reply('Processing... Please wait...');
+            await next();
+            await ctx.api.deleteMessage(chatid, loading.message_id);
+        }
+        catch (err) {
+            await ctx.reply('Error! Please try again!');
+            console.log(err);
+        }
     }
     else {
         await ctx.reply('Error! Please try again!');
