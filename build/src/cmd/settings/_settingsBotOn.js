@@ -22,7 +22,13 @@ const settingsAnnouncements_Send = async (ctx) => {
         await Promise.all(sendUsers.map(async (n) => {
             const sentMsg = await _index_1.dbMessaging.sendMessageUser(n, announcement, ctx);
             try {
-                await ctx.api.pinChatMessage(sentMsg.chat.id, sentMsg.message_id);
+                if (sentMsg) {
+                    await ctx.api.pinChatMessage(sentMsg.chat.id, sentMsg.message_id);
+                }
+                else {
+                    await ctx.reply('Error in sending message');
+                    console.log('Error in sending message');
+                }
             }
             catch (err) {
                 console.log(err);

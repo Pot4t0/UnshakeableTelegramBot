@@ -236,6 +236,6 @@ const sendSpecificReminder_Execution = async (ctx) => {
         console.log(prefix + reminder + `(${teleUser})`);
         await ctx.reply(`Reminder sent to ${ctx.session.reminderUser}`);
     }
-    ctx.session = await (0, _SessionData_1.initial)();
+    ctx.session = (0, _SessionData_1.initial)();
 };
 exports.sendSpecificReminder_Execution = sendSpecificReminder_Execution;

@@ -41,7 +41,7 @@ const reminderSystem = async (ctx) => {
 const reminder_Menu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const title = ctx.update.callback_query.data.substring('sendWelfareReminder-'.length);
-    ctx.session.name = await title;
+    ctx.session.name = title;
     await _index_1.reminder.reminderMenu(ctx, 'Welfare');
 };
 //Send Not In Reminder Messaage

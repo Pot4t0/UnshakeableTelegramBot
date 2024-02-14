@@ -46,7 +46,7 @@ export const WeAttendanceLogReason = async (
             },
           ],
         ];
-        await ctx.reply(`Are you coming for ${meal.toLowerCase()}?`, {
+        await ctx.reply(`Are you coming for ${meal}?`, {
           reply_markup: { inline_keyboard: inlineKeyboard },
         });
       } else {
@@ -139,7 +139,7 @@ export const SpecialAttendanceLogReason = async (
             },
           ],
         ];
-        await ctx.reply(`Are you coming for ${meal.toLowerCase()}?`, {
+        await ctx.reply(`Are you coming for ${meal}?`, {
           reply_markup: { inline_keyboard: inlineKeyboard },
         });
       } else {

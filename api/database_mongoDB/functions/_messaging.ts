@@ -8,11 +8,16 @@ export const sendMessageUser = async (
   msg: string,
   ctx: Context
 ) => {
-  const name = await Database.getMongoRepository(Names).find({
+  const name = await Database.getMongoRepository(Names).findOneBy({
     teleUser: user,
   });
-  const message = await ctx.api.sendMessage(name[0].chat, msg, {
-    parse_mode: 'HTML',
-  });
-  return message;
+  if (name) {
+    const message = await ctx.api.sendMessage(name.chat, msg, {
+      parse_mode: 'HTML',
+    });
+    return message;
+  } else {
+    await ctx.reply(`Error in sending message to ${user}!`);
+    console.log(`Error in sending message to ${user}!`);
+  }
 };

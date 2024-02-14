@@ -16,6 +16,10 @@ export const removeInLineButton = async (
 // Adds Loading Message to indicate bot is processing (for long running functions)
 export const loadFunction = async (ctx: BotContext, next: NextFunction) => {
   const chatid = ctx.chat?.id;
+  const isBot = ctx.chat?.type === 'group' || ctx.chat?.type === 'supergroup';
+  if (isBot) {
+    return;
+  }
   if (chatid) {
     const loading = await ctx.reply('Processing... Please wait...');
     await next();

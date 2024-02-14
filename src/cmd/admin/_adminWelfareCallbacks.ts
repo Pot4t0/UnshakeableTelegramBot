@@ -55,7 +55,7 @@ const reminder_Menu = async (ctx: CallbackQueryContext<BotContext>) => {
   const title = ctx.update.callback_query.data.substring(
     'sendWelfareReminder-'.length
   );
-  ctx.session.name = await title;
+  ctx.session.name = title;
   await reminder.reminderMenu(ctx, 'Welfare');
 };
 //Send Not In Reminder Messaage
