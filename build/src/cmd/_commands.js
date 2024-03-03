@@ -300,12 +300,12 @@ const adminbday = async (ctx) => {
                 callback_data: 'manageBirthdayEvent',
             },
         ],
-        [
-            {
-                text: 'Manage Birthday Team',
-                callback_data: 'manageBirthdayTeam',
-            },
-        ],
+        // [
+        //   {
+        //     text: 'Manage Birthday Team',
+        //     callback_data: 'manageBirthdayTeam',
+        //   },
+        // ],
         [
             {
                 text: 'See Wishes',

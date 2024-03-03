@@ -83,13 +83,24 @@ const eventView = async (
   } else {
     eventTeam = 'Bday';
   }
+  const currentUser = ctx.callbackQuery.from.username;
   const allEvents = await Database.getMongoRepository(Events).find({
     eventTeam: eventTeam,
   });
-  const eventListed = allEvents.map(
-    (n) =>
-      `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`
-  );
+  const currentUserName = await Database.getRepository(Names).findOneBy({
+    teleUser: currentUser,
+  });
+  if (!currentUserName) {
+    await ctx.reply(
+      `You are not in the database. Please contact the admin to add you in the database`
+    );
+    return;
+  }
+  const eventListed = allEvents.map((n) => {
+    if (currentUserName.nameText != n.notAllowedUser) {
+      return `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`;
+    }
+  });
 
   await ctx.reply(eventListed.join('\n\n'));
 };

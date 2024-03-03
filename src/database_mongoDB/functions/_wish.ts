@@ -42,6 +42,19 @@ const wishView_EventMenu = async (
   });
   const wishNumber = await Database.getMongoRepository(Wishes);
   const totalNames = await Database.getMongoRepository(Names).count();
+  const currentUser = ctx.callbackQuery.from.username;
+  const currentUserName = await Database.getRepository(Names).findOneBy({
+    teleUser: currentUser,
+  });
+  if (currentUserName == null) {
+    await ctx.reply('You are not registered');
+    return;
+  }
+  eventObject.map(async (e) => {
+    if (e.notAllowedUser.includes(currentUserName.nameText)) {
+      eventObject.splice(eventObject.indexOf(e), 1);
+    }
+  });
   const inlineKeyboard = new InlineKeyboard(
     await Promise.all(
       eventObject.map(async (e) => [
