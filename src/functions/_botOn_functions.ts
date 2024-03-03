@@ -219,14 +219,20 @@ const userSharedListener = async (ctx: Filter<BotContext, ':user_shared'>) => {
 
 const chatSharedListener = async (ctx: Filter<BotContext, ':chat_shared'>) => {
   const request_id = ctx.update.message?.chat_shared.request_id;
+  if (!request_id) {
+    console.log('Error! No request_id found in chat_shared message');
+    return await ctx.reply('Sorry I do not understand. Please try again!');
+  }
   switch (request_id) {
     case 1:
-      chat.changeChatExecution(ctx);
+      await chat.changeChatExecution(ctx);
       break;
     default:
       const chatid = ctx.chat.id.toString();
-      if (chatid != process.env.LG_CHATID)
-        await ctx.reply('Sorry I do not understand. Please try again!');
+      if (chatid != process.env.LG_CHATID) {
+        console.log('Error! LG chat not found');
+        return await ctx.reply('Sorry I do not understand. Please try again!');
+      }
   }
 };
 
