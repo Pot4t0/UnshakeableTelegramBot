@@ -161,10 +161,10 @@ const addEvent_CreateEvent = async (ctx, notAllowedUser) => {
 };
 const delEvent = async (bot, team) => {
     let eventName;
-    bot.callbackQuery(`del${team}Events`, (ctx) => delEvent_EventMenu(ctx, team));
-    bot.callbackQuery(/^delEventName/g, (ctx) => {
+    bot.callbackQuery(`del${team}Events`, async (ctx) => await delEvent_EventMenu(ctx, team));
+    bot.callbackQuery(/^delEventName/g, async (ctx) => {
         eventName = ctx.update.callback_query.data.substring('delEventName-'.length);
-        delEvent_CfmMsg(ctx, eventName);
+        await delEvent_CfmMsg(ctx, eventName);
     });
     bot.callbackQuery(/^cfmDelEvent-/g, (ctx) => delEvent_PerformDeletion(ctx, ctx.update.callback_query.data.substring('cfmDelEvent-'.length), eventName));
 };
