@@ -86,7 +86,7 @@ const reminderSendAllNotIn_Execution = async (ctx) => {
         (0, exports.reminderSendAllNotIn_Execution)(ctx);
     }
     const team = ctx.session.team;
-    const prefix = `<b>${team} Team:</b>\n`;
+    const prefix = `<b>${team}:</b>\n`;
     switch (team) {
         case 'Attendance':
             const totalNames = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
