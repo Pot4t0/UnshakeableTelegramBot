@@ -16,8 +16,8 @@ export const wishView = async (
   team: 'Welfare' | 'Birthday'
 ) => {
   let eventName: string;
-  bot.callbackQuery(`${team}WishView`, loadFunction, (ctx) => {
-    wishView_EventMenu(ctx, team);
+  bot.callbackQuery(`${team}WishView`, loadFunction, async (ctx) => {
+    await wishView_EventMenu(ctx, team);
   });
   bot.callbackQuery(/^seeWish-/g, loadFunction, async (ctx) => {
     eventName = ctx.update.callback_query.data.substring('seeWish-'.length);

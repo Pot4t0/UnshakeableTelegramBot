@@ -13,8 +13,8 @@ const _telefunctions_1 = require("../../app/_telefunctions");
 // CallbackQuery: see{team}Wish-{eventName}
 const wishView = async (bot, team) => {
     let eventName;
-    bot.callbackQuery(`${team}WishView`, _telefunctions_1.loadFunction, (ctx) => {
-        wishView_EventMenu(ctx, team);
+    bot.callbackQuery(`${team}WishView`, _telefunctions_1.loadFunction, async (ctx) => {
+        await wishView_EventMenu(ctx, team);
     });
     bot.callbackQuery(/^seeWish-/g, _telefunctions_1.loadFunction, async (ctx) => {
         eventName = ctx.update.callback_query.data.substring('seeWish-'.length);
