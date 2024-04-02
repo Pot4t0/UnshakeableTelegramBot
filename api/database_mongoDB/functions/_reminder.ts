@@ -110,7 +110,7 @@ export const reminderSendAllNotIn_Execution = async (
     reminderSendAllNotIn_Execution(ctx);
   }
   const team = ctx.session.team;
-  const prefix = `<b>${team} Team:</b>\n`;
+  const prefix = `<b>${team}:</b>\n`;
 
   switch (team) {
     case 'Attendance':

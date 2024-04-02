@@ -16,6 +16,8 @@ import { gsheet } from '../../../functions/_initialise';
 
 // Admin Attendance Callbacks
 export const adminAttendance = (bot: Bot<BotContext>) => {
+  let weMsg = '';
+  let lgMsg = '';
   // Add Attendance Sheet Menu
   bot.callbackQuery('addAttendanceSheet', loadFunction, addAttendanceSheet);
   // Add LG Event
@@ -81,10 +83,14 @@ export const adminAttendance = (bot: Bot<BotContext>) => {
     loadFunction,
     sendAttendanceToLGChat_EventMenu
   );
-  bot.callbackQuery(
-    /^sendAttendanceToLGChat/g,
-    sendAttendanceToLGChat_Execution
-  );
+  bot.callbackQuery(/^sendAttendanceToLGChat/g, loadFunction, async (ctx) => {
+    const msgArray = await sendAttendanceToLGChat_Execution(ctx);
+    weMsg = msgArray[0];
+    lgMsg = msgArray[1];
+  });
+  bot.callbackQuery(/^sendAttendance-WELGEvent-/g, loadFunction, (ctx) => {
+    sendAttendanceToLGChat_WELGEvent(ctx, weMsg, lgMsg);
+  });
   // Archive Attendance Sheet
   bot.callbackQuery('archiveAttendance', loadFunction, archiveAttendance_Menu);
   bot.callbackQuery(
@@ -404,6 +410,7 @@ const sendAttendanceToLGChat_EventMenu = async (
     reply_markup: inlineKeyboard,
   });
 };
+
 //Send To LG Chat Execution
 const sendAttendanceToLGChat_Execution = async (
   ctx: CallbackQueryContext<BotContext>
@@ -424,7 +431,10 @@ const sendAttendanceToLGChat_Execution = async (
   const checkSpecialCell = sheet.getCellByA1('B2');
   const mealCheckCell = sheet.getCellByA1('F3');
   let msg = `Unshakeable Attendance`;
+  let weMsg = 'Unshakeable Attendance - WE';
+  let lgMsg = 'Unshakeable Attendance - LG';
   if (checkSpecialCell.value == 'Special Event') {
+    // Special Event
     let cmgMsg = `\n\n${weCheckCell.value} (${weDateCell.value}):\n\nComing 🥳\n`;
     let notCmgMsg = `\n\nNot Coming (${weCheckCell.value}) 😢\n`;
     let nvrSubmitMsg = '\n\nYet to submit ❗️\n';
@@ -461,6 +471,7 @@ const sendAttendanceToLGChat_Execution = async (
     );
     msg += cmgMsg + notCmgMsg + mealCmgMsg + mealNotCmgMsg + nvrSubmitMsg;
   } else {
+    // WE Sheet
     let lgComingMsg = `\n\n<b>${lgCheckCell.value} (${lgDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
     let lgNotCmgMsg = '\n\n<b>Not Coming (LG) 😢</b>\n';
     let weCmgMsg = `\n\n<b>${weCheckCell.value} (${weDateCell.value}):</b>\n\n<b>Coming 🥳</b>\n`;
@@ -480,12 +491,14 @@ const sendAttendanceToLGChat_Execution = async (
         const dinnerCell = sheet.getCellByA1(`I${i}`);
         const dinnerReasonCell = sheet.getCellByA1(`J${i}`);
         if (lgCheckCell.value != 'No LG') {
+          // WE + LG
           if (lgCell.value == 'Y') {
             lgComingMsg += `\n${attendName.value}`;
           } else if (lgCell.value == 'N') {
             lgNotCmgMsg += `\n${attendName.value} - ${lgReasonCell.value}`;
           }
         } else {
+          // WE only
           lgComingMsg = '';
           lgNotCmgMsg = '';
         }
@@ -513,13 +526,74 @@ const sendAttendanceToLGChat_Execution = async (
       dinnerCmgMsg +
       dinnerNotCmgMsg +
       nvrSubmitMsg;
+    weMsg +=
+      weCmgMsg + weNotCmgMsg + dinnerCmgMsg + dinnerNotCmgMsg + nvrSubmitMsg;
+    lgMsg += lgComingMsg + lgNotCmgMsg + nvrSubmitMsg;
   }
-  await ctx.api.sendMessage(process.env.LG_CHATID || '', msg, {
-    parse_mode: 'HTML',
-  });
-  console.log(msg);
-  await ctx.reply(`Sent to LG Chat!`);
+  if (
+    checkSpecialCell.value == 'Special Event' ||
+    lgCheckCell.value == 'No LG'
+  ) {
+    await ctx.api.sendMessage(process.env.LG_CHATID || '', msg, {
+      parse_mode: 'HTML',
+    });
+    console.log(msg);
+    await ctx.reply(`Sent to LG Chat!`);
+  } else {
+    const inline_keyboard = new InlineKeyboard([
+      [
+        {
+          text: 'WE',
+          callback_data: `sendAttendance-WELGEvent-WE`,
+        },
+      ],
+      [
+        {
+          text: 'LG',
+          callback_data: `sendAttendance-WELGEvent-LG`,
+        },
+      ],
+    ]);
+    await ctx.reply(`Do you want to send WE or LG to LG Chat?`, {
+      reply_markup: inline_keyboard,
+    });
+  }
   unshakeableAttendanceSpreadsheet.resetLocalCache();
+  return [weMsg, lgMsg];
+};
+
+const sendAttendanceToLGChat_WELGEvent = async (
+  ctx: CallbackQueryContext<BotContext>,
+  weMsg: string,
+  lgMsg: string
+) => {
+  await removeInLineButton(ctx);
+  if (!weMsg || !lgMsg || weMsg == '' || lgMsg == '') {
+    await ctx.reply(`Error in sending to LG Chat!`);
+    return;
+  }
+  const msgType = ctx.update.callback_query.data.substring(
+    'sendAttendance-WELGEvent-'.length
+  );
+  switch (msgType) {
+    case 'WE':
+      await ctx.api.sendMessage(process.env.LG_CHATID || '', weMsg, {
+        parse_mode: 'HTML',
+      });
+      console.log(weMsg);
+      await ctx.reply(`Sent to LG Chat!`);
+      break;
+    case 'LG':
+      await ctx.api.sendMessage(process.env.LG_CHATID || '', lgMsg, {
+        parse_mode: 'HTML',
+      });
+      console.log(lgMsg);
+      await ctx.reply(`Sent to LG Chat!`);
+      break;
+    default:
+      await ctx.reply(`Error in sending to LG Chat!`);
+      break;
+  }
 };
 
 // Archive Attendance Sheet
