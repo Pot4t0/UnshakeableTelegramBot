@@ -177,7 +177,7 @@ __decorate([
 ], Claims.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Claims.prototype, "claimid", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -195,6 +195,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Claims.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Claims.prototype, "msg", void 0);
 exports.Claims = Claims = __decorate([
     (0, typeorm_1.Entity)('claims')
 ], Claims);

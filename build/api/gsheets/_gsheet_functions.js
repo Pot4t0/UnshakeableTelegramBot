@@ -35,22 +35,23 @@ const changeSheet = async (sheetName, sheetId) => {
 };
 exports.changeSheet = changeSheet;
 const searchRowNo = async (search, sheet, col, min, max) => {
-    let left = min;
-    let right = max - 1;
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        const cell = sheet.getCellByA1(`${col}${mid}`);
-        const cellValue = cell.value;
-        if (cellValue === search) {
-            return mid;
-        }
-        else if (cellValue < search) {
-            left = mid + 1;
+    try {
+        const indices = Array.from({ length: max - min }, (_, i) => min + i);
+        const results = indices.map((index) => {
+            const cell = sheet.getCellByA1(`${col}${index}`);
+            const cellValue = cell.value;
+            return { index, value: cellValue };
+        });
+        const foundItem = results.find((item) => item.value === search);
+        if (foundItem) {
+            return foundItem.index;
         }
         else {
-            right = mid - 1;
+            return -1;
         }
     }
-    return -1;
+    catch (_a) {
+        return -1;
+    }
 };
 exports.searchRowNo = searchRowNo;

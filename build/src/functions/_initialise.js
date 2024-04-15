@@ -9,6 +9,7 @@ const conversations_1 = require("@grammyjs/conversations");
 const _db_init_1 = require("../database_mongoDB/_db-init");
 const _gsheet_init_1 = require("../gsheets/_gsheet_init");
 const google_spreadsheet_1 = require("google-spreadsheet");
+const files_1 = require("@grammyjs/files");
 //Initilaise Telegram Bot
 const init_bot = () => {
     (0, _db_init_1.init)();
@@ -17,6 +18,7 @@ const init_bot = () => {
     if (!token)
         throw new Error('BOT_TOKEN is unset');
     bot.use((0, grammy_1.session)({ initial: _SessionData_1.initial }));
+    bot.api.config.use((0, files_1.hydrateFiles)(token));
     bot.use((0, conversations_1.conversations)());
     return bot;
 };

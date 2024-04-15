@@ -9,6 +9,7 @@ function initial() {
         attendance: undefined,
         eventName: undefined,
         eventDate: undefined,
+        claimId: undefined,
         name: undefined,
         wish: undefined,
         reminderUser: undefined,

@@ -7,6 +7,7 @@ export interface SessionData {
   financeAccess?: boolean;
   chatId?: number;
   amount?: string;
+  claimId?: string;
   team?:
     | 'Attendance'
     | 'Welfare'
@@ -42,6 +43,7 @@ export function initial(): SessionData {
     attendance: undefined,
     eventName: undefined,
     eventDate: undefined,
+    claimId: undefined,
     name: undefined,
     wish: undefined,
     reminderUser: undefined,

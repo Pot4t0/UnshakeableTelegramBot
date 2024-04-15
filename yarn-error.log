@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /Users/whysleep/.cache/node/corepack/yarn/1.22.19/bin/yarn.js run
+  /usr/local/bin/node /Users/whysleep/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add @grammy/types
 
 PATH: 
   /opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/opt/local/bin:/opt/local/sbin
@@ -14,12 +14,17 @@ Platform:
   darwin arm64
 
 Trace: 
-  Invariant Violation: Action must exists
-      at invariant (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:2318:15)
-      at Object.<anonymous> (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:61719:9)
-      at Generator.next (<anonymous>)
-      at step (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:310:30)
-      at /Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:321:13
+  Error: https://registry.yarnpkg.com/@grammy%2ftypes: Not found
+      at params.callback [as _callback] (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:66145:18)
+      at self.callback (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:140890:22)
+      at Request.emit (node:events:513:28)
+      at Request.<anonymous> (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:141862:10)
+      at Request.emit (node:events:513:28)
+      at IncomingMessage.<anonymous> (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:627:28)
+      at IncomingMessage.emit (node:events:525:35)
+      at endReadableNT (node:internal/streams/readable:1359:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
 
 npm manifest: 
   {

@@ -4,6 +4,8 @@ import { initial } from '../../../models/_SessionData';
 import { DateTime } from 'luxon';
 import { Claims } from '../../../database_mongoDB/Entity/_tableEntity';
 import { Database } from '../../../database_mongoDB/_db-init';
+import { randomUUID } from 'crypto';
+import { gsheet } from '../../../functions/_initialise';
 
 // /sendclaim BotOn Functions
 //Used for receiving claim amount
@@ -43,7 +45,7 @@ export const logClaimReason = async (ctx: Filter<BotContext, 'message'>) => {
 //BotOnPhoto = 1
 export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
   ctx.session.botOnPhoto = undefined;
-  const photo = ctx.update.message.photo;
+  const photo = await ctx.getFile();
   if (photo == null) {
     submitClaim(ctx);
   } else {
@@ -56,37 +58,41 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
     const status = 'Pending Approval 🟠';
     const formattedDate = `${date.day} ${date.monthShort} ${date.year}`;
     const claimMsg = `Claim submitted by\n${user}\n${formattedDate}\n\n<b>${status}</b>\n\nAmount: $${amount}\nDescription: ${reason}`;
+    const financeSheet = await gsheet('finance');
+    const claimsSheet = financeSheet.sheetsByTitle['Claims'];
+
     if (claimChatId && user && amount && reason) {
-      const claim = await ctx.api.sendPhoto(
-        claimChatId,
-        photo[photo.length - 1].file_id,
-        {
-          caption: claimMsg,
-          parse_mode: 'HTML',
-        }
-      );
-      if (claim) {
-        const claimId = claim.message_id;
-        const claimDoc = new Claims();
-        claimDoc.claimid = claimId;
-        claimDoc.amount = parseInt(amount);
-        claimDoc.name = user;
-        claimDoc.status = status;
-        claimDoc.description = reason;
-        claimDoc.date = formattedDate;
-        const sendDB = await Database.getMongoRepository(Claims).save(claimDoc);
-        if (sendDB) {
-          await ctx.reply('Claim submitted! Thank you!');
-        } else {
-          await ctx.reply('Error! Please try again!');
-          ctx.api.deleteMessage(claimChatId, claimId);
-        }
+      const claimId = randomUUID();
+      const claimDoc = new Claims();
+      claimDoc.claimid = claimId;
+      claimDoc.amount = parseInt(amount);
+      claimDoc.name = user;
+      claimDoc.status = status;
+      claimDoc.description = reason;
+      claimDoc.date = formattedDate;
+      claimDoc.msg = claimMsg;
+
+      const newRow = await claimsSheet.addRow({
+        'Claim ID': claimId,
+        Date: formattedDate,
+        Amount: amount,
+        Description: reason,
+        Status: status,
+        Claimee: user,
+      });
+      const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`;
+      newRow.set('Images', photoFormula);
+      await newRow.save();
+      const sendDB = await Database.getMongoRepository(Claims).save(claimDoc);
+      if (sendDB && newRow) {
+        await ctx.reply('Claim submitted! Thank you!');
       } else {
         await ctx.reply('Error! Please try again!');
       }
     } else {
       await ctx.reply('Error! Please try again!');
     }
+    financeSheet.resetLocalCache();
     ctx.session = initial();
   }
 };

@@ -55,21 +55,23 @@ export const searchRowNo = async (
   min: number,
   max: number
 ) => {
-  let left = min;
-  let right = max - 1;
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    const cell = sheet.getCellByA1(`${col}${mid}`);
-    const cellValue = cell.value as string;
+  try {
+    const indices = Array.from({ length: max - min }, (_, i) => min + i);
 
-    if (cellValue === search) {
-      return mid;
-    } else if (cellValue < search) {
-      left = mid + 1;
+    const results = indices.map((index) => {
+      const cell = sheet.getCellByA1(`${col}${index}`);
+      const cellValue = cell.value as string;
+      return { index, value: cellValue };
+    });
+
+    const foundItem = results.find((item) => item.value === search);
+
+    if (foundItem) {
+      return foundItem.index;
     } else {
-      right = mid - 1;
+      return -1;
     }
+  } catch {
+    return -1;
   }
-
-  return -1;
 };

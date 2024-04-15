@@ -98,7 +98,7 @@ export class Claims {
   @Column()
   name: string;
   @Column()
-  claimid: number;
+  claimid: string;
   @Column()
   date: string;
   @Column()
@@ -107,6 +107,8 @@ export class Claims {
   amount: number;
   @Column()
   description: string;
+  @Column()
+  msg: string;
 }
 
 // attendance collection

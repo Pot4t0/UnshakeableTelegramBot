@@ -7,6 +7,7 @@ import { gsheet } from '../../../functions/_initialise';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 import { searchRowNo } from '../../../gsheets/_gsheet_functions';
+import { GoogleSpreadsheetRow } from 'google-spreadsheet';
 
 //Main Finance Menu
 //Used in _botOn_functions.ts in botOntype = 12
@@ -199,7 +200,7 @@ export const completedClaimAmountNo = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
   const amount = ctx.message.text;
-  const claimid = ctx.session.chatId;
+  const claimid = ctx.session.claimId;
   const witness = ctx.session.reminderUser;
   const user = ctx.message.from.username;
   if (amount == null || claimid == null || witness == null || user == null) {
@@ -218,10 +219,42 @@ export const completedClaimAmountNo = async (
     const financeGSheet = await gsheet('finance');
     const reimbursementSheet = financeGSheet.sheetsByTitle['Reimbursement'];
     const allRecordSheet = financeGSheet.sheetsByTitle['All Records'];
+    const claimsSheet = financeGSheet.sheetsByTitle['Claims'];
+    await claimsSheet.loadCells();
+    const claimRowNo = await searchRowNo(
+      claimid,
+      claimsSheet,
+      'A',
+      2,
+      claimsSheet.rowCount
+    );
+
+    const claimRows = await claimsSheet.getRows({});
+    let row: GoogleSpreadsheetRow | null = null;
+    if (claimRowNo != -1) {
+      row = claimRows[claimRowNo - 2];
+    } else {
+      await ctx.reply('Invalid Claim!');
+      return;
+    }
     const uuid = uuidv4();
     const dateTime = DateTime.now()
       .setZone('Asia/Singapore')
       .toFormat('dd/mm/yyyy hh:mm:ss');
+    const claimMsg = `Claim submitted by\n${claim.name}\n${claim.date}\nClaim ID: ${claim.claimid}\n\n<b>Completed ✅</b>\n\nAmount: $${claim.amount}\nDescription: ${claim.description}`;
+    claim.msg = claimMsg;
+    const savedDBEntry = await Database.getMongoRepository(Claims).save(claim);
+    if (!savedDBEntry) {
+      await ctx.reply('Something went wrong! Pls try again!');
+      return;
+    }
+    if (row) {
+      row.set('Status', 'Completed ✅');
+      row.save();
+    } else {
+      await ctx.reply('Something went wrong! Pls try again!');
+      return;
+    }
     await reimbursementSheet.addRow({
       'Transaction ID': uuid,
       'Claim ID': claimid,
@@ -230,6 +263,7 @@ export const completedClaimAmountNo = async (
       Amount: -amount,
       Description: claim.description,
       'Approved by': userDoc.nameText,
+      Claimee: claim.name,
       Witness: witness,
     });
     await allRecordSheet.addRow({
@@ -240,13 +274,10 @@ export const completedClaimAmountNo = async (
       Amount: -amount,
       Description: claim.description,
       'Approved by': userDoc.nameText,
+      'Claimed by': claim.name,
       Witness: witness,
     });
 
-    await Database.getMongoRepository(Claims).deleteOne({
-      claimid: claimid,
-    });
-    await ctx.api.deleteMessage(process.env.LG_FINANCE_CLAIM || '', claimid);
     await ctx.reply('Claim Completed');
   }
 };
