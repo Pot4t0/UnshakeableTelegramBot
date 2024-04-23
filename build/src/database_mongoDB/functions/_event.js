@@ -54,6 +54,11 @@ const eventManageMenu = async (ctx, team) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Displays all events for a specific team.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const eventView = async (ctx, team) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
@@ -74,6 +79,11 @@ const eventView = async (ctx, team) => {
         await ctx.reply(`You are not in the database. Please contact the admin to add you in the database`);
         return;
     }
+    /**
+     * The list of events for the specified team.
+     * @type {string[]}
+     * @returns The list of events for the specified team.
+     */
     const eventListed = allEvents.map((n) => {
         if (currentUserName.nameText != n.notAllowedUser) {
             return `${n.eventName}\n\nDeadline: ${n.eventDate}\nNot Allowed User: ${n.notAllowedUser}`;
@@ -81,10 +91,24 @@ const eventView = async (ctx, team) => {
     });
     await ctx.reply(eventListed.join('\n\n'));
 };
+/*
+  The following functions are used to add, delete, and edit events for the specified team.
+  These functions are used in the eventManagement function.
+*/
+/**
+ * Adds an event for the specified team.
+ * @param bot The Bot instance.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const addEvent = async (bot, team) => {
     bot.callbackQuery(`add${team}Events`, (ctx) => addEvent_Init(ctx, team));
     bot.callbackQuery(/^createEvent-/g, (ctx) => addEvent_CreateEvent(ctx, ctx.update.callback_query.data.substring(`createEvent-`.length)));
 };
+/**
+ * Initializes the event creation process.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const addEvent_Init = async (ctx, team) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.name = team;
@@ -95,7 +119,12 @@ const addEvent_Init = async (ctx, team) => {
     });
     ctx.session.botOnType = 4;
 };
-//Used in _botOn_functions.ts in botOntype = 4
+/**
+ * Creates an event for the specified team.
+ * Used in _botOn_functions.ts in botOntype = 4
+ * @param ctx The callback query context.
+ * @param notAllowedUser The user to exclude from the event.
+ */
 const addEvent_ReceiveEventName = async (ctx) => {
     ctx.session.eventName = ctx.message.text;
     if (ctx.session.eventName == null) {
@@ -107,7 +136,12 @@ const addEvent_ReceiveEventName = async (ctx) => {
     ctx.session.botOnType = 5;
 };
 exports.addEvent_ReceiveEventName = addEvent_ReceiveEventName;
-//Used in _botOn_functions.ts in botOntype = 5
+/**
+ * Creates an event for the specified team.
+ * Used in _botOn_functions.ts in botOntype = 5
+ * @param ctx The callback query context.
+ * @param notAllowedUser The user to exclude from the event.
+ */
 const addEvent_ReceiveEventDate = async (ctx) => {
     ctx.session.eventDate = await ctx.message.text;
     if (ctx.session.eventDate == null) {
@@ -134,6 +168,11 @@ const addEvent_ReceiveEventDate = async (ctx) => {
     });
 };
 exports.addEvent_ReceiveEventDate = addEvent_ReceiveEventDate;
+/**
+ * Creates an event for the specified team.
+ * @param ctx The callback query context.
+ * @param notAllowedUser The user to exclude from the event.
+ */
 const addEvent_CreateEvent = async (ctx, notAllowedUser) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const team = ctx.session.name;
@@ -159,6 +198,11 @@ const addEvent_CreateEvent = async (ctx, notAllowedUser) => {
     }
     ctx.session = (0, _SessionData_1.initial)();
 };
+/**
+ * Deletes an event for the specified team.
+ * @param bot The Bot instance.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const delEvent = async (bot, team) => {
     let eventName;
     bot.callbackQuery(`del${team}Events`, async (ctx) => await delEvent_EventMenu(ctx, team));
@@ -168,6 +212,15 @@ const delEvent = async (bot, team) => {
     });
     bot.callbackQuery(/^cfmDelEvent-/g, (ctx) => delEvent_PerformDeletion(ctx, ctx.update.callback_query.data.substring('cfmDelEvent-'.length), eventName));
 };
+/*
+  The following functions are used to delete an event for the specified team.
+  These functions are used in the delEvent function.
+*/
+/**
+ * Displays the event menu for deletion.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const delEvent_EventMenu = async (ctx, team) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
@@ -190,6 +243,12 @@ const delEvent_EventMenu = async (ctx, team) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Displays a confirmation message for the deletion of an event.
+ * @param ctx The callback query context.
+ * @param eventName The name of the event to delete.
+ * @returns The name of the event to delete.
+ */
 const delEvent_CfmMsg = async (ctx, eventName) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -211,6 +270,12 @@ const delEvent_CfmMsg = async (ctx, eventName) => {
     });
     return eventName;
 };
+/**
+ * Performs the deletion of an event.
+ * @param ctx The callback query context.
+ * @param choice The choice to delete the event.
+ * @param eventName The name of the event to delete.
+ */
 const delEvent_PerformDeletion = async (ctx, choice, eventName) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     if (eventName) {
@@ -236,6 +301,11 @@ const delEvent_PerformDeletion = async (ctx, choice, eventName) => {
     }
     ctx.session = (0, _SessionData_1.initial)();
 };
+/**
+ * Edits an event for the specified team.
+ * @param bot The Bot instance.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const editEvent = async (bot, team) => {
     let eventName;
     bot.callbackQuery(`edit${team}Events`, (ctx) => editEvent_Init(ctx, team));
@@ -248,6 +318,15 @@ const editEvent = async (bot, team) => {
     bot.callbackQuery('editNotAllowedUser', (ctx) => editNotAllowedUser(ctx, eventName));
     bot.callbackQuery(/^editNotAllowedUserSelect-/g, (ctx) => editNotAllowedUser_Execution(ctx, eventName));
 };
+/*
+  The following functions are used to edit an event for the specified team.
+  These functions are used in the editEvent function.
+*/
+/**
+ * Initializes the event editing process.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const editEvent_Init = async (ctx, team) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     let eventTeam;
@@ -270,6 +349,12 @@ const editEvent_Init = async (ctx, team) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Edits the menu for an event.
+ * @param ctx The callback query context.
+ * @param eventName The name of the event to edit.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const editEvent_EditMenu = async (ctx, eventName, team) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const getEvents = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
@@ -306,6 +391,11 @@ const editEvent_EditMenu = async (ctx, eventName, team) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Edits the name of an event.
+ * @param ctx The callback query context.
+ * @param eventName The name of the event to edit.
+ */
 const editEventName = async (ctx, eventName) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply(`The current event name is <b>${eventName}</b>\n What would like to change it to?`, {
@@ -314,7 +404,12 @@ const editEventName = async (ctx, eventName) => {
     });
     ctx.session.botOnType = 6;
 };
-//Used in _botOn_functions.ts in botOntype = 6
+/**
+ * Edits the name of an event.
+ * Used in _botOn_functions.ts in botOntype = 6
+ * @param ctx The callback query context.
+ * @param eventName The name of the event to edit.
+ */
 const editEventName_Execution = async (ctx) => {
     const newEventName = await ctx.message.text;
     if (newEventName == null) {
@@ -325,6 +420,10 @@ const editEventName_Execution = async (ctx) => {
     ctx.session = (0, _SessionData_1.initial)();
 };
 exports.editEventName_Execution = editEventName_Execution;
+/**
+ * Edits the date of an event.
+ * @param ctx The callback query context.
+ */
 const editEventDate = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply('Change event date to: (dd/mm/yyyy) :', {
@@ -343,6 +442,11 @@ const editEventDate_Execution = async (ctx) => {
     ctx.session = (0, _SessionData_1.initial)();
 };
 exports.editEventDate_Execution = editEventDate_Execution;
+/**
+ * Edits the user excluded from an event.
+ * @param ctx The callback query context.
+ * @param eventName The name of the event to edit.
+ */
 const editNotAllowedUser = async (ctx, eventName) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
@@ -365,6 +469,11 @@ const editNotAllowedUser = async (ctx, eventName) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Executes the exclusion of a user from an event.
+ * @param ctx The callback query context.
+ * @param eventName The name of the event to edit.
+ */
 const editNotAllowedUser_Execution = async (ctx, eventName) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     let selectedName = ctx.update.callback_query.data.substring('editNotAllowedUserSelect-'.length);

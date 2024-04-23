@@ -6,32 +6,36 @@ import { admin } from '../cmd/admin/_index'; //Bot Admin Commands
 import { reminder } from '../database_mongoDB/functions/_index';
 import { send } from '../cmd/send/_index';
 
+/**
+ * Handles callback queries from the bot.
+ * @param {Bot<BotContext>} bot The bot instance.
+ */
 export const callbackQueryHandler = (bot: Bot<BotContext>) => {
   // Bot Commands Callback
   // /start Callbacks
-  start(bot);
+  start(bot); // Executes start command callbacks
   // /settings Callbacks
-  settings(bot);
+  settings(bot); // Executes settings command callbacks
   // /sendsf Callbacks
-  send.sf(bot);
+  send.sf(bot); // Executes sendsf command callbacks
   // /sendwish Callbacks
-  send.wish(bot);
+  send.wish(bot); // Executes sendwish command callbacks
   // /sendattendance Callbacks
-  send.attendance(bot);
+  send.attendance(bot); // Executes sendattendance command callbacks
   // /sendclaim Callbacks
-  send.claim(bot);
+  send.claim(bot); // Executes sendclaim command callbacks
   // /adminWelfare Callbacks
-  admin.welfare(bot);
+  admin.welfare(bot); // Executes adminWelfare command callbacks
   // /adminbday Callbacks
-  admin.bday(bot);
+  admin.bday(bot); // Executes adminbday command callbacks
   // /adminsf Callbacks
-  admin.sf(bot);
+  admin.sf(bot); // Executes adminsf command callbacks
   // /adminattendance Callbacks
-  admin.attendance(bot);
+  admin.attendance(bot); // Executes adminattendance command callbacks
   // /adminfinance Callbacks
-  admin.finance(bot);
+  admin.finance(bot); // Executes adminfinance command callbacks
 
   // DB Callbacks
   //Specific Person Reminder
-  reminder.specificReminder(bot);
+  reminder.specificReminder(bot); // Executes specificReminder callbacks
 };

@@ -11,8 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Claims = exports.Settings = exports.Attendance_mongo = exports.SF_mongo = exports.Wishes = exports.Names = exports.Events = void 0;
 const typeorm_1 = require("typeorm");
-//Declaring all collections within UnshakeableDB
-//events Collection
+/**
+ * Represents the 'events' collection in the database.
+ */
 let Events = class Events {
 };
 exports.Events = Events;
@@ -43,7 +44,9 @@ __decorate([
 exports.Events = Events = __decorate([
     (0, typeorm_1.Entity)('events')
 ], Events);
-// names collection
+/**
+ * Represents the 'names' collection in the database.
+ */
 let Names = class Names {
 };
 exports.Names = Names;
@@ -74,7 +77,9 @@ __decorate([
 exports.Names = Names = __decorate([
     (0, typeorm_1.Entity)('names')
 ], Names);
-// wishes Collaction
+/**
+ * Represents the 'wishes' collection in the database.
+ */
 let Wishes = class Wishes {
 };
 exports.Wishes = Wishes;
@@ -97,6 +102,9 @@ __decorate([
 exports.Wishes = Wishes = __decorate([
     (0, typeorm_1.Entity)('wishes')
 ], Wishes);
+/**
+ * Represents the 'sf' collection in the database.
+ */
 let SF_mongo = class SF_mongo {
 };
 exports.SF_mongo = SF_mongo;
@@ -123,6 +131,9 @@ __decorate([
 exports.SF_mongo = SF_mongo = __decorate([
     (0, typeorm_1.Entity)('sf')
 ], SF_mongo);
+/**
+ * Represents the 'attendance' collection in the database.
+ */
 let Attendance_mongo = class Attendance_mongo {
 };
 exports.Attendance_mongo = Attendance_mongo;
@@ -145,7 +156,9 @@ __decorate([
 exports.Attendance_mongo = Attendance_mongo = __decorate([
     (0, typeorm_1.Entity)('attendance')
 ], Attendance_mongo);
-// Settings Collection
+/**
+ * Represents the 'settings' collection in the database.
+ */
 let Settings = class Settings {
 };
 exports.Settings = Settings;
@@ -164,6 +177,9 @@ __decorate([
 exports.Settings = Settings = __decorate([
     (0, typeorm_1.Entity)('settings')
 ], Settings);
+/**
+ * Represents the 'claims' collection in the database.
+ */
 let Claims = class Claims {
 };
 exports.Claims = Claims;
@@ -202,13 +218,3 @@ __decorate([
 exports.Claims = Claims = __decorate([
     (0, typeorm_1.Entity)('claims')
 ], Claims);
-// attendance collection
-// @Entity('attendance')
-// export class Attendance {
-//   @ObjectIdColumn()
-//   id: ObjectId;
-//   @Column()
-//   rowNo: number;
-//   @Column()
-//   name: string;
-// }

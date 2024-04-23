@@ -1,10 +1,12 @@
-import {
-  GoogleSpreadsheet,
-  GoogleSpreadsheetWorksheet,
-} from 'google-spreadsheet';
+import { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import { Settings } from '../database_mongoDB/Entity/_tableEntity';
 import { Database } from '../database_mongoDB/_db-init';
 
+/**
+ * Change the Google Sheet associated with a particular functionality.
+ * @param {('Attendance' | 'Finance' | 'SF')} sheetName The name of the sheet to change.
+ * @param {string} sheetId The ID of the new sheet.
+ */
 export const changeSheet = async (
   sheetName: 'Attendance' | 'Finance' | 'SF',
   sheetId: string
@@ -48,13 +50,22 @@ export const changeSheet = async (
   }
 };
 
+/**
+ * Search for a specific value in a given column within a Google Sheet.
+ * @param {string} search The value to search for.
+ * @param {GoogleSpreadsheetWorksheet} sheet The Google Spreadsheet to search in.
+ * @param {string} col The column to search within.
+ * @param {number} min The minimum row index to search from.
+ * @param {number} max The maximum row index to search up to.
+ * @returns {Promise<number>} The row index where the value is found, or -1 if not found.
+ */
 export const searchRowNo = async (
   search: string,
   sheet: GoogleSpreadsheetWorksheet,
   col: string,
   min: number,
   max: number
-) => {
+): Promise<number> => {
   try {
     const indices = Array.from({ length: max - min }, (_, i) => min + i);
 

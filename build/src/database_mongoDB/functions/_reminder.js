@@ -12,6 +12,12 @@ const _telefunctions_1 = require("../../app/_telefunctions");
 // Telegram - send message to respective chatid
 // Team - string of team name (Attendance, Welfare, Admin, Birthday)
 // Used in _botOn_functions.ts in botOntype = 2 and 3
+/**
+ * Sends a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
+ * @param ctx Context object.
+ * @param team The team name, which can be either 'Attendance', 'Welfare', 'Admin', or 'Birthday'.
+ * @param gsheet The Google Sheets worksheet. (Optional)
+ */
 const reminderMenu = async (ctx, team) => {
     ctx.session.team = team;
     let teamMessage;
@@ -65,8 +71,12 @@ const reminderMenu = async (ctx, team) => {
     }
 };
 exports.reminderMenu = reminderMenu;
-// Reminder System - Send to ALL not in users
-// Write reminder msg for all not in users
+/**
+ * Craft a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
+ * @param ctx Context object.
+ * @param gsheet The Google Sheets worksheet. (Optional)
+ * @returns The reminder message sent to all users who have not sent it in.
+ */
 const reminderSendAllNotIn_ReminderMessage = async (ctx, gsheet) => {
     ctx.session.gSheet = gsheet;
     await ctx.reply(`Write down the reminder msg for people that have not sent it in
@@ -78,8 +88,12 @@ const reminderSendAllNotIn_ReminderMessage = async (ctx, gsheet) => {
     ctx.session.botOnType = 2;
 };
 exports.reminderSendAllNotIn_ReminderMessage = reminderSendAllNotIn_ReminderMessage;
-// Send Reminder Message to ALL not in users
-// Used in _botOn_functions.ts in botOntype = 2
+/**
+ * Sends a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
+ * Used in _botOn_functions.ts in botOntype = 2
+ * @param ctx Context object.
+ * @param gsheet The Google Sheets worksheet.
+ */
 const reminderSendAllNotIn_Execution = async (ctx) => {
     const reminderMsg = ctx.message.text;
     if (reminderMsg == null) {
@@ -88,6 +102,7 @@ const reminderSendAllNotIn_Execution = async (ctx) => {
     const team = ctx.session.team;
     const prefix = `<b>${team}:</b>\n`;
     switch (team) {
+        // Send reminder to all users who have not sent in their attendance
         case 'Attendance':
             const totalNames = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
                 where: { teleUser: { $not: { $eq: '' } } },
@@ -109,6 +124,7 @@ const reminderSendAllNotIn_Execution = async (ctx) => {
                 await ctx.reply(`Error in sending reminder!`);
             }
             break;
+        // Send reminder to all users who have not sent in their welfare wish or birthday wish
         case 'Welfare':
         case 'Birthday':
             const wishEventName = ctx.session.name;
@@ -142,6 +158,7 @@ const reminderSendAllNotIn_Execution = async (ctx) => {
             }));
             await ctx.reply(`Reminder sent!`);
             break;
+        // Send reminder to all users who have not sent in their sermon feedback
         case 'Admin':
             const now = new Date();
             const offSetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 4);
@@ -184,14 +201,19 @@ const reminderSendAllNotIn_Execution = async (ctx) => {
     ctx.session = (0, _SessionData_1.initial)();
 };
 exports.reminderSendAllNotIn_Execution = reminderSendAllNotIn_Execution;
-// Reminder System - Send to specific user
-// Used in bot.ts
+/**
+ * Sends a reminder message to a specific user.
+ * @param bot The bot object.
+ */
 const specificReminder = async (bot) => {
     bot.callbackQuery('sendSpecificReminder', _telefunctions_1.loadFunction, sendSpecificReminder_ChooseMember);
     bot.callbackQuery(/^reminderSpecificNames-/, _telefunctions_1.loadFunction, sendSpecificReminder_ReminderMsg);
 };
 exports.specificReminder = specificReminder;
-// Choose specific user to send reminder
+/**
+ * Choose specific user for reminder message
+ * @param ctx Context object.
+ */
 const sendSpecificReminder_ChooseMember = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
@@ -205,7 +227,10 @@ const sendSpecificReminder_ChooseMember = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-// Write reminder msg for specific user
+/**
+ * Craft a reminder message to a specific user.
+ * @param ctx Context object.
+ */
 const sendSpecificReminder_ReminderMsg = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const telegramUser = await ctx.update.callback_query.data.substring('reminderSpecificNames-'.length);
@@ -220,9 +245,11 @@ const sendSpecificReminder_ReminderMsg = async (ctx) => {
     });
     ctx.session.botOnType = 3;
 };
-// Send Reminder Message to specific user
-// Used in _botOn_functions.ts in botOntype = 3
-//Uses botOnType = 3 to work
+/**
+ * Sends a reminder message to a specific user.
+ * Used in _botOn_functions.ts in botOntype = 3
+ * @param ctx Context object.
+ */
 const sendSpecificReminder_Execution = async (ctx) => {
     const team = ctx.session.team;
     const teleUser = ctx.session.reminderUser;

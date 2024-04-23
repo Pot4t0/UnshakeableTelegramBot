@@ -2,6 +2,9 @@ import { GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
 import { Settings } from 'luxon';
 import { ObjectId } from 'typeorm';
 
+/**
+ * Interface representing session data.
+ */
 export interface SessionData {
   id?: ObjectId;
   financeAccess?: boolean;
@@ -35,6 +38,11 @@ export interface SessionData {
   scheduler?: Settings;
   botOnPhoto?: number;
 }
+
+/**
+ * Initializes a new session data object with default values.
+ * @returns {SessionData} The initialized session data object.
+ */
 export function initial(): SessionData {
   return {
     id: undefined,

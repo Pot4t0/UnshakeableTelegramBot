@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initial = void 0;
+/**
+ * Initializes a new session data object with default values.
+ * @returns {SessionData} The initialized session data object.
+ */
 function initial() {
     return {
         id: undefined,

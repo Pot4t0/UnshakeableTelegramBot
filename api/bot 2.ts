@@ -1,51 +1,32 @@
-/**
- * Entry point for the bot application.
- */
 import { webhookCallback } from 'grammy';
 import { init_bot } from './functions/_initialise';
 import { botOnHandler } from './functions/_botOn_functions';
 import { commands } from './cmd/_commands';
 import { callbackQueryHandler } from './functions/_index';
 
-/**
- * Initialise the bot and handle errors if bot is not initialised.
- * @throws {Error} Throws an error if bot is not initialised successfully.
- */
+//Initialise Bot as bot
 const bot = init_bot();
 if (!bot) {
   throw new Error('Bot not initialised');
 }
-
-/**
- * Initialise bot commands.
- */
+// Command Functions
+//Initialise Bot Commands
 commands(bot);
 
-/**
- * Handle callback queries.
- */
+// CallBackQuery Function
 callbackQueryHandler(bot);
 
-/**
- * Handle bot.on method. **(KEEP THIS AT END OF PROGRAM)**
- * This method can completely destroy everything if used wrongly.
- * Refer to switch case in botOn_functions.ts to understand how to differentiate it.
- */
-botOnHandler(bot);
+// Bot.on method **(KEEP THIS AT END OF PROGRAM)**
+// THIS METHOD CAN COMPLETELY DESTROY EVERYTHING IF USED WRONGLY
+botOnHandler(bot); //Refer to switch case in botOn_functions.ts to understand how to differentiate it.
 
-/**
- * Start the bot (TESTING ONLY).
- * Comment this out when deploying.
- */
-bot.start();
+// Start the bot (TESTING ONLY)
+// Comment this out when deploying
+// bot.start();
 
-/**
- * Create a webhook callback for the bot using grammY's webhook.
- * @returns {Function} The webhook callback function.
- */
+//grammY webhook http (Vercel)
 export default webhookCallback(bot, 'http');
-
-// Vercel Edge Runtime
+//Vercel Edge Runtime
 // export const config = {
 //   runtime: 'edge',
 // };

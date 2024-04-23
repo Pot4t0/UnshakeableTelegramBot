@@ -2,7 +2,13 @@ import { Context } from 'grammy';
 import { Names } from '../Entity/_tableEntity';
 import { Database } from '../_db-init';
 
-//Send to User in their respective ChatId with telegram bot
+/**
+ * Send message to user
+ * @param user The user to send the message to.
+ * @param msg The message to send.
+ * @param ctx The context object.
+ * @returns The message sent.
+ */
 export const sendMessageUser = async (
   user: string,
   msg: string,
