@@ -3,10 +3,14 @@ import { BotContext } from '../../../app/_index';
 import { Database } from '../../../database_mongoDB/_db-init';
 import { Names, SF_mongo } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
-import { gsheet } from '../../../gsheets/_index';
 
-// Send to Google Sheets Sermon Feedback
-// Used in _botOn_functions.ts in botOntype = 8
+/**
+ * Sends the sermon feedback to the Google Sheet
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 8
+ * @param ctx The message context.
+ * @throws Error if the sermon feedback could not be logged.
+ */
 export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
   const sfmsg = await ctx.message.text;
   const teleUserName = await ctx.update.message.from.username;
@@ -67,6 +71,13 @@ export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
 
 // Send to Google Sheets Reason
 // Used in _botOn_functions.ts in botOntype = 9
+/**
+ * Sends the reason to the Google Sheet
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 9
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 export const sendToSheet_Reason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {

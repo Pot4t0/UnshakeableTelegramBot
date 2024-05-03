@@ -4,11 +4,13 @@ import { Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
 import { Filter } from 'grammy';
 import { dinnerLogAttendance } from './_sendAttendanceInternal';
-import { gsheet } from '../../../functions/_initialise';
 
-// WE Attendance Logging Reason Function
-// Used in _botOn_functions.ts in botOntype = 19
-// Logs Reason Message to Google Sheets
+/**
+ * Logs the reason for the WE attendance.
+ *  * Used in _botOn_functions.ts
+ * Refer to case botOntype = 19
+ * @param ctx The message context.
+ */
 export const WeAttendanceLogReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -62,9 +64,13 @@ export const WeAttendanceLogReason = async (
   }
 };
 
-// LG Attendance Logging Reason Function
-// Used in _botOn_functions.ts in botOntype = 20
-// Logs Reason Message to Google Sheets
+/**
+ * Logs the reason for the LG attendance.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 20
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 export const lgAttendanceLogReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -99,9 +105,13 @@ export const lgAttendanceLogReason = async (
   ctx.session = initial();
 };
 
-// Special Attendance Logging Reason Function
-// Used in _botOn_functions.ts in botOntype = 28
-// Logs Reason Message to Google Sheets
+/**
+ * Logs the reason for the special attendance.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 28
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 export const SpecialAttendanceLogReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -153,11 +163,13 @@ export const SpecialAttendanceLogReason = async (
   }
   ctx.session = initial();
 };
-
-// Dinner Attendance Reason Function
-// Used in _botOn_functions.ts in botOntype = 29
-// Logs Reason Message to Google Sheets (Special/ No LG Event)
-// Proceeds to move to LG Attendance Function (LG Event)
+/**
+ * Logs Reason Message to Google Sheets (Special/ No LG Event)
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 29
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 export const dinnerAttendanceReason = async (
   ctx: Filter<BotContext, 'message'>
 ) => {

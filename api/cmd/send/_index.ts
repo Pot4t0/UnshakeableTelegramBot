@@ -10,17 +10,37 @@ export * as sendAttendanceBotOn from './attendance/_sendAttendanceBotOn';
 export * as sendsfBotOn from './sf/_sendSFBotOn';
 export * as sendWishBotOn from './wish/_sendWishBotOn';
 export * as sendClaimBotOn from './claim/_claimBotOn';
-export //Send Callbacks Functions
-class send {
+
+/**
+ * send Class (Callbacks)
+ * - Collection of send commands.
+ */
+export class send {
+  /**
+   * Sends attendance command.
+   * @param bot The Bot instance.
+   */
   static attendance(bot: Bot<BotContext>) {
     sendAttendance(bot);
   }
+  /**
+   * Sends wish command.
+   * @param bot The Bot instance.
+   */
   static wish(bot: Bot<BotContext>) {
     sendWish(bot);
   }
+  /**
+   * Sends sf command.
+   * @param bot The Bot instance.
+   */
   static sf(bot: Bot<BotContext>) {
     sendsf(bot);
   }
+  /**
+   * Sends claim command.
+   * @param bot The Bot instance.
+   */
   static claim(bot: Bot<BotContext>) {
     sendClaim(bot);
   }

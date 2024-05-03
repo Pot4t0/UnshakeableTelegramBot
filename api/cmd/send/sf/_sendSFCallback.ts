@@ -3,14 +3,21 @@ import { BotContext } from '../../../app/_index';
 import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 import { gsheet } from '../../../functions/_initialise';
 
-//Send SF Callbacks
+/**
+ * /sendSF
+ * - Sets up callback query handlers for the send command.
+ * - This function registers callback queries for the send command.
+ * @param bot The Bot instance.
+ */
 export const sendsf = async (bot: Bot<BotContext>) => {
   bot.callbackQuery('AttendanceSF-yes', loadFunction, sendSF);
   bot.callbackQuery('AttendanceSF-no', loadFunction, sendReason);
 };
 
-// Send SF Callback
-// For attendance = yes
+/**
+ * Sends a sermon feedback when attendance is yes.
+ * @param ctx The message context.
+ */
 const sendSF = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   ctx.session.attendance = await ctx.update.callback_query.data.substring(
@@ -31,8 +38,10 @@ const sendSF = async (ctx: CallbackQueryContext<BotContext>) => {
   ctx.session.botOnType = 8;
 };
 
-// Send Reason Callback
-// For attendance = no
+/**
+ * Sends a reason when attendance is no.
+ * @param ctx The message context.
+ */
 const sendReason = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   ctx.session.attendance = await ctx.update.callback_query.data.substring(

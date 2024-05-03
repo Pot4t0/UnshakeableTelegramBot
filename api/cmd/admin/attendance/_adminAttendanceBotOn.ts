@@ -7,8 +7,13 @@ import {
 } from './__adminAttendanceInternal';
 import { gsheet } from '../../../functions/_initialise';
 
-// LG Event Worship Experience Date
-// Used in _botOn_functions.ts in botOntype = 21
+/**
+ * Adds the LG Event Worship Experience Date to the session.
+ * Used in _botOn_functions.ts
+ * - botOntype = 21
+ * @param ctx The message context.
+ * @throws Error if the LG Event Worship Experience Date is not provided.
+ */
 export const addAttendanceSheet_LGEventWEDateMessage = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -22,8 +27,13 @@ export const addAttendanceSheet_LGEventWEDateMessage = async (
   });
   ctx.session.botOnType = adminAttendanceBotOn.createLgEventBotOn;
 };
-// Create LG Event Sheet
-// Used in _botOn_functions.ts in botOntype = 22
+
+/**
+ * Create LG Event Sheet
+ * Used in _botOn_functions.ts
+ * - botOntype = 22
+ * @param ctx The message context.
+ */
 export const addAttendanceSheet_CreateLGEventSheet = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -67,8 +77,12 @@ export const addAttendanceSheet_CreateLGEventSheet = async (
     unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
-// Create No LG Event Sheet
-// Used in _botOn_functions.ts in botOntype = 23
+/**
+ * Create No LG Event Sheet
+ * Used in _botOn_functions.ts
+ * - botOntype = 23
+ * @param ctx The message context.
+ */
 export const addAttendanceSheet_CreateNoLGEventSheet = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -112,8 +126,13 @@ export const addAttendanceSheet_CreateNoLGEventSheet = async (
     unshakeableAttendanceSpreadsheet.resetLocalCache();
   }
 };
-// Special Event Date
-// Used in _botOn_functions.ts in botOntype = 24
+
+/**
+ * Adds the Special Event Date to the session.
+ * Used in _botOn_functions.ts
+ * - botOntype = 24
+ * @param ctx The message context.
+ */
 export const addAttendanceSheet_SpecialEventDateMessage = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -127,8 +146,13 @@ export const addAttendanceSheet_SpecialEventDateMessage = async (
   });
   ctx.session.botOnType = adminAttendanceBotOn.createSplEventBotOn;
 };
-// Create Special Event Sheet
-// Used in _botOn_functions.ts in botOntype = 25
+
+/**
+ * Create Special Event Sheet
+ * Used in _botOn_functions.ts
+ * - botOntype = 25
+ * @param ctx The message context.
+ */
 export const addAttendanceSheet_CreateSpecialEventSheet = async (
   ctx: Filter<BotContext, 'message'>
 ) => {

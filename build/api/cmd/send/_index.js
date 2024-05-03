@@ -33,16 +33,36 @@ exports.sendAttendanceBotOn = __importStar(require("./attendance/_sendAttendance
 exports.sendsfBotOn = __importStar(require("./sf/_sendSFBotOn"));
 exports.sendWishBotOn = __importStar(require("./wish/_sendWishBotOn"));
 exports.sendClaimBotOn = __importStar(require("./claim/_claimBotOn"));
+/**
+ * send Class (Callbacks)
+ * - Collection of send commands.
+ */
 class send {
+    /**
+     * Sends attendance command.
+     * @param bot The Bot instance.
+     */
     static attendance(bot) {
         (0, _sendAttendanceCallbacks_1.sendAttendance)(bot);
     }
+    /**
+     * Sends wish command.
+     * @param bot The Bot instance.
+     */
     static wish(bot) {
         (0, _sendWishCallback_1.sendWish)(bot);
     }
+    /**
+     * Sends sf command.
+     * @param bot The Bot instance.
+     */
     static sf(bot) {
         (0, _sendSFCallback_1.sendsf)(bot);
     }
+    /**
+     * Sends claim command.
+     * @param bot The Bot instance.
+     */
     static claim(bot) {
         (0, _claimCallbacks_1.sendClaim)(bot);
     }

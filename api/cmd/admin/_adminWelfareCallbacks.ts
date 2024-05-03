@@ -10,6 +10,12 @@ import {
 } from '../../database_mongoDB/functions/_index';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
+/**
+ * /adminWelfare
+ * - Sets up callback query handlers for the Welfare command.
+ * - This function registers callback queries for the Welfare command.
+ * @param bot The Bot instance.
+ */
 export const adminWelfare = (bot: Bot<BotContext>) => {
   //Wish View Callbacks
   wish.wishView(bot, 'Welfare');
@@ -26,8 +32,11 @@ export const adminWelfare = (bot: Bot<BotContext>) => {
   bot.callbackQuery('sendReminder-Welfare', loadFunction, reminder_Msg);
 };
 
-// Reminder Management
-//Choose which event to send reminder for
+/**
+ * Welfare Reminder System
+ * - Sends a list of events to choose from.
+ * @param ctx The message context.
+ */
 const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const event = await Database.getMongoRepository(Events).find({
@@ -49,7 +58,10 @@ const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
     }
   );
 };
-//Choose which reminder to send (Not In / Specific)
+/**
+ * Choose which reminder to send (Not In / Specific)
+ * @param ctx The message context.
+ */
 const reminder_Menu = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const title = ctx.update.callback_query.data.substring(

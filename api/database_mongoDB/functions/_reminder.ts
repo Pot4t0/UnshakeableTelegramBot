@@ -20,6 +20,12 @@ import { gsheet } from '../../gsheets/_index';
 // Team - string of team name (Attendance, Welfare, Admin, Birthday)
 // Used in _botOn_functions.ts in botOntype = 2 and 3
 
+/**
+ * Sends a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
+ * @param ctx Context object.
+ * @param team The team name, which can be either 'Attendance', 'Welfare', 'Admin', or 'Birthday'.
+ * @param gsheet The Google Sheets worksheet. (Optional)
+ */
 export const reminderMenu = async (
   ctx: BotContext,
   team: 'Attendance' | 'Welfare' | 'Admin' | 'Birthday'
@@ -82,8 +88,13 @@ export const reminderMenu = async (
     );
   }
 };
-// Reminder System - Send to ALL not in users
-// Write reminder msg for all not in users
+
+/**
+ * Craft a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
+ * @param ctx Context object.
+ * @param gsheet The Google Sheets worksheet. (Optional)
+ * @returns The reminder message sent to all users who have not sent it in.
+ */
 export const reminderSendAllNotIn_ReminderMessage = async (
   ctx: CallbackQueryContext<BotContext>,
   gsheet?: GoogleSpreadsheetWorksheet
@@ -100,8 +111,13 @@ export const reminderSendAllNotIn_ReminderMessage = async (
   );
   ctx.session.botOnType = 2;
 };
-// Send Reminder Message to ALL not in users
-// Used in _botOn_functions.ts in botOntype = 2
+
+/**
+ * Sends a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
+ * Used in _botOn_functions.ts in botOntype = 2
+ * @param ctx Context object.
+ * @param gsheet The Google Sheets worksheet.
+ */
 export const reminderSendAllNotIn_Execution = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -113,6 +129,7 @@ export const reminderSendAllNotIn_Execution = async (
   const prefix = `<b>${team}:</b>\n`;
 
   switch (team) {
+    // Send reminder to all users who have not sent in their attendance
     case 'Attendance':
       const totalNames = await Database.getMongoRepository(Names).find({
         where: { teleUser: { $not: { $eq: '' } } },
@@ -140,6 +157,7 @@ export const reminderSendAllNotIn_Execution = async (
         await ctx.reply(`Error in sending reminder!`);
       }
       break;
+    // Send reminder to all users who have not sent in their welfare wish or birthday wish
     case 'Welfare':
     case 'Birthday':
       const wishEventName = ctx.session.name;
@@ -178,6 +196,8 @@ export const reminderSendAllNotIn_Execution = async (
 
       await ctx.reply(`Reminder sent!`);
       break;
+
+    // Send reminder to all users who have not sent in their sermon feedback
     case 'Admin':
       const now = new Date();
       const offSetDate = new Date(
@@ -230,8 +250,10 @@ export const reminderSendAllNotIn_Execution = async (
   ctx.session = initial();
 };
 
-// Reminder System - Send to specific user
-// Used in bot.ts
+/**
+ * Sends a reminder message to a specific user.
+ * @param bot The bot object.
+ */
 export const specificReminder = async (bot: Bot<BotContext>) => {
   bot.callbackQuery(
     'sendSpecificReminder',
@@ -244,7 +266,11 @@ export const specificReminder = async (bot: Bot<BotContext>) => {
     sendSpecificReminder_ReminderMsg
   );
 };
-// Choose specific user to send reminder
+
+/**
+ * Choose specific user for reminder message
+ * @param ctx Context object.
+ */
 const sendSpecificReminder_ChooseMember = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -262,7 +288,11 @@ const sendSpecificReminder_ChooseMember = async (
     reply_markup: inlineKeyboard,
   });
 };
-// Write reminder msg for specific user
+
+/**
+ * Craft a reminder message to a specific user.
+ * @param ctx Context object.
+ */
 const sendSpecificReminder_ReminderMsg = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -285,9 +315,11 @@ const sendSpecificReminder_ReminderMsg = async (
   );
   ctx.session.botOnType = 3;
 };
-// Send Reminder Message to specific user
-// Used in _botOn_functions.ts in botOntype = 3
-//Uses botOnType = 3 to work
+/**
+ * Sends a reminder message to a specific user.
+ * Used in _botOn_functions.ts in botOntype = 3
+ * @param ctx Context object.
+ */
 export const sendSpecificReminder_Execution = async (
   ctx: Filter<BotContext, 'message'>
 ) => {

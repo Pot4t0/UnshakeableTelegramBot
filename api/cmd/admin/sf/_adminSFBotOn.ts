@@ -4,6 +4,13 @@ import { Database } from '../../../database_mongoDB/_db-init';
 import { Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../../models/_SessionData';
 import { gsheet } from '../../../functions/_initialise';
+
+/**
+ * Log reason for not attending SF
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 8
+ * @param ctx The message context.
+ */
 export const manualSFNo = async (ctx: Filter<BotContext, 'message'>) => {
   const reason = await ctx.message.text;
   if (reason == null) {

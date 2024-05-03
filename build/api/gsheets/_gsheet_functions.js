@@ -3,6 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.searchRowNo = exports.changeSheet = void 0;
 const _tableEntity_1 = require("../database_mongoDB/Entity/_tableEntity");
 const _db_init_1 = require("../database_mongoDB/_db-init");
+/**
+ * Change the Google Sheet associated with a particular functionality.
+ * @param {('Attendance' | 'Finance' | 'SF')} sheetName The name of the sheet to change.
+ * @param {string} sheetId The ID of the new sheet.
+ */
 const changeSheet = async (sheetName, sheetId) => {
     const gsheetobj = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).findOneBy({
         option: 'gsheet',
@@ -34,6 +39,15 @@ const changeSheet = async (sheetName, sheetId) => {
     }
 };
 exports.changeSheet = changeSheet;
+/**
+ * Search for a specific value in a given column within a Google Sheet.
+ * @param {string} search The value to search for.
+ * @param {GoogleSpreadsheetWorksheet} sheet The Google Spreadsheet to search in.
+ * @param {string} col The column to search within.
+ * @param {number} min The minimum row index to search from.
+ * @param {number} max The maximum row index to search up to.
+ * @returns {Promise<number>} The row index where the value is found, or -1 if not found.
+ */
 const searchRowNo = async (search, sheet, col, min, max) => {
     try {
         const indices = Array.from({ length: max - min }, (_, i) => min + i);

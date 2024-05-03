@@ -9,8 +9,13 @@ import { v4 as uuidv4 } from 'uuid';
 import { searchRowNo } from '../../../gsheets/_gsheet_functions';
 import { GoogleSpreadsheetRow } from 'google-spreadsheet';
 
-//Main Finance Menu
-//Used in _botOn_functions.ts in botOntype = 12
+/**
+ * Main Finance Menu. Accessible only by the finance team and requires a password.
+ * Used in _botOn_functions.ts
+ * - botOntype = 12
+ * @param ctx The message context.
+ * @throws Error if the password is invalid.
+ */
 export const adminFinanceMenu = async (ctx: BotContext) => {
   const password = process.env.FINANCE_PASSWORD;
   if (ctx.message?.text !== password) {
@@ -82,8 +87,13 @@ export const adminFinanceMenu = async (ctx: BotContext) => {
   );
   financeSheet.resetLocalCache();
 };
-// Add Offering Date
-// Used in _botOn_functions.ts in botOntype = 14
+
+/**
+ * Logs Offering LG Date
+ * Used in _botOn_functions.ts
+ * - botOntype = 14
+ * @param ctx The message context.
+ */
 export const addOfferingLGDate = async (ctx: Filter<BotContext, 'message'>) => {
   const amount = ctx.message.text;
   if (amount == null) {
@@ -96,8 +106,13 @@ export const addOfferingLGDate = async (ctx: Filter<BotContext, 'message'>) => {
     ctx.session.botOnType = 14;
   }
 };
-// Add Offering Record
-// Used in _botOn_functions.ts in botOntype = 14
+
+/**
+ * Adds the Offering Record to the Google Sheet.
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 14
+ * @param ctx The message context.
+ */
 export const addOfferingExecution = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -150,8 +165,13 @@ export const addOfferingExecution = async (
     ctx.session = initial();
   }
 };
-// Delete Offering Record
-// Used in _botOn_functions.ts in botOntype = 15
+
+/**
+ * Delete Offering Record
+ * Used in _botOn_functions.ts
+ * - botOntype = 15
+ * @param ctx The message context.
+ */
 export const deleteOfferingRecord = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -194,8 +214,12 @@ export const deleteOfferingRecord = async (
   }
 };
 
-// Add Completed Claim Amount
-// Used in _botOn_functions.ts in botOntype = 16
+/**
+ * Logs Reimbursement Amount
+ * Used in _botOn_functions.ts
+ * - botOntype = 16
+ * @param ctx The message context.
+ */
 export const completedClaimAmountNo = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -282,8 +306,12 @@ export const completedClaimAmountNo = async (
   }
 };
 
-// Change Password
-// Used in _botOn_functions.ts in botOntype = 17
+/**
+ * Changes the password for the finance team.
+ * Used in _botOn_functions.ts
+ * - botOntype = 17
+ * @param ctx The message context.
+ */
 export const passwordCheck = async (ctx: Filter<BotContext, 'message'>) => {
   const password = process.env.FINANCE_PASSWORD;
   if (ctx.message.text !== password) {
@@ -296,8 +324,12 @@ export const passwordCheck = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = 18;
 };
 
-// Cfm Change Password
-// Used in _botOn_functions.ts in botOntype = 18
+/**
+ * Confirms the password change.
+ * Used in _botOn_functions.ts
+ * - botOntype = 18
+ * @param ctx The message context.
+ */
 export const cfmChangePassword = async (ctx: Filter<BotContext, 'message'>) => {
   const password = ctx.message.text;
   if (password == null) {

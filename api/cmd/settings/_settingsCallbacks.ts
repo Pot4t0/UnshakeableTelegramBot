@@ -7,8 +7,12 @@ import { initial } from '../../models/_SessionData';
 import { chat, gSheetDB, team } from '../../database_mongoDB/functions/_index';
 import { gsheet } from '../../functions/_initialise';
 
-// Settings Callbacks
-// Any overall bot admin settings
+/**
+ * Sets up callback query handlers for the settings command.
+ * This function registers callback queries for the settings command.
+ * @param bot The Bot instance.
+ * @returns The next middleware function or command function.
+ */
 export const settings = (bot: Bot<BotContext>) => {
   bot.callbackQuery(
     'settingsAnnouncements',
@@ -21,7 +25,6 @@ export const settings = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^rmUser-/g, loadFunction, rmUser);
   bot.callbackQuery(/^cfmRmUser-/g, loadFunction, cfmRmUser);
 
-  // bot.callbackQuery('settingsLGGroup', loadFunction, lgGroupManagement); //Settings Bot On
   //Settings Announcements Output is located in BotOnFunctions
   chat.chooseChat(bot, 'LG');
 
@@ -32,7 +35,11 @@ export const settings = (bot: Bot<BotContext>) => {
   gSheetDB.chooseSheet(bot);
 };
 
-// Settings Announcements Input
+/**
+ * Sends an announcement to all users.
+ * The function crafts an announcement to send to all users.
+ * @param ctx The message context.
+ */
 const settingsAnnouncements_Write = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -49,7 +56,11 @@ const settingsAnnouncements_Write = async (
   ctx.session.botOnType = 31;
 };
 
-// Settings New User Management
+/**
+ * New User Management
+ * This function prompts the user to add a new user in their contact list.
+ * @param bot The Bot instance.
+ */
 const newUserManagement = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const button = new Keyboard().requestUser('Add User', 1).oneTime(true);
@@ -59,7 +70,11 @@ const newUserManagement = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
-// Settings Remove User Management
+/**
+ * Remove User Management
+ * This function prompts the user to remove a user in the database.
+ * @param bot The Bot instance
+ */
 const rmUserManagement = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const allNames = await Database.getMongoRepository(Names).find();
@@ -76,6 +91,11 @@ const rmUserManagement = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Removes a user from the database.
+ * This function prompts the user to confirm the removal of a user.
+ * @param ctx The callback query context.
+ */
 const rmUser = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const user = await ctx.update.callback_query.data.substring('rmUser-'.length);
@@ -96,7 +116,11 @@ const rmUser = async (ctx: CallbackQueryContext<BotContext>) => {
     reply_markup: inlineKeyboard,
   });
 };
-
+/**
+ * Confirms the removal of a user.
+ * This function removes a user from the database.
+ * @param ctx The callback query context.
+ */
 const cfmRmUser = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const cfm = await ctx.update.callback_query.data.substring(

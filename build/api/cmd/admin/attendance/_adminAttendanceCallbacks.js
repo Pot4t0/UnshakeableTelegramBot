@@ -9,7 +9,17 @@ const _index_1 = require("../../../database_mongoDB/functions/_index");
 const __adminAttendanceInternal_1 = require("./__adminAttendanceInternal");
 const _telefunctions_1 = require("../../../app/_telefunctions");
 const _initialise_1 = require("../../../functions/_initialise");
-// Admin Attendance Callbacks
+/**
+ * Sets up callback query handlers for the admin attendance command.
+ * This function registers callback queries for the admin attendance command.
+ * - Add Attendance Sheet
+ * - Delete Attendance Sheet
+ * - Attendance Reminders
+ * - Send to LG Chat
+ * - Archive Attendance Sheet
+ * - Unarchive Attendance Sheet
+ * @param bot The Bot instance.
+ */
 const adminAttendance = (bot) => {
     let weMsg = '';
     let lgMsg = '';
@@ -50,10 +60,13 @@ const adminAttendance = (bot) => {
     bot.callbackQuery(/^unarchiveSheet/g, _telefunctions_1.loadFunction, unarchiveAttendance_Execution);
 };
 exports.adminAttendance = adminAttendance;
-// Add Attendance Sheet Menu
-// Choose between 3 options
-// LG Event, No LG Event, Special Event
-// Special Event will have an optional meal option
+/**
+ * Adds an attendance sheet.
+ * Choose between 3 options
+ * LG Event, No LG Event, Special Event
+ * Special Event will have an optional meal option
+ * @param ctx The message context.
+ */
 const addAttendanceSheet = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -83,6 +96,13 @@ const addAttendanceSheet = async (ctx) => {
     });
 };
 exports.addAttendanceSheet = addAttendanceSheet;
+/**
+ * Remove Event
+ * - Remove event from active document
+ * - Remove event from archive document
+ * - Remove event from google sheet
+ * @param title The title of the event to be removed
+ */
 const removeEventDBDoc = async (title) => {
     const activeDoc = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
         name: 'Active',
@@ -97,8 +117,10 @@ const removeEventDBDoc = async (title) => {
         }
     }
 };
-// Add Sheet With LG
-// LG Event LG Date
+/**
+ * Logs the LG Event Date to the session.
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_LGEventLGDateMessage = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply('Enter Worship Experience Date in dd/mm/yyyy: ', {
@@ -106,8 +128,10 @@ const addAttendanceSheet_LGEventLGDateMessage = async (ctx) => {
     });
     ctx.session.botOnType = __adminAttendanceInternal_1.adminAttendanceBotOn.lgEventWEDate;
 };
-// Add Sheet without LG
-// No LG Event Worship Experience Date
+/**
+ * Logs the No LG Event Worship Experience Date to the session.
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_NoLGEventWEDateMessage = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply('Enter WE Date in dd/mm/yyyy: ', {
@@ -115,8 +139,10 @@ const addAttendanceSheet_NoLGEventWEDateMessage = async (ctx) => {
     });
     ctx.session.botOnType = __adminAttendanceInternal_1.adminAttendanceBotOn.createNoLgEventBotOn;
 };
-// Add Sheet Special Event
-// Special Event Meal Options
+/**
+ * Logs the Special Event Meal to the session.
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_SpecialEventMealMessage = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -159,8 +185,10 @@ const addAttendanceSheet_SpecialEventNameMessage = async (ctx) => {
     });
     ctx.session.botOnType = __adminAttendanceInternal_1.adminAttendanceBotOn.splEventDateBotOn;
 };
-// Delete Attendance Sheet
-// Able to delete any attendance sheet except for template and special event template
+/**
+ * Deletes an attendance sheet. Except for template and special event template
+ * @param ctx The message context.
+ */
 const delAttendanceSheet = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const unshakeableAttendanceSpreadsheet = await (0, _initialise_1.gsheet)('attendance');
@@ -180,6 +208,10 @@ const delAttendanceSheet = async (ctx) => {
 };
 exports.delAttendanceSheet = delAttendanceSheet;
 // Delete Attendance Sheet Confirmation Message
+/**
+ * Confirms the deletion of an attendance sheet.
+ * @param ctx The message context.
+ */
 const delAttendanceeSheet_CfmMessage = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const sheetName = ctx.update.callback_query.data.substring('delAttendanceeSheet-'.length);
@@ -203,7 +235,11 @@ const delAttendanceeSheet_CfmMessage = async (ctx) => {
     });
 };
 exports.delAttendanceeSheet_CfmMessage = delAttendanceeSheet_CfmMessage;
-// Delete Attendance Sheet Execution
+/**
+ * Deletes the attendance sheet.
+ * @param ctx The message context.
+ * @throws Error if the deletion fails.
+ */
 const delAttendanceeSheet_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const cfm = ctx.update.callback_query.data.substring('CfmDelAttendanceSheet-'.length);
@@ -219,6 +255,7 @@ const delAttendanceeSheet_Execution = async (ctx) => {
         }
         else {
             await ctx.reply(`Error during deletion! Please try again!`);
+            throw new Error('Error during deletion of attendance sheet!');
         }
     }
     else if (cfm == 'N') {
@@ -226,12 +263,16 @@ const delAttendanceeSheet_Execution = async (ctx) => {
     }
     else {
         await ctx.reply(`Error during deletion! Please try again!`);
+        throw new Error('Error during deletion of attendance sheet!');
     }
     ctx.session = (0, _SessionData_1.initial)();
 };
 exports.delAttendanceeSheet_Execution = delAttendanceeSheet_Execution;
-//Reminder Management
-//Choose which event to send reminder for
+/**
+ * Sends an attendance reminder.
+ * @param ctx The message context.
+ * @throws Error if the reminder could not be sent.
+ */
 const attendanceReminder = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const archivedSheets = _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
@@ -257,14 +298,20 @@ const attendanceReminder = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Choose which reminder to send (Not In / Specific)
+/**
+ * Attendance Reminder Menu
+ * @param ctx The message context.
+ */
 const attendanceReminder_Menu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const title = await ctx.update.callback_query.data.substring('sendAttendanceReminder-'.length);
     ctx.session.name = await title;
     await _index_1.reminder.reminderMenu(ctx, 'Attendance');
 };
-//Send Not In Reminder Messaage
+/**
+ * Sends an attendance reminder message. (Not In)
+ * @param ctx The message context.
+ */
 const attendanceReminder_Msg = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const title = ctx.session.name;
@@ -274,8 +321,10 @@ const attendanceReminder_Msg = async (ctx) => {
         await _index_1.reminder.reminderSendAllNotIn_ReminderMessage(ctx, sheet);
     }
 };
-//Send To LG Chat
-//Choose which event to send to LG Chat
+/**
+ * Sends the event menu to choose which event to send to LG Chat.
+ * @param ctx The message context.
+ */
 const sendAttendanceToLGChat_EventMenu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const activeEvents = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
@@ -291,7 +340,11 @@ const sendAttendanceToLGChat_EventMenu = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Send To LG Chat Execution
+/**
+ * Sends the attendance sheet to the LG Chat.
+ * @param ctx The message context.
+ * @throws Error if the attendance sheet could not be sent.
+ */
 const sendAttendanceToLGChat_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = await ctx.update.callback_query.data.substring('sendAttendanceToLGChat-'.length);
@@ -439,6 +492,12 @@ const sendAttendanceToLGChat_Execution = async (ctx) => {
     unshakeableAttendanceSpreadsheet.resetLocalCache();
     return [weMsg, lgMsg];
 };
+/**
+ * Follow up function to sendAttendanceToLGChat_Execution.
+ * Sends either the WE or LG message to the LG Chat.
+ * @param ctx The message context.
+ * @throws Error if the attendance sheet could not be sent.
+ */
 const sendAttendanceToLGChat_WELGEvent = async (ctx, weMsg, lgMsg) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     if (!weMsg || !lgMsg || weMsg == '' || lgMsg == '') {
@@ -466,7 +525,11 @@ const sendAttendanceToLGChat_WELGEvent = async (ctx, weMsg, lgMsg) => {
             break;
     }
 };
-// Archive Attendance Sheet
+/**
+ * Archive Menu
+ * Choose which sheet to archive
+ * @param ctx The message context.
+ */
 const archiveAttendance_Menu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const archivedSheets = _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
@@ -489,6 +552,11 @@ const archiveAttendance_Menu = async (ctx) => {
     });
     unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
+/**
+ * Archives the attendance sheet.
+ * @param ctx The message context.
+ * @throws Error if the sheet could not be archived.
+ */
 const archiveAttendance_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('archiveSheet-'.length);
@@ -506,7 +574,11 @@ const archiveAttendance_Execution = async (ctx) => {
     }
     unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
-// Unarchive Attendance Sheet
+/**
+ * Unarchive Menu.
+ * Choose which sheet to unarchive
+ * @param ctx The message context.
+ */
 const unarchiveAttendance_Menu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const archiveSheet = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).findOneBy({
@@ -524,6 +596,11 @@ const unarchiveAttendance_Menu = async (ctx) => {
         await ctx.reply('Unarchive Failed! Please try again');
     }
 };
+/**
+ * Unarchives the attendance sheet.
+ * @param ctx The message context.
+ * @throws Error if the sheet could not be unarchived.
+ */
 const unarchiveAttendance_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = await ctx.update.callback_query.data.substring('unarchiveSheet-'.length);

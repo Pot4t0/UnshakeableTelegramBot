@@ -14,7 +14,17 @@ import {
 import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
 import { gsheet } from '../../../functions/_initialise';
 
-// Admin Attendance Callbacks
+/**
+ * Sets up callback query handlers for the admin attendance command.
+ * This function registers callback queries for the admin attendance command.
+ * - Add Attendance Sheet
+ * - Delete Attendance Sheet
+ * - Attendance Reminders
+ * - Send to LG Chat
+ * - Archive Attendance Sheet
+ * - Unarchive Attendance Sheet
+ * @param bot The Bot instance.
+ */
 export const adminAttendance = (bot: Bot<BotContext>) => {
   let weMsg = '';
   let lgMsg = '';
@@ -110,10 +120,14 @@ export const adminAttendance = (bot: Bot<BotContext>) => {
     unarchiveAttendance_Execution
   );
 };
-// Add Attendance Sheet Menu
-// Choose between 3 options
-// LG Event, No LG Event, Special Event
-// Special Event will have an optional meal option
+
+/**
+ * Adds an attendance sheet.
+ * Choose between 3 options
+ * LG Event, No LG Event, Special Event
+ * Special Event will have an optional meal option
+ * @param ctx The message context.
+ */
 export const addAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -149,6 +163,13 @@ export const addAttendanceSheet = async (
   );
 };
 
+/**
+ * Remove Event
+ * - Remove event from active document
+ * - Remove event from archive document
+ * - Remove event from google sheet
+ * @param title The title of the event to be removed
+ */
 const removeEventDBDoc = async (title: string) => {
   const activeDoc = await Database.getMongoRepository(
     Attendance_mongo
@@ -173,8 +194,10 @@ const removeEventDBDoc = async (title: string) => {
   }
 };
 
-// Add Sheet With LG
-// LG Event LG Date
+/**
+ * Logs the LG Event Date to the session.
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_LGEventLGDateMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -185,8 +208,10 @@ const addAttendanceSheet_LGEventLGDateMessage = async (
   ctx.session.botOnType = adminAttendanceBotOn.lgEventWEDate;
 };
 
-// Add Sheet without LG
-// No LG Event Worship Experience Date
+/**
+ * Logs the No LG Event Worship Experience Date to the session.
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_NoLGEventWEDateMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -197,8 +222,10 @@ const addAttendanceSheet_NoLGEventWEDateMessage = async (
   ctx.session.botOnType = adminAttendanceBotOn.createNoLgEventBotOn;
 };
 
-// Add Sheet Special Event
-// Special Event Meal Options
+/**
+ * Logs the Special Event Meal to the session.
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_SpecialEventMealMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -248,8 +275,10 @@ const addAttendanceSheet_SpecialEventNameMessage = async (
   ctx.session.botOnType = adminAttendanceBotOn.splEventDateBotOn;
 };
 
-// Delete Attendance Sheet
-// Able to delete any attendance sheet except for template and special event template
+/**
+ * Deletes an attendance sheet. Except for template and special event template
+ * @param ctx The message context.
+ */
 export const delAttendanceSheet = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -272,7 +301,12 @@ export const delAttendanceSheet = async (
   });
   unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
+
 // Delete Attendance Sheet Confirmation Message
+/**
+ * Confirms the deletion of an attendance sheet.
+ * @param ctx The message context.
+ */
 export const delAttendanceeSheet_CfmMessage = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -299,7 +333,11 @@ export const delAttendanceeSheet_CfmMessage = async (
     reply_markup: inlineKeyboard,
   });
 };
-// Delete Attendance Sheet Execution
+/**
+ * Deletes the attendance sheet.
+ * @param ctx The message context.
+ * @throws Error if the deletion fails.
+ */
 export const delAttendanceeSheet_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -319,17 +357,22 @@ export const delAttendanceeSheet_Execution = async (
       await unshakeableAttendanceSpreadsheet.resetLocalCache();
     } else {
       await ctx.reply(`Error during deletion! Please try again!`);
+      throw new Error('Error during deletion of attendance sheet!');
     }
   } else if (cfm == 'N') {
     await ctx.reply(`Deletion cancelled!`);
   } else {
     await ctx.reply(`Error during deletion! Please try again!`);
+    throw new Error('Error during deletion of attendance sheet!');
   }
   ctx.session = initial();
 };
 
-//Reminder Management
-//Choose which event to send reminder for
+/**
+ * Sends an attendance reminder.
+ * @param ctx The message context.
+ * @throws Error if the reminder could not be sent.
+ */
 const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const archivedSheets = Database.getMongoRepository(Attendance_mongo).find({
@@ -361,7 +404,10 @@ const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
     }
   );
 };
-//Choose which reminder to send (Not In / Specific)
+/**
+ * Attendance Reminder Menu
+ * @param ctx The message context.
+ */
 const attendanceReminder_Menu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -373,7 +419,10 @@ const attendanceReminder_Menu = async (
 
   await reminder.reminderMenu(ctx, 'Attendance');
 };
-//Send Not In Reminder Messaage
+/**
+ * Sends an attendance reminder message. (Not In)
+ * @param ctx The message context.
+ */
 const attendanceReminder_Msg = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -387,8 +436,10 @@ const attendanceReminder_Msg = async (
   }
 };
 
-//Send To LG Chat
-//Choose which event to send to LG Chat
+/**
+ * Sends the event menu to choose which event to send to LG Chat.
+ * @param ctx The message context.
+ */
 const sendAttendanceToLGChat_EventMenu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -411,7 +462,11 @@ const sendAttendanceToLGChat_EventMenu = async (
   });
 };
 
-//Send To LG Chat Execution
+/**
+ * Sends the attendance sheet to the LG Chat.
+ * @param ctx The message context.
+ * @throws Error if the attendance sheet could not be sent.
+ */
 const sendAttendanceToLGChat_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -562,6 +617,12 @@ const sendAttendanceToLGChat_Execution = async (
   return [weMsg, lgMsg];
 };
 
+/**
+ * Follow up function to sendAttendanceToLGChat_Execution.
+ * Sends either the WE or LG message to the LG Chat.
+ * @param ctx The message context.
+ * @throws Error if the attendance sheet could not be sent.
+ */
 const sendAttendanceToLGChat_WELGEvent = async (
   ctx: CallbackQueryContext<BotContext>,
   weMsg: string,
@@ -596,7 +657,11 @@ const sendAttendanceToLGChat_WELGEvent = async (
   }
 };
 
-// Archive Attendance Sheet
+/**
+ * Archive Menu
+ * Choose which sheet to archive
+ * @param ctx The message context.
+ */
 const archiveAttendance_Menu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -624,6 +689,12 @@ const archiveAttendance_Menu = async (
   });
   unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
+
+/**
+ * Archives the attendance sheet.
+ * @param ctx The message context.
+ * @throws Error if the sheet could not be archived.
+ */
 const archiveAttendance_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -651,7 +722,11 @@ const archiveAttendance_Execution = async (
   unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
-// Unarchive Attendance Sheet
+/**
+ * Unarchive Menu.
+ * Choose which sheet to unarchive
+ * @param ctx The message context.
+ */
 const unarchiveAttendance_Menu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -676,6 +751,11 @@ const unarchiveAttendance_Menu = async (
   }
 };
 
+/**
+ * Unarchives the attendance sheet.
+ * @param ctx The message context.
+ * @throws Error if the sheet could not be unarchived.
+ */
 const unarchiveAttendance_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {

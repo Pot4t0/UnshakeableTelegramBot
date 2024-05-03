@@ -5,6 +5,12 @@ const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _initialise_1 = require("../../../functions/_initialise");
+/**
+ * Log reason for not attending SF
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 8
+ * @param ctx The message context.
+ */
 const manualSFNo = async (ctx) => {
     const reason = await ctx.message.text;
     if (reason == null) {

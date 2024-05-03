@@ -6,11 +6,21 @@ const _telefunctions_1 = require("../../app/_telefunctions");
 const _db_init_1 = require("../_db-init");
 const _tableEntity_1 = require("../Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
+/**
+ * Sets up callback query handlers for choosing a sheet associated with a specific group.
+ * This function registers callback queries for changing the sheet associated with either the Attendance, SF, or Finance group.
+ * @param bot The Bot instance.
+ */
 const chooseSheet = async (bot) => {
     bot.callbackQuery('manageGSheet', _telefunctions_1.loadFunction, sheetMenu);
     bot.callbackQuery(/^changeSheet/g, _telefunctions_1.loadFunction, changeSheet); //Settings Bot On
 };
 exports.chooseSheet = chooseSheet;
+/**
+ * Handles the logic for changing the sheet associated with a specific group.
+ * This function displays a keyboard for selecting a sheet when a user clicks on a callback button.
+ * @param ctx The callback query context.
+ */
 const sheetMenu = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlinekeyboard = new grammy_1.InlineKeyboard([
@@ -37,6 +47,11 @@ const sheetMenu = async (ctx) => {
         reply_markup: inlinekeyboard,
     });
 };
+/**
+ * Handles the logic for changing the sheet associated with a specific group.
+ * This function prompts the user to input the sheet ID for the selected sheet.
+ * @param ctx The callback query context.
+ */
 const changeSheet = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const sheetType = ctx.update.callback_query.data.substring('changeSheet'.length);
@@ -46,6 +61,11 @@ const changeSheet = async (ctx) => {
     });
     ctx.session.botOnType = 33;
 };
+/**
+ * Executes the sheet change process after a sheet ID is selected.
+ * This function updates the database with the new sheet ID and notifies the user about the change.
+ * @param ctx The filter for message events.
+ */
 const changeSheetExecution = async (ctx) => {
     const sheetid = ctx.message.text;
     const sheetType = ctx.session.text;

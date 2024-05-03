@@ -19,6 +19,12 @@ import { DateTime } from 'luxon';
 import { searchRowNo } from '../../../gsheets/_gsheet_functions';
 import { GoogleSpreadsheetRow } from 'google-spreadsheet';
 
+/**
+ * /adminFinance
+ * - Sets up callback query handlers for the Finance command.
+ * - This function registers callback queries for the Finance command.
+ * @param bot The Bot instance.
+ */
 export const adminFinance = (bot: Bot<BotContext>) => {
   //Finance Team Management
   team.teamManagement(bot, 'Finance');
@@ -81,6 +87,11 @@ export const adminFinance = (bot: Bot<BotContext>) => {
   chat.chooseChat(bot, 'Finance');
 };
 
+/**
+ * Fund Management Menu
+ * - Sends a list of options for fund management.
+ * @param ctx The message context.
+ */
 const fundMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const inlineKeyboard = new InlineKeyboard([
@@ -102,6 +113,10 @@ const fundMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Logs Witness for Offering
+ * @param ctx The message context.
+ */
 const addOffering = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const names = await Database.getRepository(Names).find();
@@ -117,6 +132,11 @@ const addOffering = async (ctx: CallbackQueryContext<BotContext>) => {
     reply_markup: inlineKeyboard,
   });
 };
+
+/**
+ * Logs Offering Amount
+ * @param ctx The message context.
+ */
 const addOfferingAmount = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const callback = ctx.update.callback_query.data.substring(
@@ -128,6 +148,11 @@ const addOfferingAmount = async (ctx: CallbackQueryContext<BotContext>) => {
   });
   ctx.session.botOnType = 13;
 };
+
+/**
+ * Deletes Offering
+ * @param ctx The message context.
+ */
 const deleteOffering = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   await ctx.reply('Please input Transaction Id:', {
@@ -136,6 +161,11 @@ const deleteOffering = async (ctx: CallbackQueryContext<BotContext>) => {
   ctx.session.botOnType = 15;
 };
 
+/**
+ * Reimbursement Management Menu
+ * - Sends a list of options for reimbursement management.
+ * @param ctx The message context.
+ */
 const reimbursementMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const claims = await Database.getMongoRepository(Claims).find();
@@ -195,6 +225,11 @@ const reimbursementMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   );
 };
 
+/**
+ * View All Claims
+ * - Sends all claims to the finance chat.
+ * @param ctx The message context.
+ */
 const viewAllClaims = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const approvalClaims = await Database.getMongoRepository(Claims).find({
@@ -213,6 +248,11 @@ const viewAllClaims = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Approve Reimbursement
+ * - Sends a list of claims to approve.
+ * @param ctx The message context.
+ */
 const approveReimbursement = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const claims = await Database.getMongoRepository(Claims).find({
@@ -231,6 +271,11 @@ const approveReimbursement = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Approve Reimbursement Function
+ * - Approves the selected claim.
+ * @param ctx The message context.
+ */
 const approveReimbursementFunction = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -300,6 +345,11 @@ const approveReimbursementFunction = async (
   ctx.session = initial();
 };
 
+/**
+ * Reject Reimbursement
+ * - Sends a list of claims to reject.
+ * @param ctx The message context.
+ */
 const rejectReimbursement = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const approvedClaims = await Database.getMongoRepository(Claims).find({
@@ -322,6 +372,11 @@ const rejectReimbursement = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Reject Reimbursement Function
+ * - Rejects the selected claim.
+ * @param ctx The message context.
+ */
 const rejectReimbursementFunction = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -386,6 +441,11 @@ const rejectReimbursementFunction = async (
   ctx.session = initial();
 };
 
+/**
+ * Completed Reimbursement
+ * - Sends a list of claims to complete.
+ * @param ctx The message context.
+ */
 const completedReimbursement = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -406,6 +466,11 @@ const completedReimbursement = async (
   });
 };
 
+/**
+ * Completed Reimbursement Witness
+ * - Sends a list of witnesses to complete the claim.
+ * @param ctx The message context.
+ */
 const completedReimbursementWitness = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -435,6 +500,11 @@ const completedReimbursementWitness = async (
   });
 };
 
+/**
+ * Completed Reimbursement Amount
+ * - Completes the claim with the exact amount.
+ * @param ctx The message context.
+ */
 const completedReimbursementAmount = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -479,6 +549,11 @@ const completedReimbursementAmount = async (
     }
   );
 };
+/**
+ * Completed Reimbursement Function
+ * - Completes the claim with the exact amount.
+ * @param ctx The message context.
+ */
 const completedReimbursementFunction = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -577,6 +652,11 @@ const completedReimbursementFunction = async (
   }
 };
 
+/**
+ * Delete Reimbursements
+ * - Sends a list of claims to delete.
+ * @param ctx The message context.
+ */
 const deleteReimbursements = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const claims = await Database.getMongoRepository(Claims).find({
@@ -595,6 +675,11 @@ const deleteReimbursements = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Delete Reimbursement Function
+ * - Deletes the selected claim.
+ * @param ctx The message context.
+ */
 const deleteReimbursementFunction = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -679,6 +764,11 @@ const deleteReimbursementFunction = async (
   await ctx.reply('Claim Deleted');
 };
 
+/**
+ * Change Finance Password
+ * - Changes the finance password.
+ * @param ctx The message context.
+ */
 const changeFinancePassword = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
 
@@ -686,6 +776,11 @@ const changeFinancePassword = async (ctx: CallbackQueryContext<BotContext>) => {
   ctx.session.botOnType = 17;
 };
 
+/**
+ * Confirm Password
+ * - Confirms the password change.
+ * @param ctx The message context.
+ */
 const cfmPassword = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const callback = ctx.update.callback_query.data.substring(
@@ -714,4 +809,9 @@ const cfmPassword = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
+/**
+ * Change Finance Chat
+ * - Changes the finance chat.
+ * @param ctx The message context.
+ */
 const changeFinanceChat = async (ctx: CallbackQueryContext<BotContext>) => {};

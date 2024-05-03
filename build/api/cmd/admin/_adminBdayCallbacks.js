@@ -6,6 +6,12 @@ const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _index_1 = require("../../database_mongoDB/functions/_index");
 const _telefunctions_1 = require("../../app/_telefunctions");
+/**
+ * /adminBday
+ * - Sets up callback query handlers for the Birthday command.
+ * - This function registers callback queries for the Birthday command.
+ * @param bot The Bot instance.
+ */
 const adminBday = (bot) => {
     //Birthday View Callbacks
     _index_1.wish.wishView(bot, 'Birthday');
@@ -19,8 +25,11 @@ const adminBday = (bot) => {
     bot.callbackQuery('sendReminder-Birthday', _telefunctions_1.loadFunction, reminder_Msg);
 };
 exports.adminBday = adminBday;
-// Reminder Management
-//Choose which event to send reminder for
+/**
+ * Birthday Reminder System
+ * - Sends a list of events to choose from.
+ * @param ctx The message context.
+ */
 const reminderSystem = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const event = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
@@ -37,7 +46,11 @@ const reminderSystem = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Choose which reminder to send (Not In / Specific)
+/**
+ * Choose which reminder to send (Not In / Specific)
+ * @param ctx The message context.
+ * @throws Error if the reminder could not be sent.
+ */
 const reminder_Menu = async (ctx) => {
     const title = ctx.update.callback_query.data.substring('sendBirthdayReminder-'.length);
     ctx.session.name = title;

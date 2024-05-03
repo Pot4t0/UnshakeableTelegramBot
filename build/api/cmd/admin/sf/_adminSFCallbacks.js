@@ -9,6 +9,12 @@ const _index_1 = require("../../../database_mongoDB/functions/_index");
 const _adminSFInternal_1 = require("./_adminSFInternal");
 const _telefunctions_1 = require("../../../app/_telefunctions");
 const _initialise_1 = require("../../../functions/_initialise");
+/**
+ * /adminsf
+ * - Sets up callback query handlers for the SF command.
+ * - This function registers callback queries for the SF command.
+ * @param bot The Bot instance.
+ */
 const adminSF = (bot) => {
     // SF Reminder
     bot.callbackQuery('manageSFReminder', reminderManagement);
@@ -24,15 +30,26 @@ const adminSF = (bot) => {
     bot.callbackQuery(/^rmExcludeUser-/g, removeExcludeFromReminderFunction);
 };
 exports.adminSF = adminSF;
-// Reminder Management
+/**
+ * Sends a reminder management menu.
+ * @param ctx The message context.
+ */
 const reminderManagement = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await _index_1.reminder.reminderMenu(ctx, 'Admin');
 };
+/**
+ * Sends a reminder for those that have not sent in their SF.
+ * @param ctx The message context.
+ */
 const sendNotInReminder = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await _index_1.reminder.reminderSendAllNotIn_ReminderMessage(ctx);
 };
+/**
+ * Sends a manual SF menu. Used for manual SF submission.
+ * @param ctx The message context.
+ */
 const manualSF = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
@@ -46,6 +63,10 @@ const manualSF = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Sends a sermon feedback manually.
+ * @param ctx The message context.
+ */
 const sendsf = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.name = await ctx.update.callback_query.data.substring('manualSFName-'.length);
@@ -67,6 +88,10 @@ const sendsf = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Checks attendance of sermon
+ * @param ctx The message context.
+ */
 const manualSFYesNo = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = await ctx.update.callback_query.data.substring('manualSendSF-'.length);
@@ -102,6 +127,10 @@ const manualSFYesNo = async (ctx) => {
         ctx.session = await (0, _SessionData_1.initial)();
     }
 };
+/**
+ * Choose user to exclude from SF reminder.
+ * @param ctx The message context.
+ */
 const excludeFromReminder = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const name = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
@@ -135,6 +164,11 @@ const excludeFromReminder = async (ctx) => {
         }
     }
 };
+/**
+ * Excludes User Menu.
+ * - Adds or removes user from exclusion list.
+ * @param ctx The message context.
+ */
 const excludeFromReminderMenu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -155,6 +189,10 @@ const excludeFromReminderMenu = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Excludes a user from the SF reminder.
+ * @param ctx The message context.
+ */
 const excludeFromReminderFunction = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const teleUserName = ctx.update.callback_query.data.substring('excludeUser-'.length);
@@ -170,6 +208,10 @@ const excludeFromReminderFunction = async (ctx) => {
     }
     await ctx.reply(`User ${teleUserName} excluded from SF reminder`);
 };
+/**
+ * Choose user to remove from exclusion list.
+ * @param ctx The message context.
+ */
 const removeExcludeFromReminder = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const excludeNamesArr = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).findOneBy({ option: 'SF Exclude' });
@@ -189,6 +231,10 @@ const removeExcludeFromReminder = async (ctx) => {
         await ctx.reply('No user is excluded from SF reminder');
     }
 };
+/**
+ * Removes a user from the exclusion list.
+ * @param ctx The message context.
+ */
 const removeExcludeFromReminderFunction = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const teleUserName = ctx.update.callback_query.data.substring('rmExcludeUser-'.length);

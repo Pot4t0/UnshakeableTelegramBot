@@ -5,6 +5,16 @@ import { Names } from '../Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
+/**
+ * Sets up callback query handlers for managing team members.
+ * This function registers callback queries for adding, deleting, and editing team members.
+ * @param bot The Bot instance.
+ * @param team The team parameter, which can be either 'Welfare', 'Admin', 'Birthday', 'Leaders', or 'Finance'.
+ * @returns The team management menu.
+ * @throws Error if the team parameter is invalid.
+ * @example
+ * teamManagement(bot, 'Welfare');
+ */
 export const teamManagement = async (
   bot: Bot<BotContext>,
   team: 'Welfare' | 'Admin' | 'Birthday' | 'Leaders' | 'Finance'
@@ -52,6 +62,17 @@ export const teamManagement = async (
     await editMember_Execution(ctx);
   });
 };
+/**
+ * Displays the team management menu.
+ * This function displays the team members and provides options to add, delete, or edit members.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare', 'Admin', 'Birthday', 'Leaders', or 'Finance'.
+ * @param userRole The user role parameter, which can be either 'welfare', 'admin', 'bday', 'leaders', or 'finance'.
+ * @throws Error if the team or user role parameter is invalid.
+ * @example
+ * teamManagementMenu(ctx, 'Welfare', 'welfare');
+ * teamManagementMenu(ctx, 'Leaders', 'leaders');
+ */
 const teamManagementMenu = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Admin' | 'Birthday' | 'Leaders' | 'Finance',
@@ -149,6 +170,11 @@ const teamManagementMenu = async (
   }
 };
 
+/**
+ * Adds a member to the team.
+ * This function displays a list of users to choose from and adds the selected user to the team.
+ * @param ctx The callback query context.
+ */
 const addMember = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;
@@ -184,6 +210,11 @@ const addMember = async (ctx: CallbackQueryContext<BotContext>) => {
     console.log('Sessions Failed (userRole/team)');
   }
 };
+/**
+ * Adds a member to the team.
+ * This function adds the selected user to the team.
+ * @param ctx The callback query context.
+ */
 const addMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const selectedName = await ctx.update.callback_query.data.substring(
@@ -234,6 +265,11 @@ const addMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
   ctx.session = initial();
 };
 
+/**
+ * Deletes a member from the team.
+ * This function displays a list of users to choose from and deletes the selected user from the team.
+ * @param ctx The callback query context.
+ */
 const delMember = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;
@@ -270,6 +306,12 @@ const delMember = async (ctx: CallbackQueryContext<BotContext>) => {
     ctx.session = initial();
   }
 };
+/**
+ * Deletes a member from the team.
+ * This function deletes the selected user from the team.
+ * @param ctx The callback query context.
+ * @throws Error if the user role or team is invalid.
+ */
 const delMember_Execution = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const userRole = ctx.session.userRole;

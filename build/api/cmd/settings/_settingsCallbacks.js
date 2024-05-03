@@ -8,8 +8,12 @@ const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
 const _index_1 = require("../../database_mongoDB/functions/_index");
 const _initialise_1 = require("../../functions/_initialise");
-// Settings Callbacks
-// Any overall bot admin settings
+/**
+ * Sets up callback query handlers for the settings command.
+ * This function registers callback queries for the settings command.
+ * @param bot The Bot instance.
+ * @returns The next middleware function or command function.
+ */
 const settings = (bot) => {
     bot.callbackQuery('settingsAnnouncements', _telefunctions_1.loadFunction, settingsAnnouncements_Write); //Settings Announcements Input
     bot.callbackQuery('settingsNewUser', _telefunctions_1.loadFunction, newUserManagement); //Settings New User Management
@@ -17,7 +21,6 @@ const settings = (bot) => {
     bot.callbackQuery('settingsDeleteUser', _telefunctions_1.loadFunction, rmUserManagement);
     bot.callbackQuery(/^rmUser-/g, _telefunctions_1.loadFunction, rmUser);
     bot.callbackQuery(/^cfmRmUser-/g, _telefunctions_1.loadFunction, cfmRmUser);
-    // bot.callbackQuery('settingsLGGroup', loadFunction, lgGroupManagement); //Settings Bot On
     //Settings Announcements Output is located in BotOnFunctions
     _index_1.chat.chooseChat(bot, 'LG');
     //Settings Leaders Team Management
@@ -26,7 +29,11 @@ const settings = (bot) => {
     _index_1.gSheetDB.chooseSheet(bot);
 };
 exports.settings = settings;
-// Settings Announcements Input
+/**
+ * Sends an announcement to all users.
+ * The function crafts an announcement to send to all users.
+ * @param ctx The message context.
+ */
 const settingsAnnouncements_Write = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply(`Write down the bot announcement msg. It wll broadcast to everyone using the bot.
@@ -37,7 +44,11 @@ const settingsAnnouncements_Write = async (ctx) => {
     });
     ctx.session.botOnType = 31;
 };
-// Settings New User Management
+/**
+ * New User Management
+ * This function prompts the user to add a new user in their contact list.
+ * @param bot The Bot instance.
+ */
 const newUserManagement = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const button = new grammy_1.Keyboard().requestUser('Add User', 1).oneTime(true);
@@ -45,7 +56,11 @@ const newUserManagement = async (ctx) => {
         reply_markup: button,
     });
 };
-// Settings Remove User Management
+/**
+ * Remove User Management
+ * This function prompts the user to remove a user in the database.
+ * @param bot The Bot instance
+ */
 const rmUserManagement = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const allNames = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find();
@@ -59,6 +74,11 @@ const rmUserManagement = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Removes a user from the database.
+ * This function prompts the user to confirm the removal of a user.
+ * @param ctx The callback query context.
+ */
 const rmUser = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const user = await ctx.update.callback_query.data.substring('rmUser-'.length);
@@ -79,6 +99,11 @@ const rmUser = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Confirms the removal of a user.
+ * This function removes a user from the database.
+ * @param ctx The callback query context.
+ */
 const cfmRmUser = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const cfm = await ctx.update.callback_query.data.substring('cfmRmUser-'.length);

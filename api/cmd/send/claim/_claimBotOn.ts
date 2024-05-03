@@ -7,9 +7,12 @@ import { Database } from '../../../database_mongoDB/_db-init';
 import { randomUUID } from 'crypto';
 import { gsheet } from '../../../functions/_initialise';
 
-// /sendclaim BotOn Functions
-//Used for receiving claim amount
-//Refer to logClaimAmount Method in _claimInternal.ts
+/**
+ * Used for receiving claim amount
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 10 (logClaimAmountBotOn)
+ * @param ctx The message context.
+ */
 export const logClaimAmount = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = undefined;
   const amount = ctx.message.text;
@@ -22,9 +25,13 @@ export const logClaimAmount = async (ctx: Filter<BotContext, 'message'>) => {
     await ctx.reply('Please input the description for the claim:');
   }
 };
-//Used for receiving claim reason
-//Refer to botOnHandler in _botOn_functions.ts
-//BotOntype = 11
+
+/**
+ * Used for receiving claim reason
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 11
+ * @param ctx The message context.
+ */
 export const logClaimReason = async (ctx: Filter<BotContext, 'message'>) => {
   ctx.session.botOnType = undefined;
   const reason = ctx.message.text;
@@ -43,6 +50,12 @@ export const logClaimReason = async (ctx: Filter<BotContext, 'message'>) => {
 //Used for submitting claim
 //Refer to BotOnHandler in _botOn_functions.ts
 //BotOnPhoto = 1
+/**
+ * Used for submitting claim
+ * Used in _botOn_functions.ts
+ * - Refer to case botOnPhoto = 1
+ * @param ctx The message context with photo.
+ */
 export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
   ctx.session.botOnPhoto = undefined;
   const photo = await ctx.getFile();
@@ -80,7 +93,7 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
         Status: status,
         Claimee: user,
       });
-      const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`;
+      const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`; // Telegram API to get photo
       newRow.set('Images', photoFormula);
       await newRow.save();
       const sendDB = await Database.getMongoRepository(Claims).save(claimDoc);

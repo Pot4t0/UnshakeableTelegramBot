@@ -4,8 +4,13 @@ exports.addAttendanceSheet_CreateSpecialEventSheet = exports.addAttendanceSheet_
 const _SessionData_1 = require("../../../models/_SessionData");
 const __adminAttendanceInternal_1 = require("./__adminAttendanceInternal");
 const _initialise_1 = require("../../../functions/_initialise");
-// LG Event Worship Experience Date
-// Used in _botOn_functions.ts in botOntype = 21
+/**
+ * Adds the LG Event Worship Experience Date to the session.
+ * Used in _botOn_functions.ts
+ * - botOntype = 21
+ * @param ctx The message context.
+ * @throws Error if the LG Event Worship Experience Date is not provided.
+ */
 const addAttendanceSheet_LGEventWEDateMessage = async (ctx) => {
     ctx.session.botOnType = await undefined;
     ctx.session.eventDate = await ctx.message.text;
@@ -18,8 +23,12 @@ const addAttendanceSheet_LGEventWEDateMessage = async (ctx) => {
     ctx.session.botOnType = __adminAttendanceInternal_1.adminAttendanceBotOn.createLgEventBotOn;
 };
 exports.addAttendanceSheet_LGEventWEDateMessage = addAttendanceSheet_LGEventWEDateMessage;
-// Create LG Event Sheet
-// Used in _botOn_functions.ts in botOntype = 22
+/**
+ * Create LG Event Sheet
+ * Used in _botOn_functions.ts
+ * - botOntype = 22
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_CreateLGEventSheet = async (ctx) => {
     var _a;
     const lgDate = await ctx.message.text;
@@ -57,8 +66,12 @@ const addAttendanceSheet_CreateLGEventSheet = async (ctx) => {
     }
 };
 exports.addAttendanceSheet_CreateLGEventSheet = addAttendanceSheet_CreateLGEventSheet;
-// Create No LG Event Sheet
-// Used in _botOn_functions.ts in botOntype = 23
+/**
+ * Create No LG Event Sheet
+ * Used in _botOn_functions.ts
+ * - botOntype = 23
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_CreateNoLGEventSheet = async (ctx) => {
     const weDate = ctx.message.text;
     if (weDate == null) {
@@ -95,8 +108,12 @@ const addAttendanceSheet_CreateNoLGEventSheet = async (ctx) => {
     }
 };
 exports.addAttendanceSheet_CreateNoLGEventSheet = addAttendanceSheet_CreateNoLGEventSheet;
-// Special Event Date
-// Used in _botOn_functions.ts in botOntype = 24
+/**
+ * Adds the Special Event Date to the session.
+ * Used in _botOn_functions.ts
+ * - botOntype = 24
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_SpecialEventDateMessage = async (ctx) => {
     const specialEvntName = await ctx.message.text;
     if (specialEvntName == null) {
@@ -109,8 +126,12 @@ const addAttendanceSheet_SpecialEventDateMessage = async (ctx) => {
     ctx.session.botOnType = __adminAttendanceInternal_1.adminAttendanceBotOn.createSplEventBotOn;
 };
 exports.addAttendanceSheet_SpecialEventDateMessage = addAttendanceSheet_SpecialEventDateMessage;
-// Create Special Event Sheet
-// Used in _botOn_functions.ts in botOntype = 25
+/**
+ * Create Special Event Sheet
+ * Used in _botOn_functions.ts
+ * - botOntype = 25
+ * @param ctx The message context.
+ */
 const addAttendanceSheet_CreateSpecialEventSheet = async (ctx) => {
     const event_date = await ctx.message.text;
     if (event_date == null) {
