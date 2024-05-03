@@ -7,6 +7,7 @@ const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const crypto_1 = require("crypto");
 const _initialise_1 = require("../../../functions/_initialise");
+const _index_1 = require("../../../database_mongoDB/functions/_index");
 /**
  * Used for receiving claim amount
  * Used in _botOn_functions.ts
@@ -74,6 +75,9 @@ const submitClaim = async (ctx) => {
         const claimMsg = `Claim submitted by\n${user}\n${formattedDate}\n\n<b>${status}</b>\n\nAmount: $${amount}\nDescription: ${reason}`;
         const financeSheet = await (0, _initialise_1.gsheet)('finance');
         const claimsSheet = financeSheet.sheetsByTitle['Claims'];
+        const financeTeam = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
+            role: 'finance',
+        });
         if (claimChatId && user && amount && reason) {
             const claimId = (0, crypto_1.randomUUID)();
             const claimDoc = new _tableEntity_1.Claims();
@@ -98,6 +102,9 @@ const submitClaim = async (ctx) => {
             const sendDB = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).save(claimDoc);
             if (sendDB && newRow) {
                 await ctx.reply('Claim submitted! Thank you!');
+                await Promise.all(financeTeam.map(async (i) => {
+                    await _index_1.dbMessaging.sendMessageUser(i.teleUser, `${user} has submitted a claim.`, ctx);
+                }));
             }
             else {
                 await ctx.reply('Error! Please try again!');

@@ -2,10 +2,11 @@ import { Filter } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { initial } from '../../../models/_SessionData';
 import { DateTime } from 'luxon';
-import { Claims } from '../../../database_mongoDB/Entity/_tableEntity';
+import { Claims, Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { Database } from '../../../database_mongoDB/_db-init';
 import { randomUUID } from 'crypto';
 import { gsheet } from '../../../functions/_initialise';
+import { dbMessaging } from '../../../database_mongoDB/functions/_index';
 
 /**
  * Used for receiving claim amount
@@ -73,6 +74,9 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
     const claimMsg = `Claim submitted by\n${user}\n${formattedDate}\n\n<b>${status}</b>\n\nAmount: $${amount}\nDescription: ${reason}`;
     const financeSheet = await gsheet('finance');
     const claimsSheet = financeSheet.sheetsByTitle['Claims'];
+    const financeTeam = await Database.getMongoRepository(Names).find({
+      role: 'finance',
+    });
 
     if (claimChatId && user && amount && reason) {
       const claimId = randomUUID();
@@ -99,6 +103,15 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
       const sendDB = await Database.getMongoRepository(Claims).save(claimDoc);
       if (sendDB && newRow) {
         await ctx.reply('Claim submitted! Thank you!');
+        await Promise.all(
+          financeTeam.map(async (i) => {
+            await dbMessaging.sendMessageUser(
+              i.teleUser,
+              `${user} has submitted a claim.`,
+              ctx
+            );
+          })
+        );
       } else {
         await ctx.reply('Error! Please try again!');
       }
