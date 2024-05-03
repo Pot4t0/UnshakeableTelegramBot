@@ -11,6 +11,12 @@ const _SessionData_1 = require("../../../models/_SessionData");
 const uuid_1 = require("uuid");
 const luxon_1 = require("luxon");
 const _gsheet_functions_1 = require("../../../gsheets/_gsheet_functions");
+/**
+ * /adminFinance
+ * - Sets up callback query handlers for the Finance command.
+ * - This function registers callback queries for the Finance command.
+ * @param bot The Bot instance.
+ */
 const adminFinance = (bot) => {
     //Finance Team Management
     _index_1.team.teamManagement(bot, 'Finance');
@@ -39,6 +45,11 @@ const adminFinance = (bot) => {
     _index_1.chat.chooseChat(bot, 'Finance');
 };
 exports.adminFinance = adminFinance;
+/**
+ * Fund Management Menu
+ * - Sends a list of options for fund management.
+ * @param ctx The message context.
+ */
 const fundMenu = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const inlineKeyboard = new grammy_1.InlineKeyboard([
@@ -59,6 +70,10 @@ const fundMenu = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Logs Witness for Offering
+ * @param ctx The message context.
+ */
 const addOffering = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const names = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
@@ -72,6 +87,10 @@ const addOffering = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Logs Offering Amount
+ * @param ctx The message context.
+ */
 const addOfferingAmount = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('addOffering-'.length);
@@ -81,6 +100,10 @@ const addOfferingAmount = async (ctx) => {
     });
     ctx.session.botOnType = 13;
 };
+/**
+ * Deletes Offering
+ * @param ctx The message context.
+ */
 const deleteOffering = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply('Please input Transaction Id:', {
@@ -88,6 +111,11 @@ const deleteOffering = async (ctx) => {
     });
     ctx.session.botOnType = 15;
 };
+/**
+ * Reimbursement Management Menu
+ * - Sends a list of options for reimbursement management.
+ * @param ctx The message context.
+ */
 const reimbursementMenu = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const claims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find();
@@ -138,6 +166,11 @@ const reimbursementMenu = async (ctx) => {
         parse_mode: 'HTML',
     });
 };
+/**
+ * View All Claims
+ * - Sends all claims to the finance chat.
+ * @param ctx The message context.
+ */
 const viewAllClaims = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const approvalClaims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find({
@@ -155,6 +188,11 @@ const viewAllClaims = async (ctx) => {
         await ctx.reply(n.msg, { parse_mode: 'HTML' });
     });
 };
+/**
+ * Approve Reimbursement
+ * - Sends a list of claims to approve.
+ * @param ctx The message context.
+ */
 const approveReimbursement = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const claims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find({
@@ -170,6 +208,11 @@ const approveReimbursement = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Approve Reimbursement Function
+ * - Approves the selected claim.
+ * @param ctx The message context.
+ */
 const approveReimbursementFunction = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('approveReimbursement-'.length);
@@ -221,6 +264,11 @@ const approveReimbursementFunction = async (ctx) => {
     await ctx.reply('Claim Approved');
     ctx.session = (0, _SessionData_1.initial)();
 };
+/**
+ * Reject Reimbursement
+ * - Sends a list of claims to reject.
+ * @param ctx The message context.
+ */
 const rejectReimbursement = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const approvedClaims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find({
@@ -240,6 +288,11 @@ const rejectReimbursement = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Reject Reimbursement Function
+ * - Rejects the selected claim.
+ * @param ctx The message context.
+ */
 const rejectReimbursementFunction = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('rejectReimbursement-'.length);
@@ -284,6 +337,11 @@ const rejectReimbursementFunction = async (ctx) => {
     await ctx.reply(`Claim ${desc} Rejected. User has been notified`);
     ctx.session = (0, _SessionData_1.initial)();
 };
+/**
+ * Completed Reimbursement
+ * - Sends a list of claims to complete.
+ * @param ctx The message context.
+ */
 const completedReimbursement = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const claims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find({
@@ -299,6 +357,11 @@ const completedReimbursement = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Completed Reimbursement Witness
+ * - Sends a list of witnesses to complete the claim.
+ * @param ctx The message context.
+ */
 const completedReimbursementWitness = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('completedReimbursement-'.length);
@@ -321,6 +384,11 @@ const completedReimbursementWitness = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Completed Reimbursement Amount
+ * - Completes the claim with the exact amount.
+ * @param ctx The message context.
+ */
 const completedReimbursementAmount = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('completedReimbursementWitness-'.length);
@@ -357,6 +425,11 @@ const completedReimbursementAmount = async (ctx) => {
         ]),
     });
 };
+/**
+ * Completed Reimbursement Function
+ * - Completes the claim with the exact amount.
+ * @param ctx The message context.
+ */
 const completedReimbursementFunction = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('completedReimbursementAmount-'.length);
@@ -445,6 +518,11 @@ const completedReimbursementFunction = async (ctx) => {
         }
     }
 };
+/**
+ * Delete Reimbursements
+ * - Sends a list of claims to delete.
+ * @param ctx The message context.
+ */
 const deleteReimbursements = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const claims = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).find({
@@ -460,6 +538,11 @@ const deleteReimbursements = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
+/**
+ * Delete Reimbursement Function
+ * - Deletes the selected claim.
+ * @param ctx The message context.
+ */
 const deleteReimbursementFunction = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('deleteReimbursements-'.length);
@@ -514,11 +597,21 @@ const deleteReimbursementFunction = async (ctx) => {
     });
     await ctx.reply('Claim Deleted');
 };
+/**
+ * Change Finance Password
+ * - Changes the finance password.
+ * @param ctx The message context.
+ */
 const changeFinancePassword = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply('Please input current password:', {});
     ctx.session.botOnType = 17;
 };
+/**
+ * Confirm Password
+ * - Confirms the password change.
+ * @param ctx The message context.
+ */
 const cfmPassword = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('changePassword'.length);
@@ -543,4 +636,9 @@ const cfmPassword = async (ctx) => {
         ctx.session.botOnType = 18;
     }
 };
+/**
+ * Change Finance Chat
+ * - Changes the finance chat.
+ * @param ctx The message context.
+ */
 const changeFinanceChat = async (ctx) => { };

@@ -34,10 +34,6 @@ __decorate([
     __metadata("design:type", String)
 ], Events.prototype, "eventDate", void 0);
 __decorate([
-    (0, typeorm_1.Column)('simple-json'),
-    __metadata("design:type", Array)
-], Events.prototype, "assignment", void 0);
-__decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Events.prototype, "notAllowedUser", void 0);

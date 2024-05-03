@@ -1,4 +1,4 @@
-import { Bot, CallbackQueryContext, Filter, InlineKeyboard } from 'grammy';
+import { Bot, CallbackQueryContext, InlineKeyboard } from 'grammy';
 import { BotContext } from '../../app/_index';
 import { Database } from '../../database_mongoDB/_db-init';
 import { Events } from '../../database_mongoDB/Entity/_tableEntity';
@@ -10,6 +10,12 @@ import {
 } from '../../database_mongoDB/functions/_index';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
+/**
+ * /adminBday
+ * - Sets up callback query handlers for the Birthday command.
+ * - This function registers callback queries for the Birthday command.
+ * @param bot The Bot instance.
+ */
 export const adminBday = (bot: Bot<BotContext>) => {
   //Birthday View Callbacks
   wish.wishView(bot, 'Birthday');
@@ -26,8 +32,11 @@ export const adminBday = (bot: Bot<BotContext>) => {
   bot.callbackQuery('sendReminder-Birthday', loadFunction, reminder_Msg);
 };
 
-// Reminder Management
-//Choose which event to send reminder for
+/**
+ * Birthday Reminder System
+ * - Sends a list of events to choose from.
+ * @param ctx The message context.
+ */
 const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const event = await Database.getMongoRepository(Events).find({
@@ -49,7 +58,11 @@ const reminderSystem = async (ctx: CallbackQueryContext<BotContext>) => {
     }
   );
 };
-//Choose which reminder to send (Not In / Specific)
+/**
+ * Choose which reminder to send (Not In / Specific)
+ * @param ctx The message context.
+ * @throws Error if the reminder could not be sent.
+ */
 const reminder_Menu = async (ctx: CallbackQueryContext<BotContext>) => {
   const title = ctx.update.callback_query.data.substring(
     'sendBirthdayReminder-'.length

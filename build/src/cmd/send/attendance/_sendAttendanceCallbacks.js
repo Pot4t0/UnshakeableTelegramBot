@@ -8,13 +8,15 @@ const _sendAttendanceInternal_1 = require("./_sendAttendanceInternal");
 const _sendAttendanceInternal_2 = require("./_sendAttendanceInternal");
 const _telefunctions_1 = require("../../../app/_telefunctions");
 const _initialise_1 = require("../../../functions/_initialise");
-//Send Attendance Callbacks
-// For Special Event
-// Take Event Attendance (Yes/No) -> Take Reason (If no) -> Take Meal Attendance (if Have) -> Take Reason (if no) -> Log Attendance
-// For No LG Event
-// Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Log Attendance
-// For LG Event
-// Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Take LG Attendance (Yes/No) -> Take Reason (if no) -> Log Attendance
+/**
+ * @Special For Special Event
+ * - Take Event Attendance (Yes/No) -> Take Reason (If no) -> Take Meal Attendance (if Have) -> Take Reason (if no) -> Log Attendance
+ * @WE For No LG Event (WE only)
+ * - Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Log Attendance
+ * @WELG For LG Event (With both WE and LG)
+ * - Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Take LG Attendance (Yes/No) -> Take Reason (if no) -> Log Attendance
+ * @param bot The Bot instance.
+ */
 const sendAttendance = (bot) => {
     bot.callbackQuery(/^svcLGAttendance/g, _telefunctions_1.loadFunction, attendanceEventDecision);
     bot.callbackQuery(/^WeAttendance/g, _telefunctions_1.loadFunction, WeAttendance);
@@ -25,8 +27,10 @@ const sendAttendance = (bot) => {
     bot.callbackQuery(/^dinnerAttendance-/g, _telefunctions_1.loadFunction, dinnerAttendance);
 };
 exports.sendAttendance = sendAttendance;
-// Attendance Event Decision Function
-// Choose which attendance event message to send based on sheet data
+/**
+ * Checks the attendance event and sends the appropriate message.
+ * @param ctx The callback query context.
+ */
 const attendanceEventDecision = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const unshakeableAttendanceSpreadsheet = (0, _initialise_1.gsheet)('attendance');
@@ -125,7 +129,10 @@ const attendanceEventDecision = async (ctx) => {
         }
     }
 };
-// Special Event Attendance Logging Function
+/**
+ * Logs attendance for special events.
+ * @param ctx The callback query context.
+ */
 const SpecialAttendance = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = ctx.update.callback_query.data.substring('SpecialAttendance-'.length);
@@ -182,7 +189,10 @@ const SpecialAttendance = async (ctx) => {
         ctx.session = (0, _SessionData_1.initial)();
     }
 };
-// WE Attendance Logging Function
+/**
+ * Logs attendance for No LG events.
+ * @param ctx The callback query context.
+ */
 const WeAttendance = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = await ctx.update.callback_query.data.substring('WeAttendance-'.length);
@@ -232,7 +242,10 @@ const WeAttendance = async (ctx) => {
         ctx.session = (0, _SessionData_1.initial)();
     }
 };
-// LG Attendance Logging Function
+/**
+ * Logs attendance for LG events.
+ * @param ctx The callback query context.
+ */
 const lgAttendance = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = await ctx.update.callback_query.data.substring('lgAttendance-'.length);
@@ -266,10 +279,12 @@ const lgAttendance = async (ctx) => {
         ctx.session = (0, _SessionData_1.initial)();
     }
 };
-// Dinner Attendance Function
-// Logs Dinner Attendance to Google Sheets (Special/ No LG Event)
-// Proceeds to move to LG Attendance Function (LG Event)
-// If Attendance is No, it will proceed to Dinner Attendance Reason Function at botOnType = 29
+/**
+ * Logs dinner attendance.
+ * - Logs Dinner Attendance to Google Sheets (Special/ No LG Event)
+ * - Proceeds to move to LG Attendance Function (LG Event)
+ * @param ctx The callback query context.
+ */
 const dinnerAttendance = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const callback = await ctx.update.callback_query.data.substring('dinnerAttendance-'.length);

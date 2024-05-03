@@ -5,12 +5,23 @@ const _telefunctions_1 = require("../../../app/_telefunctions");
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _claimInternal_1 = require("./_claimInternal");
+/**
+ * Sets up callback query handlers for the claim command.
+ * This function registers callback queries for the claim command.
+ * - Make Claim
+ * - View Claim
+ * @param bot The Bot instance.
+ */
 const sendClaim = (bot) => {
     // Send Claim Callbacks
     bot.callbackQuery('makeClaim', makeClaim);
     bot.callbackQuery('viewClaim', viewClaim);
 };
 exports.sendClaim = sendClaim;
+/**
+ * Used for making a claim.
+ * @param ctx The message context.
+ */
 const makeClaim = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const user = ctx.callbackQuery.from.username;
@@ -27,6 +38,10 @@ const makeClaim = async (ctx) => {
     });
     ctx.session.botOnType = _claimInternal_1.logClaimAmountBotOn;
 };
+/**
+ * Used for viewing claims.
+ * @param ctx The message context.
+ */
 const viewClaim = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const teleUser = ctx.callbackQuery.from.username;

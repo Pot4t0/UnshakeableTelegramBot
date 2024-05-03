@@ -10,7 +10,12 @@ import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 // Events Databse - Contains all events
 // Filtered events through team type (Welfare / Birthday)
 // CallbackQuery: see{team}Wish-{eventName}
-
+/**
+ * Sets up callback query handlers for viewing wishes associated with a specific event.
+ * This function registers callback queries for viewing wishes associated with either the Welfare or Birthday team.
+ * @param bot The Bot instance.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 export const wishView = async (
   bot: Bot<BotContext>,
   team: 'Welfare' | 'Birthday'
@@ -25,6 +30,12 @@ export const wishView = async (
   });
 };
 
+/**
+ * Handles the logic for viewing the event menu associated with a specific team.
+ * This function displays a list of events when a user clicks on a callback button.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare' or 'Birthday'.
+ */
 const wishView_EventMenu = async (
   ctx: CallbackQueryContext<BotContext>,
   team: 'Welfare' | 'Birthday'
@@ -77,6 +88,12 @@ const wishView_EventMenu = async (
   );
 };
 
+/**
+ * Handles the logic for sending wishes associated with a specific event.
+ * This function displays a list of wishes when a user clicks on a callback button.
+ * @param ctx The callback query context.
+ * @param eventName The name of the event.
+ */
 const wishView_SendWishes = async (
   ctx: CallbackQueryContext<BotContext>,
   eventName: string

@@ -5,6 +5,12 @@ const grammy_1 = require("grammy");
 const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _telefunctions_1 = require("../../app/_telefunctions");
+/**
+ * Sets up callback query handlers for the start command.
+ * This function registers callback queries for the start command.
+ * @param bot The Bot instance.
+ * @returns The next middleware function or command function.
+ */
 const start = (bot) => {
     bot.callbackQuery(/^nameStart-/g, _telefunctions_1.loadFunction, startReply);
     bot.callbackQuery('confirm_YES', _telefunctions_1.loadFunction, confirmReply_Yes);
@@ -13,6 +19,11 @@ const start = (bot) => {
     bot.callbackQuery('select_NO', _telefunctions_1.loadFunction, selectreply_No);
 };
 exports.start = start;
+/**
+ * Handles the logic for starting the bot.
+ * This function prompts the user to input their name.
+ * @param ctx The callback query context.
+ */
 const startReply = async (ctx) => {
     const nameStart = ctx.update.callback_query.data.substring('nameStart-'.length);
     const name = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
@@ -43,6 +54,11 @@ const startReply = async (ctx) => {
         });
     }
 };
+/**
+ * Handles the logic for confirming the user's name.
+ * This function prompts the user to confirm their name.
+ * @param ctx The callback query context.
+ */
 const confirmReply_Yes = async (ctx) => {
     var _a;
     await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
@@ -75,10 +91,20 @@ const confirmReply_Yes = async (ctx) => {
     });
     await ctx.reply('Name Logged!\nYou can now use any of the following functions below!', { reply_markup: keyboard });
 };
+/**
+ * Handles the logic for selecting the user's name.
+ * This function prompts the user to select another name.
+ * @param ctx The callback query context.
+ */
 const confirmReply_No = async (ctx) => {
     await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     await ctx.reply('Understood.\nPlease /start to try again');
 };
+/**
+ * Handles the logic for selecting the user's name.
+ * This function prompts the user to select another name.
+ * @param ctx The callback query context.
+ */
 const selectreply_No = async (ctx) => {
     await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
     await ctx.reply('Please contact your respective IT representative for technical support!');

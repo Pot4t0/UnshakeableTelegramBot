@@ -1,13 +1,36 @@
 // Send Attendance Global Variables
 import { CallbackQueryContext, Filter } from 'grammy';
 import { BotContext } from '../../../app/_context';
+
 //Session BotOnType Values
+/**
+ * Log WE Reason BotOnType Constant
+ */
 export const logReasonBotOnWE = 19;
+/**
+ * Log LG Reason BotOnType Constant
+ */
 export const logReasonBotOnLG = 20;
+/**
+ * Log Special Event Reason BotOnType Constant
+ */
 export const logReasonBotOnSpecial = 28;
+/**
+ * Log Dinner Reason BotOnType Constant
+ */
 export const logReasonBotOnDinner = 29;
 
-//Log Attendance Function
+/**
+ * Log dinner attendance to Google Sheets.
+ * - Special Event and No LG events are ends with a message to the user.
+ * - LG events do not end with a message to the user and continue to the next step (LG attendance).
+ * @param ctx The message context.
+ * @param rowNo The row number of the user in the Google Sheet.
+ * @param eventName The name of the event.
+ * @param attendance The attendance status of the user.
+ * @param reason The reason for the attendance status.
+ * @throws Error if the attendance could not be logged.
+ */
 export const dinnerLogAttendance = async (
   ctx: CallbackQueryContext<BotContext> | Filter<BotContext, 'message'>,
   rowNo: number,
@@ -45,6 +68,11 @@ export const dinnerLogAttendance = async (
   }
 };
 
+/**
+ * Logs the end dinner attendance msg to the user.
+ * @param ctx The message context.
+ * @param eventName The name of the event.
+ */
 export const logAttendanceMsg = async (ctx: BotContext, eventName: string) => {
-  ctx.reply(`Attendance ${eventName} logged! Thanks for submitting!`);
+  await ctx.reply(`Attendance ${eventName} logged! Thanks for submitting!`);
 };

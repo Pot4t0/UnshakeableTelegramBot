@@ -33,20 +33,44 @@ const _financeCallbacks_1 = require("./finance/_financeCallbacks");
 exports.adminAttendanceBotOn = __importStar(require("./attendance/_adminAttendanceBotOn"));
 exports.adminSFBotOn = __importStar(require("./sf/_adminSFBotOn"));
 exports.adminFinanceBotOn = __importStar(require("./finance/_financeBotOn"));
-//Admin Callback Functions
+/**
+ * admin Class (Callbacks)
+ * - Collection of admin commands.
+ * - This class contains all the admin commands.
+ */
 class admin {
+    /**
+     * Admin Attendance command.
+     * @param bot The Bot instance.
+     */
     static attendance(bot) {
         (0, _adminAttendanceCallbacks_1.adminAttendance)(bot);
     }
+    /**
+     * Admin Welfare command.
+     * @param bot The Bot instance.
+     */
     static welfare(bot) {
         (0, _adminWelfareCallbacks_1.adminWelfare)(bot);
     }
+    /**
+     * Admin Birthday command.
+     * @param bot The Bot instance.
+     */
     static bday(bot) {
         (0, _adminBdayCallbacks_1.adminBday)(bot);
     }
+    /**
+     * Admin SF command.
+     * @param bot The Bot instance.
+     */
     static sf(bot) {
         (0, _adminSFCallbacks_1.adminSF)(bot);
     }
+    /**
+     * Admin Finance command.
+     * @param bot The Bot instance.
+     */
     static finance(bot) {
         (0, _financeCallbacks_1.adminFinance)(bot);
     }

@@ -1,21 +1,25 @@
-import {
-  Bot,
-  CallbackQueryContext,
-  Filter,
-  InlineKeyboard,
-  Keyboard,
-} from 'grammy';
+import { Bot, CallbackQueryContext, Filter, InlineKeyboard } from 'grammy';
 import { BotContext } from '../../app/_index';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 import { Database } from '../_db-init';
 import { Settings } from '../Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
 
+/**
+ * Sets up callback query handlers for choosing a sheet associated with a specific group.
+ * This function registers callback queries for changing the sheet associated with either the Attendance, SF, or Finance group.
+ * @param bot The Bot instance.
+ */
 export const chooseSheet = async (bot: Bot<BotContext>) => {
   bot.callbackQuery('manageGSheet', loadFunction, sheetMenu);
   bot.callbackQuery(/^changeSheet/g, loadFunction, changeSheet); //Settings Bot On
 };
 
+/**
+ * Handles the logic for changing the sheet associated with a specific group.
+ * This function displays a keyboard for selecting a sheet when a user clicks on a callback button.
+ * @param ctx The callback query context.
+ */
 const sheetMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const inlinekeyboard = new InlineKeyboard([
@@ -43,6 +47,11 @@ const sheetMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Handles the logic for changing the sheet associated with a specific group.
+ * This function prompts the user to input the sheet ID for the selected sheet.
+ * @param ctx The callback query context.
+ */
 const changeSheet = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const sheetType = ctx.update.callback_query.data.substring(
@@ -57,6 +66,12 @@ const changeSheet = async (ctx: CallbackQueryContext<BotContext>) => {
   );
   ctx.session.botOnType = 33;
 };
+
+/**
+ * Executes the sheet change process after a sheet ID is selected.
+ * This function updates the database with the new sheet ID and notifies the user about the change.
+ * @param ctx The filter for message events.
+ */
 export const changeSheetExecution = async (
   ctx: Filter<BotContext, 'message'>
 ) => {

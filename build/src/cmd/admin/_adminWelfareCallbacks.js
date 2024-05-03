@@ -6,6 +6,12 @@ const _db_init_1 = require("../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _index_1 = require("../../database_mongoDB/functions/_index");
 const _telefunctions_1 = require("../../app/_telefunctions");
+/**
+ * /adminWelfare
+ * - Sets up callback query handlers for the Welfare command.
+ * - This function registers callback queries for the Welfare command.
+ * @param bot The Bot instance.
+ */
 const adminWelfare = (bot) => {
     //Wish View Callbacks
     _index_1.wish.wishView(bot, 'Welfare');
@@ -19,8 +25,11 @@ const adminWelfare = (bot) => {
     bot.callbackQuery('sendReminder-Welfare', _telefunctions_1.loadFunction, reminder_Msg);
 };
 exports.adminWelfare = adminWelfare;
-// Reminder Management
-//Choose which event to send reminder for
+/**
+ * Welfare Reminder System
+ * - Sends a list of events to choose from.
+ * @param ctx The message context.
+ */
 const reminderSystem = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const event = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).find({
@@ -37,7 +46,10 @@ const reminderSystem = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Choose which reminder to send (Not In / Specific)
+/**
+ * Choose which reminder to send (Not In / Specific)
+ * @param ctx The message context.
+ */
 const reminder_Menu = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const title = ctx.update.callback_query.data.substring('sendWelfareReminder-'.length);

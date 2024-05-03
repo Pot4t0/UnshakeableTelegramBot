@@ -1,16 +1,27 @@
-import { Bot, CallbackQueryContext, InlineKeyboard } from 'grammy';
+import { Bot, CallbackQueryContext } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { removeInLineButton } from '../../../app/_telefunctions';
 import { Database } from '../../../database_mongoDB/_db-init';
 import { Claims, Names } from '../../../database_mongoDB/Entity/_tableEntity';
 import { logClaimAmountBotOn } from './_claimInternal';
 
+/**
+ * Sets up callback query handlers for the claim command.
+ * This function registers callback queries for the claim command.
+ * - Make Claim
+ * - View Claim
+ * @param bot The Bot instance.
+ */
 export const sendClaim = (bot: Bot<BotContext>) => {
   // Send Claim Callbacks
   bot.callbackQuery('makeClaim', makeClaim);
   bot.callbackQuery('viewClaim', viewClaim);
 };
 
+/**
+ * Used for making a claim.
+ * @param ctx The message context.
+ */
 const makeClaim = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
 
@@ -29,6 +40,10 @@ const makeClaim = async (ctx: CallbackQueryContext<BotContext>) => {
   ctx.session.botOnType = logClaimAmountBotOn;
 };
 
+/**
+ * Used for viewing claims.
+ * @param ctx The message context.
+ */
 const viewClaim = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const teleUser = ctx.callbackQuery.from.username;

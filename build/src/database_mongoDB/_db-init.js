@@ -5,6 +5,9 @@ require("reflect-metadata");
 require("dotenv/config");
 const typeorm_1 = require("typeorm");
 const _tableEntity_1 = require("./Entity/_tableEntity");
+/**
+ * Represents the MongoDB database.
+ */
 exports.Database = new typeorm_1.DataSource({
     type: 'mongodb',
     url: process.env.CONNECTION || '',
@@ -19,6 +22,9 @@ exports.Database = new typeorm_1.DataSource({
         _tableEntity_1.Claims,
     ],
 });
+/**
+ * Initialises the MongoDB database.
+ */
 const init = async () => {
     await exports.Database.initialize()
         .then(() => {

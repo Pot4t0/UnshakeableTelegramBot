@@ -8,6 +8,12 @@ import { adminSFBotOn } from './_adminSFInternal';
 import { removeInLineButton } from '../../../app/_telefunctions';
 import { gsheet } from '../../../functions/_initialise';
 
+/**
+ * /adminsf
+ * - Sets up callback query handlers for the SF command.
+ * - This function registers callback queries for the SF command.
+ * @param bot The Bot instance.
+ */
 export const adminSF = (bot: Bot<BotContext>) => {
   // SF Reminder
   bot.callbackQuery('manageSFReminder', reminderManagement);
@@ -26,16 +32,27 @@ export const adminSF = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^rmExcludeUser-/g, removeExcludeFromReminderFunction);
 };
 
-// Reminder Management
+/**
+ * Sends a reminder management menu.
+ * @param ctx The message context.
+ */
 const reminderManagement = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   await reminder.reminderMenu(ctx, 'Admin');
 };
+/**
+ * Sends a reminder for those that have not sent in their SF.
+ * @param ctx The message context.
+ */
 const sendNotInReminder = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   await reminder.reminderSendAllNotIn_ReminderMessage(ctx);
 };
 
+/**
+ * Sends a manual SF menu. Used for manual SF submission.
+ * @param ctx The message context.
+ */
 const manualSF = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const name = await Database.getRepository(Names).find();
@@ -55,6 +72,10 @@ const manualSF = async (ctx: CallbackQueryContext<BotContext>) => {
   );
 };
 
+/**
+ * Sends a sermon feedback manually.
+ * @param ctx The message context.
+ */
 const sendsf = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   ctx.session.name = await ctx.update.callback_query.data.substring(
@@ -79,6 +100,10 @@ const sendsf = async (ctx: CallbackQueryContext<BotContext>) => {
   });
 };
 
+/**
+ * Checks attendance of sermon
+ * @param ctx The message context.
+ */
 const manualSFYesNo = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
@@ -118,6 +143,10 @@ const manualSFYesNo = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
+/**
+ * Choose user to exclude from SF reminder.
+ * @param ctx The message context.
+ */
 const excludeFromReminder = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const name = await Database.getRepository(Names).find();
@@ -151,6 +180,11 @@ const excludeFromReminder = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
+/**
+ * Excludes User Menu.
+ * - Adds or removes user from exclusion list.
+ * @param ctx The message context.
+ */
 const excludeFromReminderMenu = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -174,6 +208,10 @@ const excludeFromReminderMenu = async (
   });
 };
 
+/**
+ * Excludes a user from the SF reminder.
+ * @param ctx The message context.
+ */
 const excludeFromReminderFunction = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -199,6 +237,10 @@ const excludeFromReminderFunction = async (
   await ctx.reply(`User ${teleUserName} excluded from SF reminder`);
 };
 
+/**
+ * Choose user to remove from exclusion list.
+ * @param ctx The message context.
+ */
 const removeExcludeFromReminder = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -224,6 +266,10 @@ const removeExcludeFromReminder = async (
   }
 };
 
+/**
+ * Removes a user from the exclusion list.
+ * @param ctx The message context.
+ */
 const removeExcludeFromReminderFunction = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {

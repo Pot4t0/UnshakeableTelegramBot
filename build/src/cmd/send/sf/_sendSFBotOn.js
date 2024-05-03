@@ -4,8 +4,13 @@ exports.sendToSheet_Reason = exports.sendToSheet_SF = void 0;
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _SessionData_1 = require("../../../models/_SessionData");
-// Send to Google Sheets Sermon Feedback
-// Used in _botOn_functions.ts in botOntype = 8
+/**
+ * Sends the sermon feedback to the Google Sheet
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 8
+ * @param ctx The message context.
+ * @throws Error if the sermon feedback could not be logged.
+ */
 const sendToSheet_SF = async (ctx) => {
     const sfmsg = await ctx.message.text;
     const teleUserName = await ctx.update.message.from.username;
@@ -65,6 +70,13 @@ const sendToSheet_SF = async (ctx) => {
 exports.sendToSheet_SF = sendToSheet_SF;
 // Send to Google Sheets Reason
 // Used in _botOn_functions.ts in botOntype = 9
+/**
+ * Sends the reason to the Google Sheet
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 9
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 const sendToSheet_Reason = async (ctx) => {
     const teleUserName = await ctx.update.message.from.username;
     const reason = await ctx.message.text;

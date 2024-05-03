@@ -3,14 +3,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendsf = void 0;
 const _telefunctions_1 = require("../../../app/_telefunctions");
 const _initialise_1 = require("../../../functions/_initialise");
-//Send SF Callbacks
+/**
+ * /sendSF
+ * - Sets up callback query handlers for the send command.
+ * - This function registers callback queries for the send command.
+ * @param bot The Bot instance.
+ */
 const sendsf = async (bot) => {
     bot.callbackQuery('AttendanceSF-yes', _telefunctions_1.loadFunction, sendSF);
     bot.callbackQuery('AttendanceSF-no', _telefunctions_1.loadFunction, sendReason);
 };
 exports.sendsf = sendsf;
-// Send SF Callback
-// For attendance = yes
+/**
+ * Sends a sermon feedback when attendance is yes.
+ * @param ctx The message context.
+ */
 const sendSF = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.attendance = await ctx.update.callback_query.data.substring('AttendanceSF-'.length);
@@ -25,8 +32,10 @@ const sendSF = async (ctx) => {
     ctx.session.gSheet = sheet;
     ctx.session.botOnType = 8;
 };
-// Send Reason Callback
-// For attendance = no
+/**
+ * Sends a reason when attendance is no.
+ * @param ctx The message context.
+ */
 const sendReason = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     ctx.session.attendance = await ctx.update.callback_query.data.substring('AttendanceSF-'.length);

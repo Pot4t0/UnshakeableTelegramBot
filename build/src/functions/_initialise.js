@@ -10,7 +10,10 @@ const _db_init_1 = require("../database_mongoDB/_db-init");
 const _gsheet_init_1 = require("../gsheets/_gsheet_init");
 const google_spreadsheet_1 = require("google-spreadsheet");
 const files_1 = require("@grammyjs/files");
-// Initialise Telegram Bot
+/**
+ * Initialise the Telegram bot with the bot token.
+ * @returns The Telegram bot.
+ */
 const init_bot = () => {
     // Initialise MongoDB database
     (0, _db_init_1.init)();
@@ -29,7 +32,14 @@ const init_bot = () => {
     return bot;
 };
 exports.init_bot = init_bot;
-// Initialise Google Sheets connection
+/**
+ * Load the Google Spreadsheet for the specified type.
+ * @param type The type of Google Spreadsheet to load.
+ * @returns The Google Spreadsheet.
+ * @throws Error if the type is invalid.
+ * @throws Error if the Google Spreadsheet could not be loaded.
+ * @throws Error if the Google Spreadsheet info could not be loaded.
+ */
 const gsheet = async (type) => {
     switch (type) {
         case 'attendance':

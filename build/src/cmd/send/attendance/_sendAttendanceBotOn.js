@@ -5,9 +5,12 @@ const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _sendAttendanceInternal_1 = require("./_sendAttendanceInternal");
-// WE Attendance Logging Reason Function
-// Used in _botOn_functions.ts in botOntype = 19
-// Logs Reason Message to Google Sheets
+/**
+ * Logs the reason for the WE attendance.
+ *  * Used in _botOn_functions.ts
+ * Refer to case botOntype = 19
+ * @param ctx The message context.
+ */
 const WeAttendanceLogReason = async (ctx) => {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text;
@@ -60,9 +63,13 @@ const WeAttendanceLogReason = async (ctx) => {
     }
 };
 exports.WeAttendanceLogReason = WeAttendanceLogReason;
-// LG Attendance Logging Reason Function
-// Used in _botOn_functions.ts in botOntype = 20
-// Logs Reason Message to Google Sheets
+/**
+ * Logs the reason for the LG attendance.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 20
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 const lgAttendanceLogReason = async (ctx) => {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text;
@@ -95,9 +102,13 @@ const lgAttendanceLogReason = async (ctx) => {
     ctx.session = (0, _SessionData_1.initial)();
 };
 exports.lgAttendanceLogReason = lgAttendanceLogReason;
-// Special Attendance Logging Reason Function
-// Used in _botOn_functions.ts in botOntype = 28
-// Logs Reason Message to Google Sheets
+/**
+ * Logs the reason for the special attendance.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 28
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 const SpecialAttendanceLogReason = async (ctx) => {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text;
@@ -149,10 +160,13 @@ const SpecialAttendanceLogReason = async (ctx) => {
     ctx.session = (0, _SessionData_1.initial)();
 };
 exports.SpecialAttendanceLogReason = SpecialAttendanceLogReason;
-// Dinner Attendance Reason Function
-// Used in _botOn_functions.ts in botOntype = 29
-// Logs Reason Message to Google Sheets (Special/ No LG Event)
-// Proceeds to move to LG Attendance Function (LG Event)
+/**
+ * Logs Reason Message to Google Sheets (Special/ No LG Event)
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 29
+ * @param ctx The message context.
+ * @throws Error if the reason could not be logged.
+ */
 const dinnerAttendanceReason = async (ctx) => {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text;

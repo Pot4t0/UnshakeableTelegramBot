@@ -9,7 +9,10 @@ import { auth } from '../gsheets/_gsheet_init';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { hydrateFiles } from '@grammyjs/files';
 
-// Initialise Telegram Bot
+/**
+ * Initialise the Telegram bot with the bot token.
+ * @returns The Telegram bot.
+ */
 export const init_bot = () => {
   // Initialise MongoDB database
   init();
@@ -33,7 +36,14 @@ export const init_bot = () => {
   return bot;
 };
 
-// Initialise Google Sheets connection
+/**
+ * Load the Google Spreadsheet for the specified type.
+ * @param type The type of Google Spreadsheet to load.
+ * @returns The Google Spreadsheet.
+ * @throws Error if the type is invalid.
+ * @throws Error if the Google Spreadsheet could not be loaded.
+ * @throws Error if the Google Spreadsheet info could not be loaded.
+ */
 export const gsheet = async (type: 'attendance' | 'finance' | 'sf') => {
   switch (type) {
     case 'attendance':

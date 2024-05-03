@@ -11,6 +11,10 @@ import {
   Settings,
   Wishes,
 } from './Entity/_tableEntity';
+
+/**
+ * Represents the MongoDB database.
+ */
 export const Database = new DataSource({
   type: 'mongodb',
   url: process.env.CONNECTION || '',
@@ -26,6 +30,9 @@ export const Database = new DataSource({
   ],
 });
 
+/**
+ * Initialises the MongoDB database.
+ */
 export const init = async () => {
   await Database.initialize()
     .then(() => {

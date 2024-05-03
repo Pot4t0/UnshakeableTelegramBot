@@ -6,9 +6,12 @@ const _tableEntity_1 = require("../../database_mongoDB/Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
 const _index_1 = require("../../database_mongoDB/functions/_index");
 const _initialise_1 = require("../../functions/_initialise");
-// Settings Announcements Output
-// Used in _botOn_functions.ts
-// Refer to case botOntype = 31
+/**
+ * Sends an announcement to all users.
+ * @param ctx The message context.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 31
+ */
 const settingsAnnouncements_Send = async (ctx) => {
     const announcement = '<b>Bot Announcement:</b>\n' + ctx.message.text;
     if (announcement == null || ctx.session.botOnType == null) {
@@ -40,10 +43,13 @@ const settingsAnnouncements_Send = async (ctx) => {
     }
 };
 exports.settingsAnnouncements_Send = settingsAnnouncements_Send;
-// Settings Add User
-// Full Name of New User
-// Used in _botOn_functions.ts
-// Refer to user_shared case 1
+/**
+ * Adds a user to the database.
+ * This function prompts the user to input the full name of the new user.
+ * @param ctx The message context.
+ * Used in _botOn_functions.ts
+ * Refer to case user_shared = 1
+ */
 const addUser = async (ctx) => {
     var _a;
     const chatid = (_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.user_shared.user_id;
@@ -57,10 +63,12 @@ const addUser = async (ctx) => {
     ctx.session.botOnType = 32;
 };
 exports.addUser = addUser;
-// Settings Add User
-// Full Name of New User
-// Used in _botOn_functions.ts
-// Refer to case botOntype = 32
+/**
+ * Adds the new user to the database and Google Sheets.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 32
+ * @param ctx The message context.
+ */
 const addUser_FullName = async (ctx) => {
     const fullName = ctx.message.text;
     const chatId = ctx.session.chatId;

@@ -4,6 +4,12 @@ import { Database } from '../../database_mongoDB/_db-init';
 import { Names } from '../../database_mongoDB/Entity/_tableEntity';
 import { loadFunction, removeInLineButton } from '../../app/_telefunctions';
 
+/**
+ * Sets up callback query handlers for the start command.
+ * This function registers callback queries for the start command.
+ * @param bot The Bot instance.
+ * @returns The next middleware function or command function.
+ */
 export const start = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^nameStart-/g, loadFunction, startReply);
   bot.callbackQuery('confirm_YES', loadFunction, confirmReply_Yes);
@@ -12,6 +18,11 @@ export const start = (bot: Bot<BotContext>) => {
   bot.callbackQuery('select_NO', loadFunction, selectreply_No);
 };
 
+/**
+ * Handles the logic for starting the bot.
+ * This function prompts the user to input their name.
+ * @param ctx The callback query context.
+ */
 const startReply = async (ctx: CallbackQueryContext<BotContext>) => {
   const nameStart = ctx.update.callback_query.data.substring(
     'nameStart-'.length
@@ -47,6 +58,11 @@ const startReply = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
+/**
+ * Handles the logic for confirming the user's name.
+ * This function prompts the user to confirm their name.
+ * @param ctx The callback query context.
+ */
 const confirmReply_Yes = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
   const keyboard = new Keyboard()
@@ -85,12 +101,22 @@ const confirmReply_Yes = async (ctx: CallbackQueryContext<BotContext>) => {
   );
 };
 
+/**
+ * Handles the logic for selecting the user's name.
+ * This function prompts the user to select another name.
+ * @param ctx The callback query context.
+ */
 const confirmReply_No = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
 
   await ctx.reply('Understood.\nPlease /start to try again');
 };
 
+/**
+ * Handles the logic for selecting the user's name.
+ * This function prompts the user to select another name.
+ * @param ctx The callback query context.
+ */
 const selectreply_No = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.editMessageReplyMarkup({ reply_markup: { inline_keyboard: [] } });
 

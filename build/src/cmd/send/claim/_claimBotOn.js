@@ -7,9 +7,12 @@ const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const crypto_1 = require("crypto");
 const _initialise_1 = require("../../../functions/_initialise");
-// /sendclaim BotOn Functions
-//Used for receiving claim amount
-//Refer to logClaimAmount Method in _claimInternal.ts
+/**
+ * Used for receiving claim amount
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 10 (logClaimAmountBotOn)
+ * @param ctx The message context.
+ */
 const logClaimAmount = async (ctx) => {
     ctx.session.botOnType = undefined;
     const amount = ctx.message.text;
@@ -24,9 +27,12 @@ const logClaimAmount = async (ctx) => {
     }
 };
 exports.logClaimAmount = logClaimAmount;
-//Used for receiving claim reason
-//Refer to botOnHandler in _botOn_functions.ts
-//BotOntype = 11
+/**
+ * Used for receiving claim reason
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 11
+ * @param ctx The message context.
+ */
 const logClaimReason = async (ctx) => {
     ctx.session.botOnType = undefined;
     const reason = ctx.message.text;
@@ -44,6 +50,12 @@ exports.logClaimReason = logClaimReason;
 //Used for submitting claim
 //Refer to BotOnHandler in _botOn_functions.ts
 //BotOnPhoto = 1
+/**
+ * Used for submitting claim
+ * Used in _botOn_functions.ts
+ * - Refer to case botOnPhoto = 1
+ * @param ctx The message context with photo.
+ */
 const submitClaim = async (ctx) => {
     ctx.session.botOnPhoto = undefined;
     const photo = await ctx.getFile();
@@ -80,7 +92,7 @@ const submitClaim = async (ctx) => {
                 Status: status,
                 Claimee: user,
             });
-            const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`;
+            const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`; // Telegram API to get photo
             newRow.set('Images', photoFormula);
             await newRow.save();
             const sendDB = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).save(claimDoc);

@@ -14,16 +14,17 @@ import {
   logReasonBotOnWE,
 } from './_sendAttendanceInternal';
 import { loadFunction, removeInLineButton } from '../../../app/_telefunctions';
-import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { gsheet } from '../../../functions/_initialise';
 
-//Send Attendance Callbacks
-// For Special Event
-// Take Event Attendance (Yes/No) -> Take Reason (If no) -> Take Meal Attendance (if Have) -> Take Reason (if no) -> Log Attendance
-// For No LG Event
-// Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Log Attendance
-// For LG Event
-// Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Take LG Attendance (Yes/No) -> Take Reason (if no) -> Log Attendance
+/**
+ * @Special For Special Event
+ * - Take Event Attendance (Yes/No) -> Take Reason (If no) -> Take Meal Attendance (if Have) -> Take Reason (if no) -> Log Attendance
+ * @WE For No LG Event (WE only)
+ * - Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Log Attendance
+ * @WELG For LG Event (With both WE and LG)
+ * - Take WE Attendance (Yes/No) -> Take Reason (If no) -> Take Dinner Attendance (if Have) -> Take Reason (if no) -> Take LG Attendance (Yes/No) -> Take Reason (if no) -> Log Attendance
+ * @param bot The Bot instance.
+ */
 export const sendAttendance = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^svcLGAttendance/g, loadFunction, attendanceEventDecision);
   bot.callbackQuery(/^WeAttendance/g, loadFunction, WeAttendance);
@@ -34,8 +35,10 @@ export const sendAttendance = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^dinnerAttendance-/g, loadFunction, dinnerAttendance);
 };
 
-// Attendance Event Decision Function
-// Choose which attendance event message to send based on sheet data
+/**
+ * Checks the attendance event and sends the appropriate message.
+ * @param ctx The callback query context.
+ */
 const attendanceEventDecision = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
@@ -153,7 +156,10 @@ const attendanceEventDecision = async (
   }
 };
 
-// Special Event Attendance Logging Function
+/**
+ * Logs attendance for special events.
+ * @param ctx The callback query context.
+ */
 const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const callback = ctx.update.callback_query.data.substring(
@@ -210,7 +216,10 @@ const SpecialAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
-// WE Attendance Logging Function
+/**
+ * Logs attendance for No LG events.
+ * @param ctx The callback query context.
+ */
 const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
@@ -261,7 +270,10 @@ const WeAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
-// LG Attendance Logging Function
+/**
+ * Logs attendance for LG events.
+ * @param ctx The callback query context.
+ */
 const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(
@@ -297,10 +309,12 @@ const lgAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   }
 };
 
-// Dinner Attendance Function
-// Logs Dinner Attendance to Google Sheets (Special/ No LG Event)
-// Proceeds to move to LG Attendance Function (LG Event)
-// If Attendance is No, it will proceed to Dinner Attendance Reason Function at botOnType = 29
+/**
+ * Logs dinner attendance.
+ * - Logs Dinner Attendance to Google Sheets (Special/ No LG Event)
+ * - Proceeds to move to LG Attendance Function (LG Event)
+ * @param ctx The callback query context.
+ */
 const dinnerAttendance = async (ctx: CallbackQueryContext<BotContext>) => {
   await removeInLineButton(ctx);
   const callback = await ctx.update.callback_query.data.substring(

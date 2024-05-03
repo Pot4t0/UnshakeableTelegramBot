@@ -6,6 +6,16 @@ const _db_init_1 = require("../_db-init");
 const _tableEntity_1 = require("../Entity/_tableEntity");
 const _SessionData_1 = require("../../models/_SessionData");
 const _telefunctions_1 = require("../../app/_telefunctions");
+/**
+ * Sets up callback query handlers for managing team members.
+ * This function registers callback queries for adding, deleting, and editing team members.
+ * @param bot The Bot instance.
+ * @param team The team parameter, which can be either 'Welfare', 'Admin', 'Birthday', 'Leaders', or 'Finance'.
+ * @returns The team management menu.
+ * @throws Error if the team parameter is invalid.
+ * @example
+ * teamManagement(bot, 'Welfare');
+ */
 const teamManagement = async (bot, team
 //   |'Attendance'
 ) => {
@@ -52,6 +62,17 @@ const teamManagement = async (bot, team
     });
 };
 exports.teamManagement = teamManagement;
+/**
+ * Displays the team management menu.
+ * This function displays the team members and provides options to add, delete, or edit members.
+ * @param ctx The callback query context.
+ * @param team The team parameter, which can be either 'Welfare', 'Admin', 'Birthday', 'Leaders', or 'Finance'.
+ * @param userRole The user role parameter, which can be either 'welfare', 'admin', 'bday', 'leaders', or 'finance'.
+ * @throws Error if the team or user role parameter is invalid.
+ * @example
+ * teamManagementMenu(ctx, 'Welfare', 'welfare');
+ * teamManagementMenu(ctx, 'Leaders', 'leaders');
+ */
 const teamManagementMenu = async (ctx, team, userRole) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     let icText = 'Make User be IC/Member';
@@ -140,6 +161,11 @@ const teamManagementMenu = async (ctx, team, userRole) => {
         });
     }
 };
+/**
+ * Adds a member to the team.
+ * This function displays a list of users to choose from and adds the selected user to the team.
+ * @param ctx The callback query context.
+ */
 const addMember = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
@@ -175,6 +201,11 @@ const addMember = async (ctx) => {
         console.log('Sessions Failed (userRole/team)');
     }
 };
+/**
+ * Adds a member to the team.
+ * This function adds the selected user to the team.
+ * @param ctx The callback query context.
+ */
 const addMember_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const selectedName = await ctx.update.callback_query.data.substring('addMemberUser-'.length);
@@ -214,6 +245,11 @@ const addMember_Execution = async (ctx) => {
     }
     ctx.session = (0, _SessionData_1.initial)();
 };
+/**
+ * Deletes a member from the team.
+ * This function displays a list of users to choose from and deletes the selected user from the team.
+ * @param ctx The callback query context.
+ */
 const delMember = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;
@@ -250,6 +286,12 @@ const delMember = async (ctx) => {
         ctx.session = (0, _SessionData_1.initial)();
     }
 };
+/**
+ * Deletes a member from the team.
+ * This function deletes the selected user from the team.
+ * @param ctx The callback query context.
+ * @throws Error if the user role or team is invalid.
+ */
 const delMember_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     const userRole = ctx.session.userRole;

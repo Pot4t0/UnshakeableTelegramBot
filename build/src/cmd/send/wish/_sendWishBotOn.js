@@ -5,6 +5,13 @@ const _db_init_1 = require("../../../database_mongoDB/_db-init");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 //Used in _botOn_functions.ts in botOntype = 1
+/**
+ * Used for sending a wish.
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 1
+ * @param ctx The message context.
+ * @throws Error if the wish could not be sent.
+ */
 const sendWish_Execution = async (ctx) => {
     const wish = ctx.message.text;
     ctx.session.wish = wish;

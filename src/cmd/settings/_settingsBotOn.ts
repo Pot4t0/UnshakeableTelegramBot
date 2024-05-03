@@ -1,14 +1,17 @@
 import { Filter } from 'grammy';
 import { BotContext } from '../../app/_index';
 import { Database } from '../../database_mongoDB/_db-init';
-import { Names, Settings } from '../../database_mongoDB/Entity/_tableEntity';
+import { Names } from '../../database_mongoDB/Entity/_tableEntity';
 import { initial } from '../../models/_SessionData';
 import { dbMessaging } from '../../database_mongoDB/functions/_index';
 import { gsheet } from '../../functions/_initialise';
 
-// Settings Announcements Output
-// Used in _botOn_functions.ts
-// Refer to case botOntype = 31
+/**
+ * Sends an announcement to all users.
+ * @param ctx The message context.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 31
+ */
 export const settingsAnnouncements_Send = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
@@ -43,10 +46,13 @@ export const settingsAnnouncements_Send = async (
   }
 };
 
-// Settings Add User
-// Full Name of New User
-// Used in _botOn_functions.ts
-// Refer to user_shared case 1
+/**
+ * Adds a user to the database.
+ * This function prompts the user to input the full name of the new user.
+ * @param ctx The message context.
+ * Used in _botOn_functions.ts
+ * Refer to case user_shared = 1
+ */
 export const addUser = async (ctx: Filter<BotContext, ':user_shared'>) => {
   const chatid = ctx.update.message?.user_shared.user_id;
   if (chatid) {
@@ -61,10 +67,12 @@ export const addUser = async (ctx: Filter<BotContext, ':user_shared'>) => {
   ctx.session.botOnType = 32;
 };
 
-// Settings Add User
-// Full Name of New User
-// Used in _botOn_functions.ts
-// Refer to case botOntype = 32
+/**
+ * Adds the new user to the database and Google Sheets.
+ * Used in _botOn_functions.ts
+ * Refer to case botOntype = 32
+ * @param ctx The message context.
+ */
 export const addUser_FullName = async (ctx: Filter<BotContext, 'message'>) => {
   const fullName = ctx.message.text;
   const chatId = ctx.session.chatId;

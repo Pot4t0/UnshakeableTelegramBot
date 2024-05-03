@@ -10,7 +10,13 @@ const _index_2 = require("./admin/_index");
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
 // Refer to each respective callback function for more details on the command
-//All the commands that the bot can call
+/**
+ * Sets up all the commands that the bot can call.
+ * This function registers all the commands that the bot can call.
+ * DB Security is used to check if the user is in the database before calling the command.
+ * If user is not in the database, the user will not be able to call the command.
+ * @param bot The Bot instance.
+ */
 const commands = (bot) => {
     //Call /start command
     bot.command('start', _index_1.dbSecurity.checkUserInDatabaseMiddleware, start);
@@ -38,7 +44,12 @@ const commands = (bot) => {
     bot.command('adminfinance', _index_1.dbSecurity.checkUserInDatabaseMiddleware, adminfinance);
 };
 exports.commands = commands;
-//Start command
+/**
+ * Handles the logic for the /start command.
+ * This function sends a welcome message to the user and prompts them to select their name.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const start = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -55,7 +66,12 @@ const start = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Help command
+/**
+ * Handles the logic for the /help command.
+ * This function sends a list of available commands to the user.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const help = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -75,7 +91,13 @@ const help = async (ctx) => {
   \n/adminattendance --> Management of attendance (only accessible to Admin Team)
 	`);
 };
-//Settings command
+/**
+ * Handles the logic for the /settings command.
+ * This function sends a list of settings that the user can configure.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ * @returns Returns false if the user does not have access to the settings.
+ */
 const settings = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -129,7 +151,12 @@ const settings = async (ctx) => {
         await ctx.reply('No Access to Bot Settings');
     }
 };
-//Send SF command
+/**
+ * Handles the logic for the /sendsf command.
+ * This function for user to send sermon feedback.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendsf = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -157,7 +184,12 @@ const sendsf = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Send Wish command
+/**
+ * Handles the logic for the /sendwish command.
+ * This function is for user to send wishes to upcoming welfare / birthday events.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendWish = async (ctx) => {
     var _a, _b;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -181,7 +213,12 @@ const sendWish = async (ctx) => {
         reply_markup: inlineKeyboard,
     });
 };
-//Send Attendance command
+/**
+ * Handles the logic for the /sendattendance command.
+ * This function is for user to send attendance.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendattendance = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -210,7 +247,12 @@ const sendattendance = async (ctx) => {
     });
     await unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
-//Make Finanace Claim
+/**
+ * Handles the logic for the /sendclaim command.
+ * This function is for user to send claims.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendClaim = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -235,7 +277,12 @@ const sendClaim = async (ctx) => {
         parse_mode: 'HTML',
     });
 };
-//Admin Welfare command
+/**
+ * Handles the logic for the /adminwelfare command.
+ * This function is for admin to manage welfare events.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminWelfare = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -282,12 +329,18 @@ const adminWelfare = async (ctx) => {
         await ctx.reply('AIYO! You are not serving in Welfare. Hence, you cant access this :(');
     }
 };
-//Admin Birthday command
+/**
+ * Handles the logic for the /adminbday command.
+ * This function is for admin to manage birthday events.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminbday = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
         return false;
     }
+    // REMOVED ACCESS RESTRICTION
     // const access = await dbSecurity.roleAccess(
     //   ['bday', 'bdayIC', 'LGL', 'it'],
     //   ctx
@@ -300,6 +353,7 @@ const adminbday = async (ctx) => {
                 callback_data: 'manageBirthdayEvent',
             },
         ],
+        // REMOVED ACCESS RESTRICTION
         // [
         //   {
         //     text: 'Manage Birthday Team',
@@ -328,13 +382,19 @@ const adminbday = async (ctx) => {
 	`, {
         reply_markup: inlineKeyboard,
     });
+    // REMOVED ACCESS RESTRICTION
     // } else {
     //   await ctx.reply(
     //     'AIYO! You are not serving in Birthday. Hence, you cant access this :('
     //   );
     // }
 };
-//Admin Sermon Feedback command
+/**
+ * Handles the logic for the /adminsf command.
+ * This function is for admin to manage sermon feedback.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminsf = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -382,7 +442,12 @@ const adminsf = async (ctx) => {
         await ctx.reply('AIYO! You are not serving in Admin. Hence, you cant access this :(');
     }
 };
-//Admin Attendance command
+/**
+ * Handles the logic for the /adminattendance command.
+ * This function is for admin to manage attendance.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminattendance = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {
@@ -447,7 +512,12 @@ const adminattendance = async (ctx) => {
         await ctx.reply('AIYO! You are our LGL/SGL. Hence, you cant access this :(');
     }
 };
-//Admin Finance command
+/**
+ * Handles the logic for the /adminfinance command.
+ * This function is for admin to manage finance.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminfinance = async (ctx) => {
     var _a;
     if (((_a = ctx.update.message) === null || _a === void 0 ? void 0 : _a.chat.type) !== 'private') {

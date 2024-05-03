@@ -3,7 +3,12 @@ import { Database } from '../_db-init';
 import { Names } from '../Entity/_tableEntity';
 import { BotContext } from '../../app/_context';
 
-//Creates security access for any function (Welfare, Bday, etc)
+/**
+ * Check if user has access to the function (Welfare, Bday, etc)
+ * @param role The role to check for access.
+ * @param ctx The context object.
+ * @returns Whether the user has access to the function.
+ */
 export const roleAccess = async (role: string[], ctx: Context) => {
   let teleUserList = [];
   let access;
@@ -18,7 +23,14 @@ export const roleAccess = async (role: string[], ctx: Context) => {
   return teleUserList.includes(user);
 };
 
-//Lock Out Middleware Function
+/**
+ * Check if user is in the database
+ * Lock Out Middleware Function
+ * @param ctx The context object.
+ * @param next The next middleware function.
+ * @returns The next middleware function or command function.
+ * @throws Error if user is not in the database.
+ */
 export const checkUserInDatabaseMiddleware = async (
   ctx: CommandContext<BotContext>,
   next: () => Promise<void>

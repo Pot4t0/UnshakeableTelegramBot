@@ -1,10 +1,4 @@
-import {
-  Bot,
-  CommandContext,
-  Filter,
-  InlineKeyboard,
-  matchFilter,
-} from 'grammy';
+import { Bot, CommandContext, InlineKeyboard } from 'grammy';
 import { BotContext } from '../app/_index';
 import { Database } from '../database_mongoDB/_db-init';
 import {
@@ -16,13 +10,18 @@ import {
 import { dbSecurity } from '../database_mongoDB/functions/_index';
 import { gsheet } from '../functions/_initialise';
 import { adminFinanceBotOn } from './admin/_index';
-import { Update } from 'grammy/types';
 
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
 // Refer to each respective callback function for more details on the command
 
-//All the commands that the bot can call
+/**
+ * Sets up all the commands that the bot can call.
+ * This function registers all the commands that the bot can call.
+ * DB Security is used to check if the user is in the database before calling the command.
+ * If user is not in the database, the user will not be able to call the command.
+ * @param bot The Bot instance.
+ */
 export const commands = (bot: Bot<BotContext>) => {
   //Call /start command
   bot.command('start', dbSecurity.checkUserInDatabaseMiddleware, start);
@@ -66,7 +65,12 @@ export const commands = (bot: Bot<BotContext>) => {
   );
 };
 
-//Start command
+/**
+ * Handles the logic for the /start command.
+ * This function sends a welcome message to the user and prompts them to select their name.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const start = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -88,7 +92,12 @@ const start = async (ctx: CommandContext<BotContext>) => {
   );
 };
 
-//Help command
+/**
+ * Handles the logic for the /help command.
+ * This function sends a list of available commands to the user.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const help = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -108,7 +117,13 @@ const help = async (ctx: CommandContext<BotContext>) => {
 	`);
 };
 
-//Settings command
+/**
+ * Handles the logic for the /settings command.
+ * This function sends a list of settings that the user can configure.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ * @returns Returns false if the user does not have access to the settings.
+ */
 const settings = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -161,7 +176,12 @@ const settings = async (ctx: CommandContext<BotContext>) => {
   }
 };
 
-//Send SF command
+/**
+ * Handles the logic for the /sendsf command.
+ * This function for user to send sermon feedback.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendsf = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -192,7 +212,12 @@ const sendsf = async (ctx: CommandContext<BotContext>) => {
   );
 };
 
-//Send Wish command
+/**
+ * Handles the logic for the /sendwish command.
+ * This function is for user to send wishes to upcoming welfare / birthday events.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendWish = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -219,7 +244,12 @@ const sendWish = async (ctx: CommandContext<BotContext>) => {
   });
 };
 
-//Send Attendance command
+/**
+ * Handles the logic for the /sendattendance command.
+ * This function is for user to send attendance.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendattendance = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -254,7 +284,12 @@ const sendattendance = async (ctx: CommandContext<BotContext>) => {
   await unshakeableAttendanceSpreadsheet.resetLocalCache();
 };
 
-//Make Finanace Claim
+/**
+ * Handles the logic for the /sendclaim command.
+ * This function is for user to send claims.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const sendClaim = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -282,7 +317,12 @@ const sendClaim = async (ctx: CommandContext<BotContext>) => {
   );
 };
 
-//Admin Welfare command
+/**
+ * Handles the logic for the /adminwelfare command.
+ * This function is for admin to manage welfare events.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminWelfare = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -338,11 +378,17 @@ const adminWelfare = async (ctx: CommandContext<BotContext>) => {
   }
 };
 
-//Admin Birthday command
+/**
+ * Handles the logic for the /adminbday command.
+ * This function is for admin to manage birthday events.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminbday = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
   }
+  // REMOVED ACCESS RESTRICTION
   // const access = await dbSecurity.roleAccess(
   //   ['bday', 'bdayIC', 'LGL', 'it'],
   //   ctx
@@ -356,6 +402,7 @@ const adminbday = async (ctx: CommandContext<BotContext>) => {
         callback_data: 'manageBirthdayEvent',
       },
     ],
+    // REMOVED ACCESS RESTRICTION
     // [
     //   {
     //     text: 'Manage Birthday Team',
@@ -388,6 +435,7 @@ const adminbday = async (ctx: CommandContext<BotContext>) => {
       reply_markup: inlineKeyboard,
     }
   );
+  // REMOVED ACCESS RESTRICTION
   // } else {
   //   await ctx.reply(
   //     'AIYO! You are not serving in Birthday. Hence, you cant access this :('
@@ -395,7 +443,12 @@ const adminbday = async (ctx: CommandContext<BotContext>) => {
   // }
 };
 
-//Admin Sermon Feedback command
+/**
+ * Handles the logic for the /adminsf command.
+ * This function is for admin to manage sermon feedback.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminsf = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -452,7 +505,12 @@ const adminsf = async (ctx: CommandContext<BotContext>) => {
   }
 };
 
-//Admin Attendance command
+/**
+ * Handles the logic for the /adminattendance command.
+ * This function is for admin to manage attendance.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminattendance = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;
@@ -526,7 +584,12 @@ const adminattendance = async (ctx: CommandContext<BotContext>) => {
   }
 };
 
-//Admin Finance command
+/**
+ * Handles the logic for the /adminfinance command.
+ * This function is for admin to manage finance.
+ * @param ctx The command context.
+ * @returns Returns false if the command is not called in a private chat.
+ */
 const adminfinance = async (ctx: CommandContext<BotContext>) => {
   if (ctx.update.message?.chat.type !== 'private') {
     return false;

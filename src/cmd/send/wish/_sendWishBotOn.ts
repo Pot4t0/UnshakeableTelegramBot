@@ -5,6 +5,13 @@ import { initial } from '../../../models/_SessionData';
 import { Wishes } from '../../../database_mongoDB/Entity/_tableEntity';
 
 //Used in _botOn_functions.ts in botOntype = 1
+/**
+ * Used for sending a wish.
+ * Used in _botOn_functions.ts
+ * - Refer to case botOntype = 1
+ * @param ctx The message context.
+ * @throws Error if the wish could not be sent.
+ */
 export const sendWish_Execution = async (
   ctx: Filter<BotContext, 'message'>
 ) => {
