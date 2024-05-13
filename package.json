@@ -1,0 +1,46 @@
+{
+  "scripts": {
+    "dev": "tsc -w",
+    "serve": " node ./build/src/bot.js",
+    "build": ""
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "@types/uuid": "^9.0.8",
+    "@typescript-eslint/eslint-plugin": "^6.1.0",
+    "@typescript-eslint/parser": "^6.1.0",
+    "@vercel/node": "^3.0.1",
+    "eslint": "^8.45.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "prettier": "^3.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@googleapis/drive": "^8.8.0",
+    "@grammyjs/conversations": "^1.1.2",
+    "@grammyjs/files": "^1.1.0",
+    "@types/luxon": "^3.4.2",
+    "@vercel/analytics": "^1.0.2",
+    "config": "^3.3.11",
+    "dotenv": "^16.4.2",
+    "es6-shim": "^0.35.8",
+    "eslint-config-google": "^0.14.0",
+    "google-spreadsheet": "^4.0.2",
+    "googleapis": "^125.0.0",
+    "grammy": "^1.19.3",
+    "luxon": "^3.4.4",
+    "mariadb": "^3.2.0",
+    "mongodb": "^5.7.0",
+    "mysql": "^2.18.1",
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^2.6.0",
+    "typeorm": "^0.3.17",
+    "typescipt": "^1.0.0",
+    "uuid": "^9.0.1",
+    "vercel": "^33.2.0"
+  }
+}
