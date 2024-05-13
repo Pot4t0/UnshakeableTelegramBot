@@ -97,21 +97,22 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
         Status: status,
         Claimee: user,
       });
+      
       const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`; // Telegram API to get photo
       newRow.set('Images', photoFormula);
       await newRow.save();
       const sendDB = await Database.getMongoRepository(Claims).save(claimDoc);
       if (sendDB && newRow) {
         await ctx.reply('Claim submitted! Thank you!');
-        await Promise.all(
-          financeTeam.map(async (i) => {
-            await dbMessaging.sendMessageUser(
-              i.teleUser,
-              `${user} has submitted a claim.`,
-              ctx
-            );
-          })
-        );
+        // await Promise.all(
+        //   financeTeam.map(async (i) => {
+        //     await dbMessaging.sendMessageUser(
+        //       i.teleUser,
+        //       `${user} has submitted a claim.`,
+        //       ctx
+        //     );
+        //   })
+        // );
       } else {
         await ctx.reply('Error! Please try again!');
       }
