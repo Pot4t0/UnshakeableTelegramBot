@@ -80,42 +80,36 @@ const submitClaim = async (ctx) => {
             role: 'finance',
         });
         if (folderID && user && amount && reason) {
-            try {
-                const claimId = (0, crypto_1.randomUUID)();
-                const claimDoc = new _tableEntity_1.Claims();
-                claimDoc.claimid = claimId;
-                claimDoc.amount = parseInt(amount);
-                claimDoc.name = user;
-                claimDoc.status = status;
-                claimDoc.description = reason;
-                claimDoc.date = formattedDate;
-                claimDoc.msg = claimMsg;
-                const photoPath = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}`;
-                const gdriveFilePath = await _index_2.gdrive.uploadFile(photoPath, reason);
-                const photoFormula = `=IMAGE("${gdriveFilePath}")`;
-                const newRow = await claimsSheet.addRow({
-                    'Claim ID': claimId,
-                    Date: formattedDate,
-                    Amount: amount,
-                    Description: reason,
-                    Status: status,
-                    Claimee: user,
-                });
-                newRow.set('Images', photoFormula);
-                await newRow.save();
-                const sendDB = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).save(claimDoc);
-                if (sendDB && newRow) {
-                    await ctx.reply('Claim submitted! Thank you!');
-                    await Promise.all(financeTeam.map(async (i) => {
-                        await _index_1.dbMessaging.sendMessageUser(i.teleUser, `${user} has submitted a claim.`, ctx);
-                    }));
-                }
-                else {
-                    await ctx.reply('Error! Please try again!');
-                }
+            const claimId = (0, crypto_1.randomUUID)();
+            const claimDoc = new _tableEntity_1.Claims();
+            claimDoc.claimid = claimId;
+            claimDoc.amount = parseInt(amount);
+            claimDoc.name = user;
+            claimDoc.status = status;
+            claimDoc.description = reason;
+            claimDoc.date = formattedDate;
+            claimDoc.msg = claimMsg;
+            const photoPath = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}`;
+            const gdriveFilePath = await _index_2.gdrive.uploadFile(photoPath, reason);
+            const photoFormula = `=IMAGE("${gdriveFilePath}")`;
+            const newRow = await claimsSheet.addRow({
+                'Claim ID': claimId,
+                Date: formattedDate,
+                Amount: amount,
+                Description: reason,
+                Status: status,
+                Claimee: user,
+            });
+            newRow.set('Images', photoFormula);
+            await newRow.save();
+            const sendDB = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).save(claimDoc);
+            if (sendDB && newRow) {
+                await ctx.reply('Claim submitted! Thank you!');
+                await Promise.all(financeTeam.map(async (i) => {
+                    await _index_1.dbMessaging.sendMessageUser(i.teleUser, `${user} has submitted a claim.`, ctx);
+                }));
             }
-            catch (error) {
-                console.log(error);
+            else {
                 await ctx.reply('Error! Please try again!');
             }
         }
