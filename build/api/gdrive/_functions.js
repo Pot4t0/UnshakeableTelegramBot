@@ -29,6 +29,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadFile = void 0;
 const googleapis_1 = require("googleapis");
 const axios_1 = __importDefault(require("axios"));
+const fs = __importStar(require("fs"));
+const path = __importStar(require("path"));
 const dotenv = __importStar(require("dotenv"));
 const util_1 = require("util");
 const stream = __importStar(require("stream"));
@@ -45,15 +47,13 @@ const pipeline = (0, util_1.promisify)(stream.pipeline);
  * @throws {Error} If an error occurs while downloading the file.
  * @throws {Error} If an error occurs while uploading the file.
  */
-async function downloadFileToStream(url) {
-    const passthrough = new stream.PassThrough();
+async function downloadFile(url, outputLocationPath) {
     const response = await (0, axios_1.default)({
         method: 'GET',
         url: url,
         responseType: 'stream',
     });
-    await pipeline(response.data, passthrough);
-    return passthrough;
+    await pipeline(response.data, fs.createWriteStream(outputLocationPath));
 }
 /**
  * Uploads a file to Google Drive.
@@ -64,9 +64,11 @@ async function downloadFileToStream(url) {
 async function uploadFile(fileURL, fileName) {
     // Create the Google Drive service
     const drive = googleapis_1.google.drive({ version: 'v3', auth: _init_1.auth });
+    // Output location
+    const outputLocationPath = path.resolve(__dirname, `${fileName}.jpg`);
     try {
         // Download the file
-        const fileStream = await downloadFileToStream(fileURL);
+        await downloadFile(fileURL, outputLocationPath);
         // Define the file metadata and media content for the file upload
         const fileMetadata = {
             name: fileName,
@@ -74,7 +76,7 @@ async function uploadFile(fileURL, fileName) {
         };
         const media = {
             mimeType: 'image/jpeg',
-            body: fileStream,
+            body: fs.createReadStream(outputLocationPath),
         };
         // Upload the file
         const response = await drive.files.create({
@@ -88,6 +90,10 @@ async function uploadFile(fileURL, fileName) {
         // Handle the error
         console.error('Error uploading file:', error);
         throw error;
+    }
+    finally {
+        // Clean up the downloaded file
+        fs.unlinkSync(outputLocationPath);
     }
 }
 exports.uploadFile = uploadFile;

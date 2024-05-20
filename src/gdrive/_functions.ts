@@ -21,15 +21,14 @@ const pipeline = promisify(stream.pipeline);
  * @throws {Error} If an error occurs while downloading the file.
  * @throws {Error} If an error occurs while uploading the file.
  */
-async function downloadFileToStream(url: string) {
-  const passthrough = new stream.PassThrough();
+async function downloadFile(url: string, outputLocationPath: string) {
   const response = await axios({
     method: 'GET',
     url: url,
     responseType: 'stream',
   });
-  await pipeline(response.data, passthrough);
-  return passthrough;
+
+  await pipeline(response.data, fs.createWriteStream(outputLocationPath));
 }
 /**
  * Uploads a file to Google Drive.
@@ -41,9 +40,12 @@ export async function uploadFile(fileURL: string, fileName: string) {
   // Create the Google Drive service
   const drive = google.drive({ version: 'v3', auth });
 
+  // Output location
+  const outputLocationPath = path.resolve(__dirname, `${fileName}.jpg`);
+
   try {
     // Download the file
-    const fileStream = await downloadFileToStream(fileURL);
+    await downloadFile(fileURL, outputLocationPath);
 
     // Define the file metadata and media content for the file upload
     const fileMetadata: drive_v3.Schema$File = {
@@ -52,7 +54,7 @@ export async function uploadFile(fileURL: string, fileName: string) {
     };
     const media = {
       mimeType: 'image/jpeg',
-      body: fileStream,
+      body: fs.createReadStream(outputLocationPath),
     };
 
     // Upload the file
@@ -66,5 +68,8 @@ export async function uploadFile(fileURL: string, fileName: string) {
     // Handle the error
     console.error('Error uploading file:', error);
     throw error;
+  } finally {
+    // Clean up the downloaded file
+    fs.unlinkSync(outputLocationPath);
   }
 }
