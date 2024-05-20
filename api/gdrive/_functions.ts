@@ -41,7 +41,7 @@ export async function uploadFile(fileURL: string, fileName: string) {
   const drive = google.drive({ version: 'v3', auth });
 
   // Output location
-  const outputLocationPath = path.resolve(__dirname, `${fileName}.jpg`);
+  const outputLocationPath = path.join('/tmp', fileName);
 
   try {
     // Download the file

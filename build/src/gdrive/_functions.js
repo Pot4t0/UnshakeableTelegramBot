@@ -65,7 +65,7 @@ async function uploadFile(fileURL, fileName) {
     // Create the Google Drive service
     const drive = googleapis_1.google.drive({ version: 'v3', auth: _init_1.auth });
     // Output location
-    const outputLocationPath = path.resolve(__dirname, `${fileName}.jpg`);
+    const outputLocationPath = path.join('/tmp', fileName);
     try {
         // Download the file
         await downloadFile(fileURL, outputLocationPath);
