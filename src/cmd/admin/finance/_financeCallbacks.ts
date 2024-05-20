@@ -31,9 +31,9 @@ export const adminFinance = (bot: Bot<BotContext>) => {
 
   //Fund Management
   bot.callbackQuery('fundManagement', loadFunction, fundMenu);
-  bot.callbackQuery('addOffering', loadFunction, addOffering);
-  bot.callbackQuery(/^addOffering-/, loadFunction, addOfferingAmount);
-  bot.callbackQuery('rmOffering', loadFunction, deleteOffering);
+  bot.callbackQuery('addFunds', loadFunction, addFunds);
+  bot.callbackQuery(/^addFunds-/, loadFunction, addFundsAmount);
+  bot.callbackQuery('rmFunds', loadFunction, deleteFunds);
 
   //Reimbursement Management
   bot.callbackQuery('reimbursementManagement', loadFunction, reimbursementMenu);
@@ -83,8 +83,9 @@ export const adminFinance = (bot: Bot<BotContext>) => {
   );
   bot.callbackQuery(/^changePassword/, loadFunction, cfmPassword);
 
-  //Change Finance Chat
-  chat.chooseChat(bot, 'Finance');
+  //Change Finance Folder
+  bot.callbackQuery('changeFinanceFolder', loadFunction, changeFinanceFolder);
+  // chat.chooseChat(bot, 'Finance');
 };
 
 /**
@@ -97,14 +98,14 @@ const fundMenu = async (ctx: CallbackQueryContext<BotContext>) => {
   const inlineKeyboard = new InlineKeyboard([
     [
       {
-        text: 'Add Offering',
-        callback_data: 'addOffering',
+        text: 'Add Funds',
+        callback_data: 'addFunds',
       },
     ],
     [
       {
-        text: 'Remove Offering',
-        callback_data: 'rmOffering',
+        text: 'Remove Funds',
+        callback_data: 'rmFunds',
       },
     ],
   ]);
@@ -114,17 +115,17 @@ const fundMenu = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 
 /**
- * Logs Witness for Offering
+ * Logs Witness for Funds
  * @param ctx The message context.
  */
-const addOffering = async (ctx: CallbackQueryContext<BotContext>) => {
+const addFunds = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   const names = await Database.getRepository(Names).find();
   const inlineKeyboard = new InlineKeyboard(
     names.map((n) => [
       {
         text: n.nameText,
-        callback_data: `addOffering-${n.nameText}`,
+        callback_data: `addFunds-${n.nameText}`,
       },
     ])
   );
@@ -134,26 +135,24 @@ const addOffering = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 
 /**
- * Logs Offering Amount
+ * Logs Funds Amount
  * @param ctx The message context.
  */
-const addOfferingAmount = async (ctx: CallbackQueryContext<BotContext>) => {
+const addFundsAmount = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
-  const callback = ctx.update.callback_query.data.substring(
-    'addOffering-'.length
-  );
+  const callback = ctx.update.callback_query.data.substring('addFunds-'.length);
   ctx.session.name = callback;
-  await ctx.reply('Please input offering amount ($SGD):', {
+  await ctx.reply('Please input Funds amount ($SGD):', {
     reply_markup: { force_reply: true },
   });
   ctx.session.botOnType = 13;
 };
 
 /**
- * Deletes Offering
+ * Deletes Funds
  * @param ctx The message context.
  */
-const deleteOffering = async (ctx: CallbackQueryContext<BotContext>) => {
+const deleteFunds = async (ctx: CallbackQueryContext<BotContext>) => {
   removeInLineButton(ctx);
   await ctx.reply('Please input Transaction Id:', {
     reply_markup: { force_reply: true },
@@ -810,8 +809,14 @@ const cfmPassword = async (ctx: CallbackQueryContext<BotContext>) => {
 };
 
 /**
- * Change Finance Chat
- * - Changes the finance chat.
+ * Change Finance Folder
+ * - Changes the finance folder.
  * @param ctx The message context.
  */
-const changeFinanceChat = async (ctx: CallbackQueryContext<BotContext>) => {};
+const changeFinanceFolder = async (ctx: CallbackQueryContext<BotContext>) => {
+  removeInLineButton(ctx);
+  await ctx.reply('Please input new folder ID:', {
+    reply_markup: { force_reply: true },
+  });
+  ctx.session.botOnType = 34;
+};

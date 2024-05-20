@@ -49,10 +49,10 @@ export const init = async () => {
       promiseLG
         .then((res) => {
           const lgChat = res?.config[0];
-          const lgFinanceClaim = res?.config[1];
+          const lgFinanceFolder = res?.config[1];
           const lgFinancePassword = res?.config[2];
           process.env.LG_CHATID = lgChat;
-          process.env.LG_FINANCE_CLAIM = lgFinanceClaim;
+          process.env.FINANCE_FOLDER_ID = lgFinanceFolder;
           process.env.FINANCE_PASSWORD = lgFinancePassword;
           console.log('LG details updated');
         })

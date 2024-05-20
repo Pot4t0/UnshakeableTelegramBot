@@ -423,6 +423,12 @@ const adminsf = async (ctx) => {
             ],
             [
                 {
+                    text: 'Set Sticker Reply',
+                    callback_data: 'setSFStickerReply',
+                },
+            ],
+            [
+                {
                     text: 'Exclude From Reminder',
                     callback_data: 'excludeFromReminder',
                 },

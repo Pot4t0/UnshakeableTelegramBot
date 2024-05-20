@@ -2,7 +2,11 @@ import { Filter, InlineKeyboard } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { initial } from '../../../models/_SessionData';
 import { Database } from '../../../database_mongoDB/_db-init';
-import { Claims, Names } from '../../../database_mongoDB/Entity/_tableEntity';
+import {
+  Claims,
+  Names,
+  Settings,
+} from '../../../database_mongoDB/Entity/_tableEntity';
 import { gsheet } from '../../../functions/_initialise';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
@@ -73,8 +77,8 @@ export const adminFinanceMenu = async (ctx: BotContext) => {
     ],
     [
       {
-        text: 'Change Finance Chat',
-        callback_data: 'changeChatFinance',
+        text: 'Change Finance Google Drive Folder',
+        callback_data: 'changeFinanceFolder',
       },
     ],
   ]);
@@ -89,36 +93,34 @@ export const adminFinanceMenu = async (ctx: BotContext) => {
 };
 
 /**
- * Logs Offering LG Date
+ * Logs Funds LG Date
  * Used in _botOn_functions.ts
  * - botOntype = 14
  * @param ctx The message context.
  */
-export const addOfferingLGDate = async (ctx: Filter<BotContext, 'message'>) => {
+export const addFundsLGDate = async (ctx: Filter<BotContext, 'message'>) => {
   const amount = ctx.message.text;
   if (amount == null) {
-    addOfferingLGDate(ctx);
+    addFundsLGDate(ctx);
   } else {
     ctx.session.amount = amount;
     await ctx.reply(
-      'Please enter LG Date / date of offering collection (dd/mm/yyyy):'
+      'Please enter LG Date / date of Funds collection (dd/mm/yyyy):'
     );
     ctx.session.botOnType = 14;
   }
 };
 
 /**
- * Adds the Offering Record to the Google Sheet.
+ * Adds the Funds Record to the Google Sheet.
  * Used in _botOn_functions.ts
  * - Refer to case botOntype = 14
  * @param ctx The message context.
  */
-export const addOfferingExecution = async (
-  ctx: Filter<BotContext, 'message'>
-) => {
+export const addFundsExecution = async (ctx: Filter<BotContext, 'message'>) => {
   const lgDate = ctx.message.text;
   if (lgDate == null) {
-    addOfferingExecution(ctx);
+    addFundsExecution(ctx);
   } else {
     const name = await Database.getMongoRepository(Names).find({
       teleUser: ctx.message.from.username,
@@ -132,13 +134,13 @@ export const addOfferingExecution = async (
     console.log(counter);
     const financeSheet = await gsheet('finance');
     const allRecordSheet = financeSheet.sheetsByTitle['All Records'];
-    const offeringSheet = financeSheet.sheetsByTitle['Offering'];
+    const FundsSheet = financeSheet.sheetsByTitle['Funds'];
     const dateTime = DateTime.now()
       .setZone('Asia/Singapore')
       .toFormat('dd/mm/yyyy hh:mm:ss');
 
     if (amount && lgDate && witness && counter) {
-      await offeringSheet.addRow({
+      await FundsSheet.addRow({
         'Transaction ID': uuid,
         Timestamp: dateTime,
         Date: lgDate,
@@ -153,36 +155,34 @@ export const addOfferingExecution = async (
         Amount: amount,
         'Counted by': counter,
         Witness: witness,
-        Type: 'Offering',
+        Type: 'Funds',
       });
-      await ctx.reply('Offering Added');
+      await ctx.reply('Funds Added');
     } else {
-      await ctx.reply('Error in adding offering');
+      await ctx.reply('Error in adding Funds');
     }
     allRecordSheet.resetLocalCache();
-    offeringSheet.resetLocalCache();
+    FundsSheet.resetLocalCache();
     financeSheet.resetLocalCache();
     ctx.session = initial();
   }
 };
 
 /**
- * Delete Offering Record
+ * Delete Funds Record
  * Used in _botOn_functions.ts
  * - botOntype = 15
  * @param ctx The message context.
  */
-export const deleteOfferingRecord = async (
-  ctx: Filter<BotContext, 'message'>
-) => {
+export const deleteFundsRecord = async (ctx: Filter<BotContext, 'message'>) => {
   const msg = ctx.message.text;
   if (msg == null) {
-    deleteOfferingRecord(ctx);
+    deleteFundsRecord(ctx);
   } else {
     const financeSheet = await gsheet('finance');
-    const offeringSheet = financeSheet.sheetsByTitle['Offering'];
+    const FundsSheet = financeSheet.sheetsByTitle['Funds'];
     const allRecordSheet = financeSheet.sheetsByTitle['All Records'];
-    await offeringSheet.loadCells();
+    await FundsSheet.loadCells();
     await allRecordSheet.loadCells();
     const allRecordRowNo = await searchRowNo(
       msg,
@@ -191,24 +191,24 @@ export const deleteOfferingRecord = async (
       2,
       allRecordSheet.rowCount
     );
-    const offeringRowNo = await searchRowNo(
+    const FundsRowNo = await searchRowNo(
       msg,
-      offeringSheet,
+      FundsSheet,
       'A',
       2,
-      offeringSheet.rowCount
+      FundsSheet.rowCount
     );
-    console.log(allRecordRowNo, offeringRowNo);
-    const offeringRow = await offeringSheet.getRows({});
+    console.log(allRecordRowNo, FundsRowNo);
+    const FundsRow = await FundsSheet.getRows({});
     const allRecordRow = await allRecordSheet.getRows({});
-    if (allRecordRowNo != -1 && offeringRowNo != -1) {
-      await offeringRow[offeringRowNo - 2].delete();
+    if (allRecordRowNo != -1 && FundsRowNo != -1) {
+      await FundsRow[FundsRowNo - 2].delete();
       await allRecordRow[allRecordRowNo - 2].delete();
-      await ctx.reply('Offering Record Deleted');
+      await ctx.reply('Funds Record Deleted');
     } else {
       await ctx.reply('No such transaction ID found');
     }
-    offeringSheet.resetLocalCache();
+    FundsSheet.resetLocalCache();
     allRecordSheet.resetLocalCache();
     ctx.session = initial();
   }
@@ -342,5 +342,36 @@ export const cfmChangePassword = async (ctx: Filter<BotContext, 'message'>) => {
         [{ text: 'No', callback_data: 'changePasswordNo' }],
       ]),
     });
+  }
+};
+
+/**
+ * Changes Folder ID for the finance team.
+ * Used in _botOn_functions.ts
+ * - botOntype = 34
+ * @param ctx The message context.
+ * @throws Error if the folder ID is invalid.
+ * @throws Error if there is an error in changing the folder ID.
+ */
+export const changeFolderID = async (ctx: Filter<BotContext, 'message'>) => {
+  const folderID = ctx.message.text;
+  if (folderID == null) {
+    changeFolderID(ctx);
+  } else if (folderID) {
+    const config = await Database.getMongoRepository(Settings).findOneBy({
+      option: 'LG',
+    });
+    if (!config) {
+      await ctx.reply('Invalid Password');
+      return;
+    }
+    config.config[1] = folderID;
+    await Database.getMongoRepository(Settings).save(config);
+    process.env.FINANCE_FOLDER_ID = folderID;
+    await ctx.reply(`Folder ID changed to ${folderID}!`);
+    ctx.session = initial();
+  } else {
+    await ctx.reply('Error in changing Folder ID');
+    ctx.session.botOnType = 34;
   }
 };

@@ -12,7 +12,8 @@ import { Settings } from '../Entity/_tableEntity';
  */
 export const chooseChat = async (
   bot: Bot<BotContext>,
-  grp: 'LG' | 'Finance'
+  grp: 'LG'
+  // | 'Finance'
 ) => {
   bot.callbackQuery(`changeChat${grp}`, loadFunction, async (ctx) => {
     await changeChat(ctx, grp);
@@ -27,7 +28,8 @@ export const chooseChat = async (
  */
 const changeChat = async (
   ctx: CallbackQueryContext<BotContext>,
-  grp: 'LG' | 'Finance'
+  grp: 'LG'
+  // | 'Finance'
 ) => {
   // Remove any existing inline buttons
   await removeInLineButton(ctx);
@@ -77,10 +79,10 @@ export const changeChatExecution = async (
           lgDetails[0] = chatid.toString();
           process.env.LG_CHATID = chatid.toString();
           break;
-        case 'Finance':
-          lgDetails[1] = chatid.toString();
-          process.env.LG_FINANCE_CLAIM = chatid.toString();
-          break;
+        // case 'Finance':
+        //   lgDetails[1] = chatid.toString();
+        //   process.env.LG_FINANCE_CLAIM = chatid.toString();
+        //   break;
         default:
           await ctx.reply('ERROR! No grp found!');
           return;

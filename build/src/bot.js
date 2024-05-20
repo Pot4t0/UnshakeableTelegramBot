@@ -34,7 +34,7 @@ if (!bot) {
  * Start the bot (TESTING ONLY).
  * Comment this out when deploying.
  */
-bot.start();
+// bot.start();
 /**
  * Create a webhook callback for the bot using grammY's webhook.
  * @returns {Function} The webhook callback function.

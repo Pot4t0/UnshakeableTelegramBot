@@ -110,19 +110,19 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       await adminFinanceBotOn.adminFinanceMenu(ctx);
       break;
     }
-    // Used for adding offering date (LG)
+    // Used for adding Funds date (LG)
     case 13: {
-      await adminFinanceBotOn.addOfferingLGDate(ctx);
+      await adminFinanceBotOn.addFundsLGDate(ctx);
       break;
     }
-    // Used for adding offering execution
+    // Used for adding Funds execution
     case 14: {
-      await adminFinanceBotOn.addOfferingExecution(ctx);
+      await adminFinanceBotOn.addFundsExecution(ctx);
       break;
     }
-    // Used for deleting offering record
+    // Used for deleting Funds record
     case 15: {
-      await adminFinanceBotOn.deleteOfferingRecord(ctx);
+      await adminFinanceBotOn.deleteFundsRecord(ctx);
       break;
     }
     // Used for completed claim amount
@@ -218,6 +218,12 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
     // Change Sheet
     case 33: {
       await gSheetDB.changeSheetExecution(ctx);
+      break;
+    }
+    // /adminfinance
+    // Used for Finance Folder ID
+    case 34: {
+      await adminFinanceBotOn.changeFolderID(ctx);
       break;
     }
     // Unrecognised msg handler

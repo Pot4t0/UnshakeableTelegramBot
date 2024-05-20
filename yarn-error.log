@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /Users/whysleep/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add @grammy/types
+  /usr/local/bin/node /Users/whysleep/.cache/node/corepack/yarn/1.22.19/bin/yarn.js add @types/googleapis
 
 PATH: 
   /opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.12/bin:/opt/local/bin:/opt/local/sbin
@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@grammy%2ftypes: Not found
+  Error: https://registry.yarnpkg.com/@types%2fgoogleapis: Not found
       at params.callback [as _callback] (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:66145:18)
       at self.callback (/Users/whysleep/.cache/node/corepack/yarn/1.22.19/lib/cli.js:140890:22)
       at Request.emit (node:events:513:28)
@@ -49,21 +49,24 @@ npm manifest:
       "typescript": "^5.1.6"
     },
     "dependencies": {
+      "@googleapis/drive": "^8.8.0",
       "@grammyjs/conversations": "^1.1.2",
+      "@grammyjs/files": "^1.1.0",
       "@types/luxon": "^3.4.2",
       "@vercel/analytics": "^1.0.2",
       "config": "^3.3.11",
       "dotenv": "^16.4.2",
       "es6-shim": "^0.35.8",
       "eslint-config-google": "^0.14.0",
+      "google-auth-library": "^9.10.0",
       "google-spreadsheet": "^4.0.2",
-      "googleapis": "^125.0.0",
+      "googleapis": "^137.1.0",
       "grammy": "^1.19.3",
       "luxon": "^3.4.4",
-      "mariadb": "^3.2.0",
       "mongodb": "^5.7.0",
       "mysql": "^2.18.1",
       "reflect-metadata": "^0.1.13",
+      "ts-google-drive": "^0.0.7",
       "tslib": "^2.6.0",
       "typeorm": "^0.3.17",
       "typescipt": "^1.0.0",
@@ -183,6 +186,13 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.0.tgz#0709e9f4cb252351c609c6e6d8d6779a8d25edff"
     integrity sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==
   
+  "@googleapis/drive@^8.8.0":
+    version "8.8.0"
+    resolved "https://registry.yarnpkg.com/@googleapis/drive/-/drive-8.8.0.tgz#9a28c309cb3825ae12de907d2794504d6f96c79f"
+    integrity sha512-EOZ9GZCOUdej9PJVnkai7qu5RPyFLYse8FlpgijzfnZPOACXWFf4XOFuAuMcMw4Zue8xPhAPHu1qYcy8u362Xw==
+    dependencies:
+      googleapis-common "^7.0.0"
+  
   "@grammyjs/conversations@^1.1.2":
     version "1.1.2"
     resolved "https://registry.yarnpkg.com/@grammyjs/conversations/-/conversations-1.1.2.tgz#99de24e1202c7e75d11e5939cc3337753f763971"
@@ -191,6 +201,11 @@ Lockfile:
       "@grammyjs/types" "^3.1.1"
       debug "^4.3.4"
       o-son "^1.0.1"
+  
+  "@grammyjs/files@^1.1.0":
+    version "1.1.0"
+    resolved "https://registry.yarnpkg.com/@grammyjs/files/-/files-1.1.0.tgz#7ab1d3050906cdea2ca8111ffc6be1eb9bc92526"
+    integrity sha512-nvwhhWrQLaOqT4Ggbf0/aIrLYXqb3X1oWjGtoMmPFCnITn74eh1atbMIUsrrfhYYcuqGQHmVMUAYGaV8fTZOBw==
   
   "@grammyjs/types@3.3.0":
     version "3.3.0"
@@ -335,11 +350,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.4.tgz#0b92dcc0cc1c81f6f306a381f28e31b1a56536e9"
     integrity sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==
   
-  "@types/geojson@^7946.0.10":
-    version "7946.0.13"
-    resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.13.tgz#e6e77ea9ecf36564980a861e24e62a095988775e"
-    integrity sha512-bmrNrgKMOhM3WsafmbGmC+6dsF2Z308vLFsQ3a/bT8X8Sv5clVYpPars/UPq+sAaJP+5OoLAYgwbkS5QEJdLUQ==
-  
   "@types/json-schema@^7.0.12", "@types/json-schema@^7.0.6":
     version "7.0.15"
     resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
@@ -366,11 +376,6 @@ Lockfile:
     version "14.18.33"
     resolved "https://registry.yarnpkg.com/@types/node/-/node-14.18.33.tgz#8c29a0036771569662e4635790ffa9e057db379b"
     integrity sha512-qelS/Ra6sacc4loe/3MSjXNL1dNQ/GjxNHVzuChwMfmk7HuycRLVQN2qNY3XahK+fZc5E2szqQSKUyAF0E+2bg==
-  
-  "@types/node@^17.0.45":
-    version "17.0.45"
-    resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.45.tgz#2c0fafd78705e7a18b7906b5201a522719dc5190"
-    integrity sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==
   
   "@types/semver@^7.5.0":
     version "7.5.6"
@@ -905,6 +910,11 @@ Lockfile:
       is-array-buffer "^3.0.2"
       is-shared-array-buffer "^1.0.2"
   
+  arrify@^2.0.0:
+    version "2.0.1"
+    resolved "https://registry.yarnpkg.com/arrify/-/arrify-2.0.1.tgz#c9655e9331e0abcd588d2a7cad7e9956f66701fa"
+    integrity sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug==
+  
   async-listen@1.2.0:
     version "1.2.0"
     resolved "https://registry.yarnpkg.com/async-listen/-/async-listen-1.2.0.tgz#861ab6f92e1703ba54498b10ddb9b5da7b69f363"
@@ -1243,11 +1253,6 @@ Lockfile:
     version "1.0.0"
     resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
     integrity sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ==
-  
-  denque@^2.1.0:
-    version "2.1.0"
-    resolved "https://registry.yarnpkg.com/denque/-/denque-2.1.0.tgz#e93e1a6569fb5e66f16a3c2a2964617d349d6ab1"
-    integrity sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==
   
   depd@~1.1.2:
     version "1.1.2"
@@ -1782,6 +1787,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
     integrity sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==
   
+  fast-text-encoding@^1.0.0:
+    version "1.0.6"
+    resolved "https://registry.yarnpkg.com/fast-text-encoding/-/fast-text-encoding-1.0.6.tgz#0aa25f7f638222e3396d72bf936afcf1d42d6867"
+    integrity sha512-VhXlQgj9ioXCqGstD37E/HBeqEGV/qOD/kmbVG8h5xKBYvM1L3lR1Zn4555cQ8GkYbJa8aJSipLPndE1k6zK2w==
+  
   fastq@^1.6.0:
     version "1.16.0"
     resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.16.0.tgz#83b9a9375692db77a822df081edb6a9cf6839320"
@@ -1935,6 +1945,16 @@ Lockfile:
       strip-ansi "^6.0.1"
       wide-align "^1.1.2"
   
+  gaxios@^5.0.0, gaxios@^5.0.1:
+    version "5.1.3"
+    resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-5.1.3.tgz#f7fa92da0fe197c846441e5ead2573d4979e9013"
+    integrity sha512-95hVgBRgEIRQQQHIbnxBXeHbW4TqFk4ZDJW7wmVtvYar72FdhRIo1UGOLS2eRAKCPEdPBWu+M7+A33D9CdX9rA==
+    dependencies:
+      extend "^3.0.2"
+      https-proxy-agent "^5.0.0"
+      is-stream "^2.0.0"
+      node-fetch "^2.6.9"
+  
   gaxios@^6.0.0, gaxios@^6.0.3, gaxios@^6.1.1:
     version "6.1.1"
     resolved "https://registry.yarnpkg.com/gaxios/-/gaxios-6.1.1.tgz#549629f86a13e756b900f9ff7c94624670102938"
@@ -1944,6 +1964,14 @@ Lockfile:
       https-proxy-agent "^7.0.1"
       is-stream "^2.0.0"
       node-fetch "^2.6.9"
+  
+  gcp-metadata@^5.3.0:
+    version "5.3.0"
+    resolved "https://registry.yarnpkg.com/gcp-metadata/-/gcp-metadata-5.3.0.tgz#6f45eb473d0cb47d15001476b48b663744d25408"
+    integrity sha512-FNTkdNEnBdlqF2oatizolQqNANMrcqJt6AAYt99B3y1aLLC8Hc5IOBb+ZnnzllodEEf6xMBp6wRcBbc16fa65w==
+    dependencies:
+      gaxios "^5.0.0"
+      json-bigint "^1.0.0"
   
   gcp-metadata@^6.1.0:
     version "6.1.0"
@@ -2051,6 +2079,21 @@ Lockfile:
       merge2 "^1.4.1"
       slash "^3.0.0"
   
+  google-auth-library@^8.7.0:
+    version "8.9.0"
+    resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-8.9.0.tgz#15a271eb2ec35d43b81deb72211bd61b1ef14dd0"
+    integrity sha512-f7aQCJODJFmYWN6PeNKzgvy9LI2tYmXnzpNDHEjG5sDNPgGb2FXQyTBnXeSH+PAtpKESFD+LmHw3Ox3mN7e1Fg==
+    dependencies:
+      arrify "^2.0.0"
+      base64-js "^1.3.0"
+      ecdsa-sig-formatter "^1.0.11"
+      fast-text-encoding "^1.0.0"
+      gaxios "^5.0.0"
+      gcp-metadata "^5.3.0"
+      gtoken "^6.1.0"
+      jws "^4.0.0"
+      lru-cache "^6.0.0"
+  
   google-auth-library@^9.0.0:
     version "9.4.1"
     resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-9.4.1.tgz#dea32cbdae0a47066995a379e6873c52926ea80e"
@@ -2062,6 +2105,25 @@ Lockfile:
       gcp-metadata "^6.1.0"
       gtoken "^7.0.0"
       jws "^4.0.0"
+  
+  google-auth-library@^9.10.0:
+    version "9.10.0"
+    resolved "https://registry.yarnpkg.com/google-auth-library/-/google-auth-library-9.10.0.tgz#c9fb940923f7ff2569d61982ee1748578c0bbfd4"
+    integrity sha512-ol+oSa5NbcGdDqA+gZ3G3mev59OHBZksBTxY/tYwjtcp1H/scAFwJfSQU9/1RALoyZ7FslNbke8j4i3ipwlyuQ==
+    dependencies:
+      base64-js "^1.3.0"
+      ecdsa-sig-formatter "^1.0.11"
+      gaxios "^6.1.1"
+      gcp-metadata "^6.1.0"
+      gtoken "^7.0.0"
+      jws "^4.0.0"
+  
+  google-p12-pem@^4.0.0:
+    version "4.0.1"
+    resolved "https://registry.yarnpkg.com/google-p12-pem/-/google-p12-pem-4.0.1.tgz#82841798253c65b7dc2a4e5fe9df141db670172a"
+    integrity sha512-WPkN4yGtz05WZ5EhtlxNDWPhC4JIic6G8ePitwUWy4l+XPVYec+a0j0Ts47PDtW59y3RwAhUd9/h9ZZ63px6RQ==
+    dependencies:
+      node-forge "^1.3.1"
   
   google-spreadsheet@^4.0.2:
     version "4.1.1"
@@ -2083,10 +2145,10 @@ Lockfile:
       url-template "^2.0.8"
       uuid "^9.0.0"
   
-  googleapis@^125.0.0:
-    version "125.0.0"
-    resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-125.0.0.tgz#d084565e567081dceaf5aade0c4f5122ae53e083"
-    integrity sha512-KsMe3gdbiI6bj4M+Zuwcl7xL0Koz8m0kaq0XQj99YT/4zHsZdaLJqGmYMDyWI4SAScVqkW7TvQftzL7L74x1uQ==
+  googleapis@^137.1.0:
+    version "137.1.0"
+    resolved "https://registry.yarnpkg.com/googleapis/-/googleapis-137.1.0.tgz#f7896e6676e6e5ca358741bd7e837d8dfce94e96"
+    integrity sha512-2L7SzN0FLHyQtFmyIxrcXhgust77067pkkduqkbIpDuj9JzVnByxsRrcRfUMFQam3rQkWW2B0f1i40IwKDWIVQ==
     dependencies:
       google-auth-library "^9.0.0"
       googleapis-common "^7.0.0"
@@ -2117,6 +2179,15 @@ Lockfile:
     version "1.4.0"
     resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
     integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
+  
+  gtoken@^6.1.0:
+    version "6.1.2"
+    resolved "https://registry.yarnpkg.com/gtoken/-/gtoken-6.1.2.tgz#aeb7bdb019ff4c3ba3ac100bbe7b6e74dce0e8bc"
+    integrity sha512-4ccGpzz7YAr7lxrT2neugmXQ3hP9ho2gcaityLVkiUecAiwiy60Ii8gRbZeOsXV19fYaRjgBSshs8kXw+NKCPQ==
+    dependencies:
+      gaxios "^5.0.1"
+      google-p12-pem "^4.0.0"
+      jws "^4.0.0"
   
   gtoken@^7.0.0:
     version "7.0.1"
@@ -2223,13 +2294,6 @@ Lockfile:
     integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
     dependencies:
       safer-buffer ">= 2.1.2 < 3"
-  
-  iconv-lite@^0.6.3:
-    version "0.6.3"
-    resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.3.tgz#a52f80bf38da1952eb5c681790719871a1a72501"
-    integrity sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==
-    dependencies:
-      safer-buffer ">= 2.1.2 < 3.0.0"
   
   ieee754@^1.2.1:
     version "1.2.1"
@@ -2562,11 +2626,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
     integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
   
-  lru-cache@^10.0.1:
-    version "10.1.0"
-    resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.1.0.tgz#2098d41c2dc56500e6c88584aa656c84de7d0484"
-    integrity sha512-/1clY/ui8CzjKFyjdvwPWJUYKiFVXG2I2cY0ssG7h4+hwk+XOIX7ZSG9Q7TW8TW3Kp3BUSqgFWBLgL4PJ+Blag==
-  
   lru-cache@^6.0.0:
     version "6.0.0"
     resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-6.0.0.tgz#6d6fe6570ebd96aaf90fcad1dafa3b2566db3a94"
@@ -2590,17 +2649,6 @@ Lockfile:
     version "1.3.6"
     resolved "https://registry.yarnpkg.com/make-error/-/make-error-1.3.6.tgz#2eb2e37ea9b67c4891f684a1394799af484cf7a2"
     integrity sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw==
-  
-  mariadb@^3.2.0:
-    version "3.2.3"
-    resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.2.3.tgz#29ae69e678a25b355f4af0605b99b112c5ba7c5b"
-    integrity sha512-Hyc1ehdUJwzvvzcLU2juZS528wJ6oE8pUlpgY0BAOdpKWcdN1motuugi5lC3jkpCkFpyNknHG7Yg66KASl3aPg==
-    dependencies:
-      "@types/geojson" "^7946.0.10"
-      "@types/node" "^17.0.45"
-      denque "^2.1.0"
-      iconv-lite "^0.6.3"
-      lru-cache "^10.0.1"
   
   memory-pager@^1.0.2:
     version "1.5.0"
@@ -2812,6 +2860,11 @@ Lockfile:
     integrity sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==
     dependencies:
       whatwg-url "^5.0.0"
+  
+  node-forge@^1.3.1:
+    version "1.3.1"
+    resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.3.1.tgz#be8da2af243b2417d5f646a770663a92b7e9ded3"
+    integrity sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==
   
   node-gyp-build@^4.2.2:
     version "4.7.1"
@@ -3264,7 +3317,7 @@ Lockfile:
       get-intrinsic "^1.1.3"
       is-regex "^1.1.4"
   
-  "safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0":
+  "safer-buffer@>= 2.1.2 < 3":
     version "2.1.2"
     resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
     integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
@@ -3585,6 +3638,13 @@ Lockfile:
     version "1.0.3"
     resolved "https://registry.yarnpkg.com/ts-api-utils/-/ts-api-utils-1.0.3.tgz#f12c1c781d04427313dbac808f453f050e54a331"
     integrity sha512-wNMeqtMz5NtwpT/UZGY5alT+VoKdSsOOP/kqHFcUW1P/VRhH2wJ48+DN2WwUliNbQ976ETwDL0Ifd2VVvgonvg==
+  
+  ts-google-drive@^0.0.7:
+    version "0.0.7"
+    resolved "https://registry.yarnpkg.com/ts-google-drive/-/ts-google-drive-0.0.7.tgz#a7b18c0be1dfeb1f1bd3e3db7a5decea1652828e"
+    integrity sha512-3cSpijpmpNNVHVeGDvfwXCNoORxF9uQLONBKTeUy6QXRGgASGEwsTLvr3B5IQipnn0l/xyLk5NfvvcepDf/N9Q==
+    dependencies:
+      google-auth-library "^8.7.0"
   
   ts-morph@12.0.0:
     version "12.0.0"

@@ -40,10 +40,10 @@ const init = async () => {
         promiseLG
             .then((res) => {
             const lgChat = res === null || res === void 0 ? void 0 : res.config[0];
-            const lgFinanceFolder = res === null || res === void 0 ? void 0 : res.config[1];
+            const lgFinanceClaim = res === null || res === void 0 ? void 0 : res.config[1];
             const lgFinancePassword = res === null || res === void 0 ? void 0 : res.config[2];
             process.env.LG_CHATID = lgChat;
-            process.env.FINANCE_FOLDER_ID = lgFinanceFolder;
+            process.env.LG_FINANCE_CLAIM = lgFinanceClaim;
             process.env.FINANCE_PASSWORD = lgFinancePassword;
             console.log('LG details updated');
         })

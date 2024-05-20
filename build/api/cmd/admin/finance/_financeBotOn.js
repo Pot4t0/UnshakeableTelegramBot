@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cfmChangePassword = exports.passwordCheck = exports.completedClaimAmountNo = exports.deleteOfferingRecord = exports.addOfferingExecution = exports.addOfferingLGDate = exports.adminFinanceMenu = void 0;
+exports.changeFolderID = exports.cfmChangePassword = exports.passwordCheck = exports.completedClaimAmountNo = exports.deleteFundsRecord = exports.addFundsExecution = exports.addFundsLGDate = exports.adminFinanceMenu = void 0;
 const grammy_1 = require("grammy");
 const _SessionData_1 = require("../../../models/_SessionData");
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
@@ -68,8 +68,8 @@ const adminFinanceMenu = async (ctx) => {
         ],
         [
             {
-                text: 'Change Finance Chat',
-                callback_data: 'changeChatFinance',
+                text: 'Change Finance Google Drive Folder',
+                callback_data: 'changeFinanceFolder',
             },
         ],
     ]);
@@ -81,33 +81,33 @@ const adminFinanceMenu = async (ctx) => {
 };
 exports.adminFinanceMenu = adminFinanceMenu;
 /**
- * Logs Offering LG Date
+ * Logs Funds LG Date
  * Used in _botOn_functions.ts
  * - botOntype = 14
  * @param ctx The message context.
  */
-const addOfferingLGDate = async (ctx) => {
+const addFundsLGDate = async (ctx) => {
     const amount = ctx.message.text;
     if (amount == null) {
-        (0, exports.addOfferingLGDate)(ctx);
+        (0, exports.addFundsLGDate)(ctx);
     }
     else {
         ctx.session.amount = amount;
-        await ctx.reply('Please enter LG Date / date of offering collection (dd/mm/yyyy):');
+        await ctx.reply('Please enter LG Date / date of Funds collection (dd/mm/yyyy):');
         ctx.session.botOnType = 14;
     }
 };
-exports.addOfferingLGDate = addOfferingLGDate;
+exports.addFundsLGDate = addFundsLGDate;
 /**
- * Adds the Offering Record to the Google Sheet.
+ * Adds the Funds Record to the Google Sheet.
  * Used in _botOn_functions.ts
  * - Refer to case botOntype = 14
  * @param ctx The message context.
  */
-const addOfferingExecution = async (ctx) => {
+const addFundsExecution = async (ctx) => {
     const lgDate = ctx.message.text;
     if (lgDate == null) {
-        (0, exports.addOfferingExecution)(ctx);
+        (0, exports.addFundsExecution)(ctx);
     }
     else {
         const name = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({
@@ -121,12 +121,12 @@ const addOfferingExecution = async (ctx) => {
         console.log(counter);
         const financeSheet = await (0, _initialise_1.gsheet)('finance');
         const allRecordSheet = financeSheet.sheetsByTitle['All Records'];
-        const offeringSheet = financeSheet.sheetsByTitle['Offering'];
+        const FundsSheet = financeSheet.sheetsByTitle['Funds'];
         const dateTime = luxon_1.DateTime.now()
             .setZone('Asia/Singapore')
             .toFormat('dd/mm/yyyy hh:mm:ss');
         if (amount && lgDate && witness && counter) {
-            await offeringSheet.addRow({
+            await FundsSheet.addRow({
                 'Transaction ID': uuid,
                 Timestamp: dateTime,
                 Date: lgDate,
@@ -141,56 +141,56 @@ const addOfferingExecution = async (ctx) => {
                 Amount: amount,
                 'Counted by': counter,
                 Witness: witness,
-                Type: 'Offering',
+                Type: 'Funds',
             });
-            await ctx.reply('Offering Added');
+            await ctx.reply('Funds Added');
         }
         else {
-            await ctx.reply('Error in adding offering');
+            await ctx.reply('Error in adding Funds');
         }
         allRecordSheet.resetLocalCache();
-        offeringSheet.resetLocalCache();
+        FundsSheet.resetLocalCache();
         financeSheet.resetLocalCache();
         ctx.session = (0, _SessionData_1.initial)();
     }
 };
-exports.addOfferingExecution = addOfferingExecution;
+exports.addFundsExecution = addFundsExecution;
 /**
- * Delete Offering Record
+ * Delete Funds Record
  * Used in _botOn_functions.ts
  * - botOntype = 15
  * @param ctx The message context.
  */
-const deleteOfferingRecord = async (ctx) => {
+const deleteFundsRecord = async (ctx) => {
     const msg = ctx.message.text;
     if (msg == null) {
-        (0, exports.deleteOfferingRecord)(ctx);
+        (0, exports.deleteFundsRecord)(ctx);
     }
     else {
         const financeSheet = await (0, _initialise_1.gsheet)('finance');
-        const offeringSheet = financeSheet.sheetsByTitle['Offering'];
+        const FundsSheet = financeSheet.sheetsByTitle['Funds'];
         const allRecordSheet = financeSheet.sheetsByTitle['All Records'];
-        await offeringSheet.loadCells();
+        await FundsSheet.loadCells();
         await allRecordSheet.loadCells();
         const allRecordRowNo = await (0, _gsheet_functions_1.searchRowNo)(msg, allRecordSheet, 'A', 2, allRecordSheet.rowCount);
-        const offeringRowNo = await (0, _gsheet_functions_1.searchRowNo)(msg, offeringSheet, 'A', 2, offeringSheet.rowCount);
-        console.log(allRecordRowNo, offeringRowNo);
-        const offeringRow = await offeringSheet.getRows({});
+        const FundsRowNo = await (0, _gsheet_functions_1.searchRowNo)(msg, FundsSheet, 'A', 2, FundsSheet.rowCount);
+        console.log(allRecordRowNo, FundsRowNo);
+        const FundsRow = await FundsSheet.getRows({});
         const allRecordRow = await allRecordSheet.getRows({});
-        if (allRecordRowNo != -1 && offeringRowNo != -1) {
-            await offeringRow[offeringRowNo - 2].delete();
+        if (allRecordRowNo != -1 && FundsRowNo != -1) {
+            await FundsRow[FundsRowNo - 2].delete();
             await allRecordRow[allRecordRowNo - 2].delete();
-            await ctx.reply('Offering Record Deleted');
+            await ctx.reply('Funds Record Deleted');
         }
         else {
             await ctx.reply('No such transaction ID found');
         }
-        offeringSheet.resetLocalCache();
+        FundsSheet.resetLocalCache();
         allRecordSheet.resetLocalCache();
         ctx.session = (0, _SessionData_1.initial)();
     }
 };
-exports.deleteOfferingRecord = deleteOfferingRecord;
+exports.deleteFundsRecord = deleteFundsRecord;
 /**
  * Logs Reimbursement Amount
  * Used in _botOn_functions.ts
@@ -316,3 +316,36 @@ const cfmChangePassword = async (ctx) => {
     }
 };
 exports.cfmChangePassword = cfmChangePassword;
+/**
+ * Changes Folder ID for the finance team.
+ * Used in _botOn_functions.ts
+ * - botOntype = 34
+ * @param ctx The message context.
+ * @throws Error if the folder ID is invalid.
+ * @throws Error if there is an error in changing the folder ID.
+ */
+const changeFolderID = async (ctx) => {
+    const folderID = ctx.message.text;
+    if (folderID == null) {
+        (0, exports.changeFolderID)(ctx);
+    }
+    else if (folderID) {
+        const config = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).findOneBy({
+            option: 'LG',
+        });
+        if (!config) {
+            await ctx.reply('Invalid Password');
+            return;
+        }
+        config.config[1] = folderID;
+        await _db_init_1.Database.getMongoRepository(_tableEntity_1.Settings).save(config);
+        process.env.FINANCE_FOLDER_ID = folderID;
+        await ctx.reply(`Folder ID changed to ${folderID}!`);
+        ctx.session = (0, _SessionData_1.initial)();
+    }
+    else {
+        await ctx.reply('Error in changing Folder ID');
+        ctx.session.botOnType = 34;
+    }
+};
+exports.changeFolderID = changeFolderID;

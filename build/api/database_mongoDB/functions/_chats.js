@@ -11,7 +11,9 @@ const _tableEntity_1 = require("../Entity/_tableEntity");
  * @param bot The Bot instance.
  * @param grp The group parameter, which can be either 'LG' or 'Finance'.
  */
-const chooseChat = async (bot, grp) => {
+const chooseChat = async (bot, grp
+// | 'Finance'
+) => {
     bot.callbackQuery(`changeChat${grp}`, _telefunctions_1.loadFunction, async (ctx) => {
         await changeChat(ctx, grp);
     });
@@ -23,7 +25,9 @@ exports.chooseChat = chooseChat;
  * @param ctx The callback query context.
  * @param grp The group parameter, which can be either 'LG' or 'Finance'.
  */
-const changeChat = async (ctx, grp) => {
+const changeChat = async (ctx, grp
+// | 'Finance'
+) => {
     // Remove any existing inline buttons
     await (0, _telefunctions_1.removeInLineButton)(ctx);
     // Create a keyboard with a request to choose the chat
@@ -63,10 +67,10 @@ const changeChatExecution = async (ctx) => {
                     lgDetails[0] = chatid.toString();
                     process.env.LG_CHATID = chatid.toString();
                     break;
-                case 'Finance':
-                    lgDetails[1] = chatid.toString();
-                    process.env.LG_FINANCE_CLAIM = chatid.toString();
-                    break;
+                // case 'Finance':
+                //   lgDetails[1] = chatid.toString();
+                //   process.env.LG_FINANCE_CLAIM = chatid.toString();
+                //   break;
                 default:
                     await ctx.reply('ERROR! No grp found!');
                     return;

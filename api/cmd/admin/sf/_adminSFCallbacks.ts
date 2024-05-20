@@ -30,6 +30,8 @@ export const adminSF = (bot: Bot<BotContext>) => {
   bot.callbackQuery(/^excludeUser-/g, excludeFromReminderFunction);
   bot.callbackQuery('removeExcludeUser', removeExcludeFromReminder);
   bot.callbackQuery(/^rmExcludeUser-/g, removeExcludeFromReminderFunction);
+
+  bot.callbackQuery('setSFStickerReply', setSFStickerReplyMenu);
 };
 
 /**
@@ -294,4 +296,25 @@ const removeExcludeFromReminderFunction = async (
   } else {
     await ctx.reply('No user is excluded from SF reminder');
   }
+};
+
+const setSFStickerReplyMenu = async (ctx: CallbackQueryContext<BotContext>) => {
+  await removeInLineButton(ctx);
+  const inlineKeyboard = new InlineKeyboard([
+    [
+      {
+        text: 'Reminder Sticker',
+        callback_data: 'setSFReminderSticker',
+      },
+    ],
+    [
+      {
+        text: 'Logged SF Sticker',
+        callback_data: 'setSFLogSticker',
+      },
+    ],
+  ]);
+  await ctx.reply('Which reply to set sticker:', {
+    reply_markup: inlineKeyboard,
+  });
 };

@@ -28,6 +28,7 @@ const adminSF = (bot) => {
     bot.callbackQuery(/^excludeUser-/g, excludeFromReminderFunction);
     bot.callbackQuery('removeExcludeUser', removeExcludeFromReminder);
     bot.callbackQuery(/^rmExcludeUser-/g, removeExcludeFromReminderFunction);
+    bot.callbackQuery('setSFStickerReply', setSFStickerReplyMenu);
 };
 exports.adminSF = adminSF;
 /**
@@ -250,4 +251,24 @@ const removeExcludeFromReminderFunction = async (ctx) => {
     else {
         await ctx.reply('No user is excluded from SF reminder');
     }
+};
+const setSFStickerReplyMenu = async (ctx) => {
+    await (0, _telefunctions_1.removeInLineButton)(ctx);
+    const inlineKeyboard = new grammy_1.InlineKeyboard([
+        [
+            {
+                text: 'Reminder Sticker',
+                callback_data: 'setSFReminderSticker',
+            },
+        ],
+        [
+            {
+                text: 'Logged SF Sticker',
+                callback_data: 'setSFLogSticker',
+            },
+        ],
+    ]);
+    await ctx.reply('Which reply to set sticker:', {
+        reply_markup: inlineKeyboard,
+    });
 };

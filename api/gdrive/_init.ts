@@ -1,14 +1,8 @@
 import { google } from 'googleapis';
-import fs from 'fs';
-
-const credentials = require('./path/to/service-account-file.json');
-
-const auth = new google.auth.GoogleAuth({
-  credentials: credentials,
+export const auth = new google.auth.GoogleAuth({
+  credentials: {
+    client_email: process.env.DRIVE_EMAIL!,
+    private_key: process.env.DRIVEKEY!,
+  },
   scopes: ['https://www.googleapis.com/auth/drive'],
-});
-
-const drive = google.drive({
-  version: 'v3',
-  auth: auth,
 });

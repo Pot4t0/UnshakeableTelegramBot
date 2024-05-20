@@ -1,4 +1,4 @@
-import { Filter } from 'grammy';
+import { Filter, InputFile } from 'grammy';
 import { BotContext } from '../../../app/_index';
 import { initial } from '../../../models/_SessionData';
 import { DateTime } from 'luxon';
@@ -7,6 +7,7 @@ import { Database } from '../../../database_mongoDB/_db-init';
 import { randomUUID } from 'crypto';
 import { gsheet } from '../../../functions/_initialise';
 import { dbMessaging } from '../../../database_mongoDB/functions/_index';
+import { gdrive } from '../../../gdrive/_index';
 
 /**
  * Used for receiving claim amount
@@ -68,7 +69,7 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
     const amount = ctx.session.amount;
     const reason = ctx.session.text;
     const date = DateTime.now().setZone('Asia/Singapore');
-    const claimChatId = process.env.LG_FINANCE_CLAIM;
+    const folderID = process.env.FINANCE_FOLDER_ID;
     const status = 'Pending Approval 🟠';
     const formattedDate = `${date.day} ${date.monthShort} ${date.year}`;
     const claimMsg = `Claim submitted by\n${user}\n${formattedDate}\n\n<b>${status}</b>\n\nAmount: $${amount}\nDescription: ${reason}`;
@@ -78,7 +79,7 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
       role: 'finance',
     });
 
-    if (claimChatId && user && amount && reason) {
+    if (folderID && user && amount && reason) {
       const claimId = randomUUID();
       const claimDoc = new Claims();
       claimDoc.claimid = claimId;
@@ -97,22 +98,25 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
         Status: status,
         Claimee: user,
       });
-      
-      const photoFormula = `=IMAGE("https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}")`; // Telegram API to get photo
+
+      const photoPath = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}`;
+
+      const gdriveFilePath = await gdrive.uploadFile(photoPath, reason);
+      const photoFormula = `=IMAGE("${gdriveFilePath}")`;
       newRow.set('Images', photoFormula);
       await newRow.save();
       const sendDB = await Database.getMongoRepository(Claims).save(claimDoc);
       if (sendDB && newRow) {
         await ctx.reply('Claim submitted! Thank you!');
-        // await Promise.all(
-        //   financeTeam.map(async (i) => {
-        //     await dbMessaging.sendMessageUser(
-        //       i.teleUser,
-        //       `${user} has submitted a claim.`,
-        //       ctx
-        //     );
-        //   })
-        // );
+        await Promise.all(
+          financeTeam.map(async (i) => {
+            await dbMessaging.sendMessageUser(
+              i.teleUser,
+              `${user} has submitted a claim.`,
+              ctx
+            );
+          })
+        );
       } else {
         await ctx.reply('Error! Please try again!');
       }

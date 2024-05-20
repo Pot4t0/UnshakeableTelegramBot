@@ -22,9 +22,9 @@ const adminFinance = (bot) => {
     _index_1.team.teamManagement(bot, 'Finance');
     //Fund Management
     bot.callbackQuery('fundManagement', _telefunctions_1.loadFunction, fundMenu);
-    bot.callbackQuery('addOffering', _telefunctions_1.loadFunction, addOffering);
-    bot.callbackQuery(/^addOffering-/, _telefunctions_1.loadFunction, addOfferingAmount);
-    bot.callbackQuery('rmOffering', _telefunctions_1.loadFunction, deleteOffering);
+    bot.callbackQuery('addFunds', _telefunctions_1.loadFunction, addFunds);
+    bot.callbackQuery(/^addFunds-/, _telefunctions_1.loadFunction, addFundsAmount);
+    bot.callbackQuery('rmFunds', _telefunctions_1.loadFunction, deleteFunds);
     //Reimbursement Management
     bot.callbackQuery('reimbursementManagement', _telefunctions_1.loadFunction, reimbursementMenu);
     bot.callbackQuery('viewAllClaims', _telefunctions_1.loadFunction, viewAllClaims);
@@ -41,8 +41,9 @@ const adminFinance = (bot) => {
     //Change Finance Password
     bot.callbackQuery('changeFinancePassword', _telefunctions_1.loadFunction, changeFinancePassword);
     bot.callbackQuery(/^changePassword/, _telefunctions_1.loadFunction, cfmPassword);
-    //Change Finance Chat
-    _index_1.chat.chooseChat(bot, 'Finance');
+    //Change Finance Folder
+    bot.callbackQuery('changeFinanceFolder', _telefunctions_1.loadFunction, changeFinanceFolder);
+    // chat.chooseChat(bot, 'Finance');
 };
 exports.adminFinance = adminFinance;
 /**
@@ -55,14 +56,14 @@ const fundMenu = async (ctx) => {
     const inlineKeyboard = new grammy_1.InlineKeyboard([
         [
             {
-                text: 'Add Offering',
-                callback_data: 'addOffering',
+                text: 'Add Funds',
+                callback_data: 'addFunds',
             },
         ],
         [
             {
-                text: 'Remove Offering',
-                callback_data: 'rmOffering',
+                text: 'Remove Funds',
+                callback_data: 'rmFunds',
             },
         ],
     ]);
@@ -71,16 +72,16 @@ const fundMenu = async (ctx) => {
     });
 };
 /**
- * Logs Witness for Offering
+ * Logs Witness for Funds
  * @param ctx The message context.
  */
-const addOffering = async (ctx) => {
+const addFunds = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     const names = await _db_init_1.Database.getRepository(_tableEntity_1.Names).find();
     const inlineKeyboard = new grammy_1.InlineKeyboard(names.map((n) => [
         {
             text: n.nameText,
-            callback_data: `addOffering-${n.nameText}`,
+            callback_data: `addFunds-${n.nameText}`,
         },
     ]));
     await ctx.reply('Please select the witness:', {
@@ -88,23 +89,23 @@ const addOffering = async (ctx) => {
     });
 };
 /**
- * Logs Offering Amount
+ * Logs Funds Amount
  * @param ctx The message context.
  */
-const addOfferingAmount = async (ctx) => {
+const addFundsAmount = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
-    const callback = ctx.update.callback_query.data.substring('addOffering-'.length);
+    const callback = ctx.update.callback_query.data.substring('addFunds-'.length);
     ctx.session.name = callback;
-    await ctx.reply('Please input offering amount ($SGD):', {
+    await ctx.reply('Please input Funds amount ($SGD):', {
         reply_markup: { force_reply: true },
     });
     ctx.session.botOnType = 13;
 };
 /**
- * Deletes Offering
+ * Deletes Funds
  * @param ctx The message context.
  */
-const deleteOffering = async (ctx) => {
+const deleteFunds = async (ctx) => {
     (0, _telefunctions_1.removeInLineButton)(ctx);
     await ctx.reply('Please input Transaction Id:', {
         reply_markup: { force_reply: true },
@@ -637,8 +638,14 @@ const cfmPassword = async (ctx) => {
     }
 };
 /**
- * Change Finance Chat
- * - Changes the finance chat.
+ * Change Finance Folder
+ * - Changes the finance folder.
  * @param ctx The message context.
  */
-const changeFinanceChat = async (ctx) => { };
+const changeFinanceFolder = async (ctx) => {
+    (0, _telefunctions_1.removeInLineButton)(ctx);
+    await ctx.reply('Please input new folder ID:', {
+        reply_markup: { force_reply: true },
+    });
+    ctx.session.botOnType = 34;
+};
