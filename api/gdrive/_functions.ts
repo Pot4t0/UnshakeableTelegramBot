@@ -63,7 +63,7 @@ export async function uploadFile(fileURL: string, fileName: string) {
       media: media,
       fields: 'id',
     });
-    return `https://drive.google.com/uc?id=${response.data.id}&export=download`;
+    return response.data.id;
   } catch (error) {
     // Handle the error
     console.error('Error uploading file:', error);
@@ -73,3 +73,15 @@ export async function uploadFile(fileURL: string, fileName: string) {
     fs.unlinkSync(outputLocationPath);
   }
 }
+
+export const deleteFile = async (fileId: string) => {
+  const drive = google.drive({ version: 'v3', auth });
+  try {
+    await drive.files.delete({
+      fileId: fileId,
+    });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    throw error;
+  }
+};

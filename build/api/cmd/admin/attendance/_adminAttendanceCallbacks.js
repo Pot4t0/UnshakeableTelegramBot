@@ -42,7 +42,7 @@ const adminAttendance = (bot) => {
     bot.callbackQuery('sendAttendanceNotInReminder', _telefunctions_1.loadFunction, attendanceReminder);
     bot.callbackQuery(/^sendAttendanceReminder-/g, _telefunctions_1.loadFunction, attendanceReminder_Menu);
     bot.callbackQuery('sendReminder-Attendance', _telefunctions_1.loadFunction, attendanceReminder_Msg);
-    //Send to Attendance Sheet to LG Chat
+    // Send to Attendance Sheet to LG Chat
     bot.callbackQuery('chatAttendance', _telefunctions_1.loadFunction, sendAttendanceToLGChat_EventMenu);
     bot.callbackQuery(/^sendAttendanceToLGChat/g, _telefunctions_1.loadFunction, async (ctx) => {
         const msgArray = await sendAttendanceToLGChat_Execution(ctx);
@@ -330,10 +330,14 @@ const sendAttendanceToLGChat_EventMenu = async (ctx) => {
     const activeEvents = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Attendance_mongo).find({
         name: 'Active',
     });
+    if (activeEvents.length == 0) {
+        await ctx.reply('No active events to send to LG Chat!');
+        return;
+    }
     const inlineKeyboard = new grammy_1.InlineKeyboard(activeEvents[0].eventTitle.map((n) => [
         {
             text: n,
-            callback_data: `sendAttendanceToLGChat-${n}`,
+            callback_data: `sendAttendanceToChat-${n}`,
         },
     ]));
     await ctx.reply(`Choose which event you want to send to LG Chat:\n`, {
@@ -347,7 +351,7 @@ const sendAttendanceToLGChat_EventMenu = async (ctx) => {
  */
 const sendAttendanceToLGChat_Execution = async (ctx) => {
     await (0, _telefunctions_1.removeInLineButton)(ctx);
-    const callback = await ctx.update.callback_query.data.substring('sendAttendanceToLGChat-'.length);
+    const callback = ctx.update.callback_query.data.substring('sendAttendanceToChat-'.length);
     const totalNames = await _db_init_1.Database.getMongoRepository(_tableEntity_1.Names).find({});
     const unshakeableAttendanceSpreadsheet = await (0, _initialise_1.gsheet)('attendance');
     await unshakeableAttendanceSpreadsheet.loadInfo();

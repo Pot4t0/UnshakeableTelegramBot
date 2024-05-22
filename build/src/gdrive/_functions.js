@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFile = void 0;
+exports.deleteFile = exports.uploadFile = void 0;
 const googleapis_1 = require("googleapis");
 const axios_1 = __importDefault(require("axios"));
 const fs = __importStar(require("fs"));
@@ -84,7 +84,7 @@ async function uploadFile(fileURL, fileName) {
             media: media,
             fields: 'id',
         });
-        return `https://drive.google.com/uc?id=${response.data.id}&export=download`;
+        return response.data.id;
     }
     catch (error) {
         // Handle the error
@@ -97,3 +97,16 @@ async function uploadFile(fileURL, fileName) {
     }
 }
 exports.uploadFile = uploadFile;
+const deleteFile = async (fileId) => {
+    const drive = googleapis_1.google.drive({ version: 'v3', auth: _init_1.auth });
+    try {
+        await drive.files.delete({
+            fileId: fileId,
+        });
+    }
+    catch (error) {
+        console.error('Error deleting file:', error);
+        throw error;
+    }
+};
+exports.deleteFile = deleteFile;

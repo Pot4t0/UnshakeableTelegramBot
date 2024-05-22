@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from 'luxon';
 import { searchRowNo } from '../../../gsheets/_gsheet_functions';
 import { GoogleSpreadsheetRow } from 'google-spreadsheet';
+import { gdrive } from '../../../gdrive/_index';
 
 /**
  * /adminFinance
@@ -427,6 +428,7 @@ const rejectReimbursementFunction = async (
 
   const teleUser = user.teleUser;
   const desc = claim.description;
+  await gdrive.deleteFile(claim.claimid);
   await Database.getMongoRepository(Claims).deleteOne({
     claimid: callback,
   });

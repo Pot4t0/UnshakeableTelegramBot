@@ -80,9 +80,7 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
     });
 
     if (folderID && user && amount && reason) {
-      const claimId = randomUUID();
       const claimDoc = new Claims();
-      claimDoc.claimid = claimId;
       claimDoc.amount = parseInt(amount);
       claimDoc.name = user;
       claimDoc.status = status;
@@ -92,10 +90,16 @@ export const submitClaim = async (ctx: Filter<BotContext, 'message:photo'>) => {
 
       const photoPath = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}`;
 
-      const gdriveFilePath = await gdrive.uploadFile(photoPath, reason);
-      const photoFormula = `=IMAGE("${gdriveFilePath}")`;
+      const gdriveFileId = await gdrive.uploadFile(photoPath, reason);
+      if (!gdriveFileId) {
+        await ctx.reply('Error! Please try again!');
+        return;
+      }
+      const photoFormula = `=IMAGE("https://drive.google.com/uc?id=${gdriveFileId}&export=download")`;
+
+      claimDoc.claimid = gdriveFileId;
       const newRow = await claimsSheet.addRow({
-        'Claim ID': claimId,
+        'Claim ID': gdriveFileId,
         Date: formattedDate,
         Amount: amount,
         Description: reason,

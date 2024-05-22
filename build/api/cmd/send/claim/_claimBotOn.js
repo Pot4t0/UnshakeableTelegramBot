@@ -5,7 +5,6 @@ const _SessionData_1 = require("../../../models/_SessionData");
 const luxon_1 = require("luxon");
 const _tableEntity_1 = require("../../../database_mongoDB/Entity/_tableEntity");
 const _db_init_1 = require("../../../database_mongoDB/_db-init");
-const crypto_1 = require("crypto");
 const _initialise_1 = require("../../../functions/_initialise");
 const _index_1 = require("../../../database_mongoDB/functions/_index");
 const _index_2 = require("../../../gdrive/_index");
@@ -80,9 +79,7 @@ const submitClaim = async (ctx) => {
             role: 'finance',
         });
         if (folderID && user && amount && reason) {
-            const claimId = (0, crypto_1.randomUUID)();
             const claimDoc = new _tableEntity_1.Claims();
-            claimDoc.claimid = claimId;
             claimDoc.amount = parseInt(amount);
             claimDoc.name = user;
             claimDoc.status = status;
@@ -90,10 +87,15 @@ const submitClaim = async (ctx) => {
             claimDoc.date = formattedDate;
             claimDoc.msg = claimMsg;
             const photoPath = `https://api.telegram.org/file/bot${process.env.BOT_TOKEN}/${photo.file_path}`;
-            const gdriveFilePath = await _index_2.gdrive.uploadFile(photoPath, reason);
-            const photoFormula = `=IMAGE("${gdriveFilePath}")`;
+            const gdriveFileId = await _index_2.gdrive.uploadFile(photoPath, reason);
+            if (!gdriveFileId) {
+                await ctx.reply('Error! Please try again!');
+                return;
+            }
+            const photoFormula = `=IMAGE("https://drive.google.com/uc?id=${gdriveFileId}&export=download")`;
+            claimDoc.claimid = gdriveFileId;
             const newRow = await claimsSheet.addRow({
-                'Claim ID': claimId,
+                'Claim ID': gdriveFileId,
                 Date: formattedDate,
                 Amount: amount,
                 Description: reason,

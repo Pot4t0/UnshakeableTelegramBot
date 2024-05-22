@@ -87,7 +87,7 @@ export const adminAttendance = (bot: Bot<BotContext>) => {
     loadFunction,
     attendanceReminder_Msg
   );
-  //Send to Attendance Sheet to LG Chat
+  // Send to Attendance Sheet to LG Chat
   bot.callbackQuery(
     'chatAttendance',
     loadFunction,
@@ -449,11 +449,15 @@ const sendAttendanceToLGChat_EventMenu = async (
       name: 'Active',
     }
   );
+  if (activeEvents.length == 0) {
+    await ctx.reply('No active events to send to LG Chat!');
+    return;
+  }
   const inlineKeyboard = new InlineKeyboard(
     activeEvents[0].eventTitle.map((n) => [
       {
         text: n,
-        callback_data: `sendAttendanceToLGChat-${n}`,
+        callback_data: `sendAttendanceToChat-${n}`,
       },
     ])
   );
@@ -471,8 +475,8 @@ const sendAttendanceToLGChat_Execution = async (
   ctx: CallbackQueryContext<BotContext>
 ) => {
   await removeInLineButton(ctx);
-  const callback = await ctx.update.callback_query.data.substring(
-    'sendAttendanceToLGChat-'.length
+  const callback = ctx.update.callback_query.data.substring(
+    'sendAttendanceToChat-'.length
   );
   const totalNames = await Database.getMongoRepository(Names).find({});
   const unshakeableAttendanceSpreadsheet = await gsheet('attendance');

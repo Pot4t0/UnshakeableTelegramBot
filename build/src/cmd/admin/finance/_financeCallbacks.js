@@ -11,6 +11,7 @@ const _SessionData_1 = require("../../../models/_SessionData");
 const uuid_1 = require("uuid");
 const luxon_1 = require("luxon");
 const _gsheet_functions_1 = require("../../../gsheets/_gsheet_functions");
+const _index_2 = require("../../../gdrive/_index");
 /**
  * /adminFinance
  * - Sets up callback query handlers for the Finance command.
@@ -330,6 +331,7 @@ const rejectReimbursementFunction = async (ctx) => {
     }
     const teleUser = user.teleUser;
     const desc = claim.description;
+    await _index_2.gdrive.deleteFile(claim.claimid);
     await _db_init_1.Database.getMongoRepository(_tableEntity_1.Claims).deleteOne({
         claimid: callback,
     });
