@@ -24,6 +24,7 @@ exports.botOnHandler = botOnHandler;
  * @param {Filter<BotContext, 'message'>} ctx The context of the message.
  */
 const anyMsgListener = async (ctx) => {
+    const msg = ctx.message.text;
     switch (ctx.session.botOnType) {
         // /sendwish BotOn Functions
         //Refer to finalWish Method in sendWishCallback.ts
@@ -208,6 +209,8 @@ const anyMsgListener = async (ctx) => {
             const chatid = ctx.chat.id.toString();
             if (chatid != process.env.LG_CHATID)
                 await ctx.reply('Sorry I do not understand. Please try again!');
+            console.log(`Msg not recognised! ${msg} from ${chatid}`);
+            throw new Error(`Msg not recognised! ${msg} from ${chatid}`);
         }
     }
 };

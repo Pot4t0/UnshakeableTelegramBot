@@ -17,7 +17,8 @@ const sendToSheet_SF = async (ctx) => {
     const sheet = ctx.session.gSheet;
     try {
         if (sfmsg == null) {
-            (0, exports.sendToSheet_SF)(ctx);
+            await ctx.reply('Error! Please re-enter your SF.');
+            await (0, exports.sendToSheet_SF)(ctx);
         }
         else {
             if (sfmsg && teleUserName && sheet) {
@@ -83,7 +84,8 @@ const sendToSheet_Reason = async (ctx) => {
     const sheet = ctx.session.gSheet;
     try {
         if (reason == null) {
-            (0, exports.sendToSheet_Reason)(ctx);
+            await ctx.reply('Error! Please re-enter your reason.');
+            await (0, exports.sendToSheet_SF)(ctx);
         }
         else {
             if (reason && teleUserName && sheet) {

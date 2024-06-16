@@ -17,7 +17,8 @@ export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
   const sheet = ctx.session.gSheet;
   try {
     if (sfmsg == null) {
-      sendToSheet_SF(ctx);
+      await ctx.reply('Error! Please re-enter your SF.');
+      await sendToSheet_SF(ctx);
     } else {
       if (sfmsg && teleUserName && sheet) {
         const user = await Database.getMongoRepository(Names).find({
@@ -86,7 +87,8 @@ export const sendToSheet_Reason = async (
   const sheet = ctx.session.gSheet;
   try {
     if (reason == null) {
-      sendToSheet_Reason(ctx);
+      await ctx.reply('Error! Please re-enter your reason.');
+      await sendToSheet_SF(ctx);
     } else {
       if (reason && teleUserName && sheet) {
         const user = await Database.getMongoRepository(Names).find({
