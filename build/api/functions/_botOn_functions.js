@@ -209,6 +209,7 @@ const anyMsgListener = async (ctx) => {
             const chatid = ctx.chat.id.toString();
             if (chatid != process.env.LG_CHATID)
                 await ctx.reply('Sorry I do not understand. Please try again!');
+            console.log(`Msg not recognised! ${msg} from ${chatid}`);
             throw new Error(`Msg not recognised! ${msg} from ${chatid}`);
         }
     }

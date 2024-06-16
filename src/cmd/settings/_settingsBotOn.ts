@@ -20,15 +20,19 @@ export const settingsAnnouncements_Send = async (
     settingsAnnouncements_Send(ctx);
   } else {
     const allNames = Database.getMongoRepository(Names).find();
+    const sendUsersChatId = (await allNames)
+      .map((n) => n.chat)
+      .filter((n) => n != '');
     const sendUsers = (await allNames)
       .map((n) => n.teleUser)
       .filter((n) => n != '');
     await Promise.all(
       sendUsers.map(async (n) => {
+        const chatId = await sendUsersChatId[sendUsers.indexOf(n)];
         const sentMsg = await dbMessaging.sendMessageUser(n, announcement, ctx);
         try {
           if (sentMsg) {
-            await ctx.api.pinChatMessage(sentMsg.chat.id, sentMsg.message_id);
+            await ctx.api.pinChatMessage(chatId, sentMsg.message_id);
           } else {
             await ctx.reply('Error in sending message');
             console.log('Error in sending message');
