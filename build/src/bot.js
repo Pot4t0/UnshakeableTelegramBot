@@ -1,9 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/**
- * Entry point for the bot application.
- */
-const grammy_1 = require("grammy");
 const _initialise_1 = require("./functions/_initialise");
 const _botOn_functions_1 = require("./functions/_botOn_functions");
 const _commands_1 = require("./cmd/_commands");
@@ -39,7 +35,7 @@ bot.start();
  * Create a webhook callback for the bot using grammY's webhook.
  * @returns {Function} The webhook callback function.
  */
-exports.default = (0, grammy_1.webhookCallback)(bot, 'http');
+// export default webhookCallback(bot, 'http');
 // Vercel Edge Runtime
 // export const config = {
 //   runtime: 'edge',

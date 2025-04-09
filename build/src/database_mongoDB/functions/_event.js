@@ -190,8 +190,11 @@ const addEvent_CreateEvent = async (ctx, notAllowedUser) => {
         event.eventName = eventName;
         event.eventDate = eventDate;
         event.eventTeam = eventTeam;
-        if (notAllowedUser != 'ALL') {
+        if (!notAllowedUser.includes('ALL')) {
             event.notAllowedUser = notAllowedUser;
+        }
+        else {
+            event.notAllowedUser = '';
         }
         await _db_init_1.Database.getMongoRepository(_tableEntity_1.Events).save(event);
         await ctx.reply(`${eventName} (${team} Event) added!`);

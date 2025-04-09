@@ -43,7 +43,7 @@ bot.start();
  * Create a webhook callback for the bot using grammY's webhook.
  * @returns {Function} The webhook callback function.
  */
-export default webhookCallback(bot, 'http');
+// export default webhookCallback(bot, 'http');
 
 // Vercel Edge Runtime
 // export const config = {

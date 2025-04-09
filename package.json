@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "tsc -w",
-    "serve": " node ./build/src/bot.js",
-    "build": ""
+    "dev": "ts-node-dev --respawn --transpile-only src/bot.ts",
+    "serve": "node build/src/bot.js",  // For production only after build
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/node": "^20.5.0",
