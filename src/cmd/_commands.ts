@@ -9,7 +9,6 @@ import {
 
 import { dbSecurity } from '../database_mongoDB/functions/_index';
 import { gsheet } from '../functions/_initialise';
-import { adminFinanceBotOn } from './admin/_index';
 
 // /start, /help, /settings, /sendsf, /sendwish, /sendattendance, /adminwelfare, /adminbday, /adminsf, /adminattendance
 // This file contains all the commands that the bot can call
@@ -33,8 +32,6 @@ export const commands = (bot: Bot<BotContext>) => {
   bot.command('sendsf', dbSecurity.checkUserInDatabaseMiddleware, sendsf);
   //Call /sendwish command
   bot.command('sendwish', dbSecurity.checkUserInDatabaseMiddleware, sendWish);
-  //Call /sendclaim command
-  bot.command('sendclaim', dbSecurity.checkUserInDatabaseMiddleware, sendClaim);
   //Call /sendattendance
   bot.command(
     'sendattendance',
@@ -56,12 +53,6 @@ export const commands = (bot: Bot<BotContext>) => {
     'adminattendance',
     dbSecurity.checkUserInDatabaseMiddleware,
     adminattendance
-  );
-  //Call /adminfinance
-  bot.command(
-    'adminfinance',
-    dbSecurity.checkUserInDatabaseMiddleware,
-    adminfinance
   );
 };
 
@@ -282,39 +273,6 @@ const sendattendance = async (ctx: CommandContext<BotContext>) => {
     }
   );
   await unshakeableAttendanceSpreadsheet.resetLocalCache();
-};
-
-/**
- * Handles the logic for the /sendclaim command.
- * This function is for user to send claims.
- * @param ctx The command context.
- * @returns Returns false if the command is not called in a private chat.
- */
-const sendClaim = async (ctx: CommandContext<BotContext>) => {
-  if (ctx.update.message?.chat.type !== 'private') {
-    return false;
-  }
-  const inlineKeyboard = new InlineKeyboard([
-    [
-      {
-        text: 'Make a claim',
-        callback_data: 'makeClaim',
-      },
-    ],
-    [
-      {
-        text: 'View Your Claims',
-        callback_data: 'viewClaim',
-      },
-    ],
-  ]);
-  await ctx.reply(
-    `<b>Unshakeable Finance Claims</b>\n\n<b>REMINDER</b>\nMake sure you inform the finance person before making any claims.`,
-    {
-      reply_markup: inlineKeyboard,
-      parse_mode: 'HTML',
-    }
-  );
 };
 
 /**
@@ -587,32 +545,5 @@ const adminattendance = async (ctx: CommandContext<BotContext>) => {
     await ctx.reply(
       'AIYO! You are our LGL/SGL. Hence, you cant access this :('
     );
-  }
-};
-
-/**
- * Handles the logic for the /adminfinance command.
- * This function is for admin to manage finance.
- * @param ctx The command context.
- * @returns Returns false if the command is not called in a private chat.
- */
-const adminfinance = async (ctx: CommandContext<BotContext>) => {
-  if (ctx.update.message?.chat.type !== 'private') {
-    return false;
-  }
-  const access = await dbSecurity.roleAccess(
-    ['SGL', 'finance', 'LGL', 'it'],
-    ctx
-  );
-  if (access) {
-    if (!ctx.session.financeAccess) {
-      await ctx.reply('Please enter password:');
-      ctx.session.botOnType = 12;
-    } else {
-      ctx.update.message.text = process.env.FINANCE_PASSWORD || '';
-      await adminFinanceBotOn.adminFinanceMenu(ctx);
-    }
-  } else {
-    await ctx.reply('No Access to Finance');
   }
 };

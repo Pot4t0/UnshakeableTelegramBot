@@ -5,12 +5,10 @@ import { adminAttendance } from './attendance/_adminAttendanceCallbacks';
 import { adminWelfare } from './_adminWelfareCallbacks';
 import { adminBday } from './_adminBdayCallbacks';
 import { adminSF } from './sf/_adminSFCallbacks';
-import { adminFinance } from './finance/_financeCallbacks';
 
 //Admin Bot On Functions
 export * as adminAttendanceBotOn from './attendance/_adminAttendanceBotOn';
 export * as adminSFBotOn from './sf/_adminSFBotOn';
-export * as adminFinanceBotOn from './finance/_financeBotOn';
 
 /**
  * admin Class (Callbacks)
@@ -50,7 +48,4 @@ export class admin {
    * Admin Finance command.
    * @param bot The Bot instance.
    */
-  static finance(bot: Bot<BotContext>) {
-    adminFinance(bot);
-  }
 }

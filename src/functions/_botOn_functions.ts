@@ -9,15 +9,10 @@ import {
 
 import {
   sendAttendanceBotOn,
-  sendClaimBotOn,
   sendWishBotOn,
   sendsfBotOn,
 } from '../cmd/send/_index';
-import {
-  adminAttendanceBotOn,
-  adminSFBotOn,
-  adminFinanceBotOn,
-} from '../cmd/admin/_index';
+import { adminAttendanceBotOn, adminSFBotOn } from '../cmd/admin/_index';
 import { settingBotOn } from '../cmd/settings/_index';
 import { loadFunction } from '../app/_telefunctions';
 
@@ -28,7 +23,7 @@ import { loadFunction } from '../app/_telefunctions';
  * @param {Bot<BotContext>} bot The bot instance.
  */
 export const botOnHandler = (bot: Bot<BotContext>) => {
-  bot.on('message:photo', loadFunction, phtotListener);
+  // bot.on('message:photo', loadFunction, phtotListener);
   bot.on(':user_shared', loadFunction, userSharedListener);
   bot.on(':chat_shared', loadFunction, chatSharedListener);
   bot.on('message', loadFunction, anyMsgListener);
@@ -94,53 +89,9 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       break;
     }
 
-    // sendClaim BotOn Functions
-    // Used for receiving claim amount
-    case 10: {
-      await sendClaimBotOn.logClaimAmount(ctx);
-      break;
-    }
-    // Used for receiving claim reason
-    case 11: {
-      await sendClaimBotOn.logClaimReason(ctx);
-      break;
-    }
-    // Adminfinance BotOn Functions
-    // Used for accessing admin finance menu
-    case 12: {
-      await adminFinanceBotOn.adminFinanceMenu(ctx);
-      break;
-    }
-    // Used for adding Funds date (LG)
-    case 13: {
-      await adminFinanceBotOn.addFundsLGDate(ctx);
-      break;
-    }
-    // Used for adding Funds execution
-    case 14: {
-      await adminFinanceBotOn.addFundsExecution(ctx);
-      break;
-    }
-    // Used for deleting Funds record
-    case 15: {
-      await adminFinanceBotOn.deleteFundsRecord(ctx);
-      break;
-    }
-    // Used for completed claim amount
-    case 16: {
-      await adminFinanceBotOn.completedClaimAmountNo(ctx);
-      break;
-    }
-    // Used for password check
-    case 17: {
-      await adminFinanceBotOn.passwordCheck(ctx);
-      break;
-    }
-    // Used for changing password
-    case 18: {
-      await adminFinanceBotOn.cfmChangePassword(ctx);
-      break;
-    }
+    //
+    // Usable numbers: 10-18
+    //
 
     // sendattendance BotOn Functions
     // Used for sending attendance log reason
@@ -221,12 +172,9 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       await gSheetDB.changeSheetExecution(ctx);
       break;
     }
-    // /adminfinance
-    // Used for Finance Folder ID
-    case 34: {
-      await adminFinanceBotOn.changeFolderID(ctx);
-      break;
-    }
+
+    // Usable numbers: 34
+
     // Unrecognised msg handler
     default: {
       const chatid = ctx.chat.id.toString();
@@ -286,21 +234,21 @@ const chatSharedListener = async (ctx: Filter<BotContext, ':chat_shared'>) => {
   }
 };
 
-/**
- * Listener for photo messages.
- * @param {Filter<BotContext, 'message:photo'>} ctx The context of the photo message.
- */
-const phtotListener = async (ctx: Filter<BotContext, 'message:photo'>) => {
-  switch (ctx.session.botOnPhoto) {
-    // /sendclaim
-    // Used for submitting claim (photo)
-    case 1:
-      await sendClaimBotOn.submitClaim(ctx);
-      break;
-    // Unrecognised photo message
-    default:
-      const chatid = ctx.chat.id.toString();
-      if (chatid != process.env.LG_CHATID)
-        await ctx.reply('Sorry I do not understand. Please try again!');
-  }
-};
+// /**
+//  * Listener for photo messages.
+//  * @param {Filter<BotContext, 'message:photo'>} ctx The context of the photo message.
+//  */
+// const phtotListener = async (ctx: Filter<BotContext, 'message:photo'>) => {
+//   switch (ctx.session.botOnPhoto) {
+//     // /sendclaim
+//     // Used for submitting claim (photo)
+//     case 1:
+//       await sendClaimBotOn.submitClaim(ctx);
+//       break;
+//     // Unrecognised photo message
+//     default:
+//       const chatid = ctx.chat.id.toString();
+//       if (chatid != process.env.LG_CHATID)
+//         await ctx.reply('Sorry I do not understand. Please try again!');
+//   }
+// };

@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/bot.ts",
-    "serve": "node build/src/bot.js",  // For production only after build
+    "serve": "node build/src/bot.js",
     "build": "tsc"
   },
   "devDependencies": {

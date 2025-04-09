@@ -4,7 +4,6 @@ import 'dotenv/config';
 import { DataSource } from 'typeorm';
 import {
   Attendance_mongo,
-  Claims,
   Events,
   Names,
   SF_mongo,
@@ -19,15 +18,7 @@ export const Database = new DataSource({
   type: 'mongodb',
   url: process.env.CONNECTION || '',
   database: 'UnshakeableDB',
-  entities: [
-    Names,
-    Events,
-    Wishes,
-    SF_mongo,
-    Attendance_mongo,
-    Settings,
-    Claims,
-  ],
+  entities: [Names, Events, Wishes, SF_mongo, Attendance_mongo, Settings],
 });
 
 /**

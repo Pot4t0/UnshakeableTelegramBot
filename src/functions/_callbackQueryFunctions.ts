@@ -22,8 +22,7 @@ export const callbackQueryHandler = (bot: Bot<BotContext>) => {
   send.wish(bot); // Executes sendwish command callbacks
   // /sendattendance Callbacks
   send.attendance(bot); // Executes sendattendance command callbacks
-  // /sendclaim Callbacks
-  send.claim(bot); // Executes sendclaim command callbacks
+
   // /adminWelfare Callbacks
   admin.welfare(bot); // Executes adminWelfare command callbacks
   // /adminbday Callbacks
@@ -32,8 +31,6 @@ export const callbackQueryHandler = (bot: Bot<BotContext>) => {
   admin.sf(bot); // Executes adminsf command callbacks
   // /adminattendance Callbacks
   admin.attendance(bot); // Executes adminattendance command callbacks
-  // /adminfinance Callbacks
-  admin.finance(bot); // Executes adminfinance command callbacks
 
   // DB Callbacks
   //Specific Person Reminder
