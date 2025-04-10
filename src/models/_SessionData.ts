@@ -132,6 +132,16 @@ export interface SessionData {
    */
   botOnType?: number;
   /**
+   * The bot on function.
+   * - Used for msg handling.
+   * @type {string}
+   * @memberof SessionData
+   * @default undefined
+   * @example 'functionName'
+   */
+  botOnFunction?: string;
+
+  /**
    * Any text to be stored.
    * @type {string}
    * @memberof SessionData
@@ -190,6 +200,7 @@ export function initial(): SessionData {
     wish: undefined,
     reminderUser: undefined,
     botOnType: undefined,
+    botOnFunction: undefined,
     text: undefined,
     eventMeal: undefined,
     gSheet: undefined,

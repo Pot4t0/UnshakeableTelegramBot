@@ -1,5 +1,5 @@
 import { Bot, Filter } from 'grammy';
-import { BotContext } from '../app/_index';
+import { BotContext, sendErrorMsg } from '../app/_index';
 import {
   chat,
   eventDB,
@@ -35,6 +35,25 @@ export const botOnHandler = (bot: Bot<BotContext>) => {
  */
 const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
   const msg = ctx.message.text;
+
+  switch (ctx.session.botOnFunction) {
+    // Unrecognised msg handler
+    default: {
+      const chatid = ctx.chat.id.toString();
+      if (chatid != process.env.LG_CHATID)
+        await sendErrorMsg(
+          `Sorry I do not understand. Please try again!`,
+          ctx,
+          'Unrecognised Msg',
+          'error',
+          true
+        );
+      console.log(`Msg not recognised! ${msg} from ${chatid}`);
+      throw new Error(`Msg not recognised! ${msg} from ${chatid}`);
+    }
+  }
+
+  return;
   switch (ctx.session.botOnType) {
     // /sendwish BotOn Functions
     //Refer to finalWish Method in sendWishCallback.ts
@@ -174,15 +193,6 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
     }
 
     // Usable numbers: 34
-
-    // Unrecognised msg handler
-    default: {
-      const chatid = ctx.chat.id.toString();
-      if (chatid != process.env.LG_CHATID)
-        await ctx.reply('Sorry I do not understand. Please try again!');
-      console.log(`Msg not recognised! ${msg} from ${chatid}`);
-      throw new Error(`Msg not recognised! ${msg} from ${chatid}`);
-    }
   }
 };
 
