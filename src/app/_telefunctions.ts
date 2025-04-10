@@ -107,16 +107,16 @@ export const sendErrorMsg = async (
       let formatted_message = safeMessage;
       switch (type) {
         case 'error':
-          formatted_message = `*_❗️❗️Error❗️❗️_*\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*User ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
+          formatted_message = `*_❗️❗️Error❗️❗️_*\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
           break;
         case 'runtime':
-          formatted_message = `_*Runtime Error⚙️❗️*_\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*User ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
+          formatted_message = `_*⚙️Runtime Error❗️*_\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
           break;
         case 'info':
-          formatted_message = `_*ℹ️Info*_\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*User ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
+          formatted_message = `*ℹ️ Info*\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid}\n_*Username:*_ @${ctx.from?.username}`;
           break;
         case 'warn':
-          formatted_message = `_*⚠️⚠️Warning⚠️⚠️*_\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*User ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
+          formatted_message = `_*⚠️⚠️Warning⚠️⚠️*_\n\n_*Error Function:*_ ${errorFn}\n\n_*Message:*_\n${safeMessage}, \n\n_*Chat ID:*_ ${chatid},\n_*Username:*_ @${ctx.from?.username}`;
           break;
         default:
           formatted_message = safeMessage;

@@ -45,7 +45,7 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
           `Sorry I do not understand. Please try again!`,
           ctx,
           'Unrecognised Msg',
-          'error',
+          'warn',
           true
         );
       console.log(`Msg not recognised! ${msg} from ${chatid}`);
