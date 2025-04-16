@@ -18,7 +18,8 @@ import { gsheet } from '../../gsheets/_index';
 // Database - contaims all chatid and telegramm username
 // Telegram - send message to respective chatid
 // Team - string of team name (Attendance, Welfare, Admin, Birthday)
-// Used in _botOn_functions.ts in botOntype = 2 and 3
+// Used in _botOn_functions.ts in botOnFunction = 'reminder_send_all_not_in_execution'
+// Used in _botOn_functions.ts in botOnFunction = 'reminder_specific_reminder_execution'
 
 /**
  * Sends a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
@@ -109,12 +110,12 @@ export const reminderSendAllNotIn_ReminderMessage = async (
       },
     }
   );
-  ctx.session.botOnType = 2;
+  ctx.session.botOnFunction = 'reminder_send_all_not_in_execution';
 };
 
 /**
  * Sends a reminder message to all users who have not sent in their attendance, welfare wish, sermon feedback, or birthday wish.
- * Used in _botOn_functions.ts in botOntype = 2
+ * Used in _botOn_functions.ts in botOnFunction = 'reminder_send_all_not_in_execution'
  * @param ctx Context object.
  * @param gsheet The Google Sheets worksheet.
  */
@@ -313,11 +314,11 @@ const sendSpecificReminder_ReminderMsg = async (
       },
     }
   );
-  ctx.session.botOnType = 3;
+  ctx.session.botOnFunction = 'reminder_specific_reminder_execution';
 };
 /**
  * Sends a reminder message to a specific user.
- * Used in _botOn_functions.ts in botOntype = 3
+ * Used in _botOn_functions.ts in botOnFunction = 'reminder_specific_reminder_execution'
  * @param ctx Context object.
  */
 export const sendSpecificReminder_Execution = async (

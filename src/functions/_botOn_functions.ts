@@ -33,10 +33,74 @@ export const botOnHandler = (bot: Bot<BotContext>) => {
  * Listener for any message received.
  * @param {Filter<BotContext, 'message'>} ctx The context of the message.
  */
+/**
+ * Listener for handling any message received by the bot based on the current session state.
+ *
+ * This function processes messages based on the `botOnFunction` property in the session,
+ * which determines what action to take. Each case in the switch statement corresponds to
+ * a specific bot operation like sending wishes, handling reminders, managing events, etc.
+ *
+ * @param ctx - The context object containing message data and session information
+ * @throws Error when the message cannot be recognized or handled
+ * @returns Promise<void>
+ */
 const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
   const msg = ctx.message.text;
 
   switch (ctx.session.botOnFunction) {
+    // Reminder system handlers
+    // Sends reminders to all users who haven't responded yet
+    case 'reminder_send_all_not_in_execution': {
+      await reminder.reminderSendAllNotIn_Execution(ctx);
+      break;
+    }
+    // Processes a specific reminder request for targeted users
+    case 'reminder_specific_reminder_execution': {
+      await reminder.sendSpecificReminder_Execution(ctx);
+      break;
+    }
+
+    // Event management handlers
+    // Captures the name for a new event being created
+    case 'add_event_receive_event_name': {
+      await eventDB.addEvent_ReceiveEventName(ctx);
+      break;
+    }
+    // Records the date for a newly created event
+    case 'add_event_receive_event_date': {
+      await eventDB.addEvent_ReceiveEventDate(ctx);
+      break;
+    }
+    // Updates the name of an existing event
+    case 'edit_event_name': {
+      await eventDB.editEventName_Execution(ctx);
+      break;
+    }
+    // Updates the date of an existing event
+    case 'edit_event_date': {
+      await eventDB.editEventDate_Execution(ctx);
+      break;
+    }
+
+    // Message handling for user wishes
+    // Processes the user's wish message and sends it to the recipient
+    case 'send_wish_execution': {
+      await sendWishBotOn.sendWish_Execution(ctx);
+      break;
+    }
+
+    // Service form submission handlers
+    // Records the user's service form submission
+    case 'send_sf': {
+      await sendsfBotOn.sendToSheet_SF(ctx);
+      break;
+    }
+    // Captures the reason provided for a service form submission
+    case 'send_reason': {
+      await sendsfBotOn.sendToSheet_Reason(ctx);
+      break;
+    }
+
     // Unrecognised msg handler
     default: {
       const chatid = ctx.chat.id.toString();
@@ -55,13 +119,6 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
 
   return;
   switch (ctx.session.botOnType) {
-    // /sendwish BotOn Functions
-    //Refer to finalWish Method in sendWishCallback.ts
-    //Used for receiving wish msg
-    case 1: {
-      await sendWishBotOn.sendWish_Execution(ctx);
-      break;
-    }
     // /DbFunctions BotOn Functions
     //Used for receiving reminders for all users that did not send in reminders
     case 2: {

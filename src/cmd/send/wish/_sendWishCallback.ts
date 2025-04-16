@@ -13,6 +13,7 @@ export const sendWish = (bot: Bot<BotContext>) => {
 
 /**
  * Sends a wish message when the send wish event button is clicked.
+ * Calls BotOn function to send the wish. ( sendWish_Execution )
  * @param ctx The message context.
  * @throws Error if the user spams the button.
  */
@@ -27,7 +28,7 @@ const sendWish_WishMessage = async (ctx: CallbackQueryContext<BotContext>) => {
     console.log(err);
   }
   ctx.session.eventName = event;
-  ctx.session.botOnType = 1;
+  ctx.session.botOnFunction = 'send_wish_execution';
   await ctx.answerCallbackQuery({
     text: event,
   });

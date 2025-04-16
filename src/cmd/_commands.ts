@@ -54,6 +54,21 @@ export const commands = (bot: Bot<BotContext>) => {
     dbSecurity.checkUserInDatabaseMiddleware,
     adminattendance
   );
+
+  // bot.command('testapp', async (ctx) => {
+  //   await ctx.reply('Open the Mini App!', {
+  //     reply_markup: {
+  //       inline_keyboard: [
+  //         [
+  //           {
+  //             text: 'Open App',
+  //             web_app: { url: 'https://minh-ip.duckdns.org' }, // your hosted URL
+  //           },
+  //         ],
+  //       ],
+  //     },
+  //   });
+  // });
 };
 
 /**

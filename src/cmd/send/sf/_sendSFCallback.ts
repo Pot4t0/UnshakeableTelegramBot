@@ -35,7 +35,7 @@ const sendSF = async (ctx: CallbackQueryContext<BotContext>) => {
   const unshakeableSFSpreadsheet = await gsheet('sf');
   const sheet = unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
   ctx.session.gSheet = sheet;
-  ctx.session.botOnType = 8;
+  ctx.session.botOnFunction = 'send_sf';
 };
 
 /**
@@ -58,5 +58,5 @@ const sendReason = async (ctx: CallbackQueryContext<BotContext>) => {
   const unshakeableSFSpreadsheet = await gsheet('sf');
   const sheet = unshakeableSFSpreadsheet.sheetsByTitle['Telegram Responses'];
   ctx.session.gSheet = sheet;
-  ctx.session.botOnType = 9;
+  ctx.session.botOnFunction = 'send_reason';
 };

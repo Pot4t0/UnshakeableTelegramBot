@@ -147,12 +147,12 @@ const addEvent_Init = async (
       force_reply: true,
     },
   });
-  ctx.session.botOnType = 4;
+  ctx.session.botOnFunction = 'add_event_receive_event_name';
 };
 
 /**
  * Creates an event for the specified team.
- * Used in _botOn_functions.ts in botOntype = 4
+ * Used in _botOn_functions.ts in botOnFunction = 'add_event_receive_event_name'
  * @param ctx The callback query context.
  * @param notAllowedUser The user to exclude from the event.
  */
@@ -166,12 +166,12 @@ export const addEvent_ReceiveEventName = async (
   ctx.reply('Deadline of wish collection (dd/mm/yyyy): ', {
     reply_markup: { force_reply: true },
   });
-  ctx.session.botOnType = 5;
+  ctx.session.botOnFunction = 'add_event_receive_event_date';
 };
 
 /**
  * Creates an event for the specified team.
- * Used in _botOn_functions.ts in botOntype = 5
+ * Used in _botOn_functions.ts in botOnFunction = 'add_event_receive_event_date'
  * @param ctx The callback query context.
  * @param notAllowedUser The user to exclude from the event.
  */
@@ -499,12 +499,12 @@ const editEventName = async (
       reply_markup: { force_reply: true },
     }
   );
-  ctx.session.botOnType = 6;
+  ctx.session.botOnFunction = 'edit_event_name';
 };
 
 /**
  * Edits the name of an event.
- * Used in _botOn_functions.ts in botOntype = 6
+ * Used in _botOn_functions.ts in botOnFunction = 'edit_event_name'
  * @param ctx The callback query context.
  * @param eventName The name of the event to edit.
  */
@@ -534,9 +534,9 @@ const editEventDate = async (ctx: CallbackQueryContext<BotContext>) => {
   await ctx.reply('Change event date to: (dd/mm/yyyy) :', {
     reply_markup: { force_reply: true },
   });
-  ctx.session.botOnType = 7;
+  ctx.session.botOnFunction = 'edit_event_date';
 };
-//Used in _botOn_functions.ts in botOntype = 7
+//Used in _botOn_functions.ts in botOnFunction = 'edit_event_date'
 export const editEventDate_Execution = async (
   ctx: Filter<BotContext, 'message'>
 ) => {

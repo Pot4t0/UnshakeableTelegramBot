@@ -7,7 +7,7 @@ import { initial } from '../../../models/_SessionData';
 /**
  * Sends the sermon feedback to the Google Sheet
  * Used in _botOn_functions.ts
- * - Refer to case botOntype = 8
+ * - Refer to case botOnFunction = 'send_sf'
  * @param ctx The message context.
  * @throws Error if the sermon feedback could not be logged.
  */
@@ -71,11 +71,11 @@ export const sendToSheet_SF = async (ctx: Filter<BotContext, 'message'>) => {
 };
 
 // Send to Google Sheets Reason
-// Used in _botOn_functions.ts in botOntype = 9
+// Used in _botOn_functions.ts in botOnFunction = 'send_reason'
 /**
  * Sends the reason to the Google Sheet
  * Used in _botOn_functions.ts
- * - Refer to case botOntype = 9
+ * - Refer to case botOnFunction = 'send_reason'
  * @param ctx The message context.
  * @throws Error if the reason could not be logged.
  */
