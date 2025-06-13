@@ -78,7 +78,7 @@ export const adminAttendance = (bot: Bot<BotContext>) => {
     attendanceReminder
   );
   bot.callbackQuery(
-    /^sendAttendanceReminder-/g,
+    /^sendAttendReminder-/g,
     loadFunction,
     attendanceReminder_Menu
   );
@@ -393,16 +393,12 @@ const attendanceReminder = async (ctx: CallbackQueryContext<BotContext>) => {
       .filter((n) => n != special_template)
       .filter((n) => !archivedSheetsArray.includes(n.title))
       .map((n) => [
-        { text: n.title, callback_data: `sendAttendanceReminder-${n.title}` },
+        { text: n.title, callback_data: `sendAttendReminder-${n.title}` },
       ])
   );
-  await ctx.reply(
-    `Choose which event you want to send reminder for:
-		  `,
-    {
-      reply_markup: inlineKeyboard,
-    }
-  );
+  await ctx.reply(`Choose which event you want to send reminder for:`, {
+    reply_markup: inlineKeyboard,
+  });
 };
 /**
  * Attendance Reminder Menu
@@ -413,7 +409,7 @@ const attendanceReminder_Menu = async (
 ) => {
   await removeInLineButton(ctx);
   const title = await ctx.update.callback_query.data.substring(
-    'sendAttendanceReminder-'.length
+    'sendAttendReminder-'.length
   );
   ctx.session.name = await title;
 
