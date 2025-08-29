@@ -48,6 +48,10 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
   const msg = ctx.message.text;
 
   switch (ctx.session.botOnFunction) {
+    /*
+     * Database System Handlers
+     */
+
     // Reminder system handlers
     // Sends reminders to all users who haven't responded yet
     case 'reminder_send_all_not_in_execution': {
@@ -81,6 +85,10 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
       await eventDB.editEventDate_Execution(ctx);
       break;
     }
+
+    /*
+     * Send Command Handlers
+     */
 
     // Message handling for user wishes
     // Processes the user's wish message and sends it to the recipient
@@ -119,52 +127,6 @@ const anyMsgListener = async (ctx: Filter<BotContext, 'message'>) => {
 
   return;
   switch (ctx.session.botOnType) {
-    // /DbFunctions BotOn Functions
-    //Used for receiving reminders for all users that did not send in reminders
-    case 2: {
-      await reminder.reminderSendAllNotIn_Execution(ctx);
-      break;
-    }
-    //Used for receiving reminders for specific reminder
-    //Used for receiving reminders for all users that did not send in reminders
-    case 3: {
-      await reminder.sendSpecificReminder_Execution(ctx);
-      break;
-    }
-    //eventDB BotOn Functions
-    // Add Event Date Message
-    case 4: {
-      await eventDB.addEvent_ReceiveEventName(ctx);
-      break;
-    }
-    //Add NotAllowedUser Meassage
-    case 5: {
-      await eventDB.addEvent_ReceiveEventDate(ctx);
-      break;
-    }
-    //Used for editing welfare events (Event Name)
-    case 6: {
-      await eventDB.editEventName_Execution(ctx);
-      break;
-    }
-    //Used for editing welfare events (Event Dtae)
-    case 7: {
-      await eventDB.editEventDate_Execution(ctx);
-      break;
-    }
-
-    // sendSF BotOn Functions
-    // Used for sending sf msg to google sheets
-    case 8: {
-      await sendsfBotOn.sendToSheet_SF(ctx);
-      break;
-    }
-    // Used for sending reason msg to google sheets
-    case 9: {
-      await sendsfBotOn.sendToSheet_Reason(ctx);
-      break;
-    }
-
     //
     // Usable numbers: 10-18
     //
