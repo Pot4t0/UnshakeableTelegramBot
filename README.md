@@ -61,18 +61,6 @@ _Features_
 - Attendance Google Sheet
 - Archival Management
 
-### Finance (Under Implemenatation)
-
-Tracking and monitoring of a LG finances
-
-_Features_
-
-- Offering
-- Claims System
-- Reimbursement System
-- Password-Locked
-- Team Management
-
-## Set Up Guide
+### Set Up Guide
 
 TBC

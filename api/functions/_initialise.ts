@@ -14,8 +14,12 @@ import { hydrateFiles } from '@grammyjs/files';
  * @returns The Telegram bot.
  */
 export const init_bot = () => {
-  // Initialise MongoDB database
-  init();
+  // Initialise MongoDB database. Not awaited here (init_bot stays sync), but
+  // the promise is captured so update processing can be gated on it below —
+  // otherwise a cold start can process an update (e.g. the DB-security
+  // middleware) before TypeORM has finished building entity metadata,
+  // surfacing as `EntityMetadataNotFoundError: No metadata for "X" was found`.
+  const dbReady = init();
 
   // Retrieve bot token from environment variables
   const token = process.env.BOT_TOKEN || '';
@@ -23,6 +27,12 @@ export const init_bot = () => {
 
   // Throw an error if BOT_TOKEN is not set
   if (!token) throw new Error('BOT_TOKEN is unset');
+
+  // Block update processing until the DB connection/metadata is ready
+  bot.use(async (ctx, next) => {
+    await dbReady;
+    await next();
+  });
 
   // Set up session middleware with initial session data
   bot.use(session({ initial }));
